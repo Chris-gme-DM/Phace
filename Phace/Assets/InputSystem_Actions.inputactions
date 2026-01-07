@@ -502,7 +502,7 @@
                     "name": "Cancel",
                     "type": "Button",
                     "id": "15cef263-9014-4fd5-94d9-4e4a6234a6ef",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -1006,24 +1006,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Boost",
-                    "type": "Button",
-                    "id": "dfe0c35b-ee8b-4ccb-bff4-ee39b80fc6b7",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Attack",
-                    "type": "Button",
-                    "id": "d27a5a70-8dfb-4ff5-a7db-1e47f24c5251",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Target",
                     "type": "Value",
                     "id": "a7c9d767-77de-42f4-8cfd-fc3bddb22b9c",
@@ -1033,9 +1015,45 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "AttackPrimary",
+                    "type": "Button",
+                    "id": "d27a5a70-8dfb-4ff5-a7db-1e47f24c5251",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "AttackSecondary",
+                    "type": "Button",
+                    "id": "d796a27c-0e6d-44a8-9d85-0e295b684994",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Boost",
+                    "type": "Button",
+                    "id": "dfe0c35b-ee8b-4ccb-bff4-ee39b80fc6b7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Shield",
                     "type": "Button",
                     "id": "1fa04ad0-786c-412a-80b1-f1e9cbac4111",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShipMenu",
+                    "type": "Button",
+                    "id": "83ee6223-5b98-41a8-84a3-37c0d37cec28",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1182,7 +1200,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Attack",
+                    "action": "AttackPrimary",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1193,7 +1211,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Attack",
+                    "action": "AttackPrimary",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1238,6 +1256,50 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Shield",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "70164a19-abba-4c45-b5f6-a40a81dbb184",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "AttackSecondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2af0931f-ae79-4a4a-a64e-53241220085e",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "AttackSecondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a5f5233d-ee80-4a12-b475-185859e054c8",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "ShipMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "60b54716-da79-40a9-abd5-9517d954fe36",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ShipMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
