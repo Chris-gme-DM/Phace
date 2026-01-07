@@ -9,3 +9,22 @@ Phace takes place in unfathomable space, each player controlling their own space
 + Platform: PC
 + Controls: keyboard/mouse, controller
 + Target group: 12+ yrs
+
+## Work Rules
+These rules are for all contributors to follow and establish a healthy work environment. Tools we use for organization:
++ Discord
++ Trello
++ Miro
+### Interpersonal Rules
++ Respect each other
++ Listen to each other
++ Open communication
++ We agree to not talk about the project between 0am - 8am
+### Workflow rules
++ Each contributor works in their own Workspace branch
++ Overarching Issues are discussed and opened, assignment to an issue follows work capacity
++ Sub issues can be opened by the assigned contributor on their own without further discussion
++ We established a folder structure in unity to not disrupt each others workspace.
++ Scenes are established or copied to work on issues
+### Naming conventions and commentary
++ Follow standard C# conventions
