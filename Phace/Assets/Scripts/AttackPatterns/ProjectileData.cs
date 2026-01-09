@@ -31,3 +31,10 @@ public enum HitType
     Piercing,
     DamageOverTime
 }
+[System.Serializable]
+public struct ProjectileStats
+{
+    public float Speed;
+    public float Damage;
+    public float Life;
+}

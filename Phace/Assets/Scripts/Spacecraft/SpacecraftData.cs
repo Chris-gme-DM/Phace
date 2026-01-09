@@ -35,3 +35,21 @@ public class SpacecraftData : ScriptableObject
     public AttackPatternData SecondaryAttackPattern => _secondaryAttackPattern;
 
 }
+/// <summary>
+/// Holds current stats for a spacecraft instance.
+/// </summary>
+/// 
+[System.Serializable]
+public struct SpacecraftStats
+{
+    public float CurrentHealth;
+    public float MaxHealth;
+    public float HealthRegenRate;
+    public float HealthRegenDelay;
+    public float CurrentShield;
+    public float MaxShield;
+    public float ShieldRegenRate;
+    public float ShieldRegenDelay;
+    public float MoveSpeed;
+    public float MaxSpeed;
+}

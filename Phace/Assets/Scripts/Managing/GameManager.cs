@@ -1,17 +1,11 @@
 using FishNet.Object;
-using UnityEngine;
-
+using FishNet;
 public class GameManager : NetworkBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static GameManager Instance { get; private set; }
+    public override void OnStartNetwork()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        base.OnStartNetwork();
+        Instance = this;
     }
 }

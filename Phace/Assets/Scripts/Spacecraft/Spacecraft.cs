@@ -1,7 +1,6 @@
 using UnityEngine;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-
 /// <summary>
 /// This class represents a spacecraft in the game, managing its stats and actions.
 /// </summary>
@@ -30,6 +29,7 @@ public class Spacecraft : NetworkBehaviour
         };
     }
     #endregion
+    #region Handlers
     [ServerRpc]
     public void TakeDamage(float amount)
     {
@@ -54,19 +54,4 @@ public class Spacecraft : NetworkBehaviour
     [ServerRpc]
     public void HandleSecondaryAttack(int attackPatternID) { }
 }
-/// <summary>
-/// Holds current stats for a spacecraft instance.
-/// </summary>
-public struct SpacecraftStats
-{
-    public float CurrentHealth;
-    public float MaxHealth;
-    public float HealthRegenRate;
-    public float HealthRegenDelay;
-    public float CurrentShield;
-    public float MaxShield;
-    public float ShieldRegenRate;
-    public float ShieldRegenDelay;
-    public float MoveSpeed;
-    public float MaxSpeed;
-}
+#endregion

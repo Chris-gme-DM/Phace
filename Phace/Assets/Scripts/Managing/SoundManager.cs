@@ -1,8 +1,20 @@
-using FishNet.Object;
 using UnityEngine;
 
-public class SoundManager : NetworkBehaviour
+public class SoundManager : MonoBehaviour
 {
+    public static SoundManager Instance { get; private set; }
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
