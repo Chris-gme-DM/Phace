@@ -17,7 +17,9 @@ public class PlayerMovement : NetworkBehaviour
     {
         // Unsubscribe from tick event to avoid leaks
         if (TimeManager != null)
+        {
             TimeManager.OnTick -= TimeManager_OnTick;
+        }
     }
 
     private void Start()

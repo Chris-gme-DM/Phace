@@ -18,17 +18,13 @@ public class Guns : NetworkBehaviour
         if (!IsOwner)
             return;
 
-        var keyboard = Keyboard.current;
-        if (keyboard == null)
-            return;
-
-        if ( Keyboard.current.spaceKey.wasPressedThisFrame)
+        if ( Mouse.current.leftButton.wasPressedThisFrame)
         {
             SpawnProjectile();
         }
     }
 
-    // We are using a ServerRpc here because the Server needs to do all network object spawning.
+    
     [ServerRpc]
     private void SpawnProjectile()
     {
@@ -36,5 +32,9 @@ public class Guns : NetworkBehaviour
         projectile.transform.up = transform.up; // Orient the projectile to match the gun's direction.
 
         Spawn(projectile); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
+        if (projectile != null)
+        {
+            Destroy(projectile.gameObject, 2f);
+        }
     }
 }

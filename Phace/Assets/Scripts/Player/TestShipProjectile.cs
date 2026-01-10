@@ -7,12 +7,12 @@ public class TestShipProjectile : NetworkBehaviour
 {
     public readonly SyncVar<float> syncSpeed = new SyncVar<float>();
     private Rigidbody2D rb;
-    private float speed;
+    [SerializeField] private float speed;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        speed = 10f; // Set projectile speed
+        
     }
 
     private void Start()
@@ -21,10 +21,12 @@ public class TestShipProjectile : NetworkBehaviour
     }
     private void OnTick()
     {
-        float delta = (float)TimeManager.TickDelta;
+        if (rb != null) { 
+            float delta = (float)TimeManager.TickDelta;
 
-        Vector2 nextPos = rb.position + (Vector2)(transform.up * speed * delta);
+            Vector2 nextPos = rb.position + (Vector2)(transform.up * speed * delta);
 
-        rb.MovePosition(nextPos);
+            rb.MovePosition(nextPos);
+        }
     }
 }
