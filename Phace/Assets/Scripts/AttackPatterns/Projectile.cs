@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Projectile : NetworkBehaviour
 {
-    public readonly ProjectileData _projectileData;
+    public readonly int _projectileDataID;
     public AssociationType _associationType;
     public readonly SyncVar<ProjectileStats> Stats = new();
 }

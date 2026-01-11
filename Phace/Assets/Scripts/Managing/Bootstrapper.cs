@@ -1,42 +1,50 @@
 using UnityEngine;
 using FishNet;
+using FishNet.Object;
 using FishNet.Managing.Scened;
 using System.Collections;
-using FishNet.Object;
+using System.Collections.Generic;
 public class Bootstrapper : MonoBehaviour
 {
-    [SerializeField] private string SceneName = "GameScene_0 1";
+    [Header("Scene to Load")]
+    [SerializeField] private string sceneName = "Game_1";
 
-    [SerializeField] private NetworkObject gameManagerPrefab;
-    [SerializeField] private NetworkObject lobbyManagerPrefab;
+    [Header("Networked Managers")]
+    [SerializeField] private List<NetworkObject> networkedManagersPrefabs;
+
+    [Header("Local Managers")]
+    [SerializeField] private List<GameObject> localManagerPrefabs;
     // Only called once. Loads the main scene after bootstrapper is done readying the Managers.
     private IEnumerator Start()
     {
-        // Start the Network
-        InstanceFinder.ServerManager.StartConnection();
-        InstanceFinder.ClientManager.StartConnection();
-        // Wait until server is started
-        while (!InstanceFinder.ServerManager.Started) yield return null;
-        // Instantiate the Lobby and Game Managers from the Network Prefab Manager
-        SpawnManagers();
-        LoadMenu();
+        SpawnAllManagers();
+        LoadMainMenu();
+        yield break;
     }
-    private void SpawnManagers()
+    private void SpawnAllManagers()
     {
-        if (lobbyManagerPrefab != null)
+        // Instantiate local Managers
+        foreach (var localPrefab in localManagerPrefabs)
         {
-            NetworkObject lobbyManager = Instantiate(lobbyManagerPrefab);
-            InstanceFinder.ServerManager.Spawn(lobbyManager);
-        }
-        if (gameManagerPrefab != null)
-        {
-            NetworkObject gameManager = Instantiate(gameManagerPrefab);
-            InstanceFinder.ServerManager.Spawn(gameManager);
+            if (localPrefab == null) continue;
+            GameObject go = Instantiate(localPrefab);
+            DontDestroyOnLoad(go);
+
+            // Instantiate networked Managers if Server is started.
+            if (InstanceFinder.IsServerStarted)
+            {
+                foreach (var netPrefab in networkedManagersPrefabs)
+                {
+                    if (netPrefab == null) continue;
+                    NetworkObject no = Instantiate(netPrefab);
+                    InstanceFinder.ServerManager.Spawn(no);
+                }
+            }
         }
     }
-    private void LoadMenu()
+    private void LoadMainMenu()
     {
-        SceneLoadData sld = new (SceneName);
+        SceneLoadData sld = new (sceneName);
         sld.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadGlobalScenes(sld);
     }

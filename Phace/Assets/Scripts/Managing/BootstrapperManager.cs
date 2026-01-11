@@ -8,15 +8,14 @@ public class BootstrapperManager : MonoBehaviour
     {
         if (Instance !=  null && Instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(this);
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(this);
 
     }
 
-    // Update is called once per frame. forgot what i wanted to do here
     void Update()
     {
         if (!InstanceFinder.IsServerStarted)

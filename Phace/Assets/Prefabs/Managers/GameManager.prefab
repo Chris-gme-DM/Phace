@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 383899775458720541}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8926494, y: 3.930193, z: 119.076836}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -48,6 +48,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 5729236883671825429}
   _networkObjectCache: {fileID: 5729236883671825429}
+  _spaceCraftDatas: []
 --- !u!114 &5729236883671825429
 MonoBehaviour:
   m_ObjectHideFlags: 0

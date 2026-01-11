@@ -13,13 +13,13 @@ public class AttackPatternData : ScriptableObject
     [SerializeField] private float _fireRate;
     [SerializeField] private float _AttackCooldown;
     [SerializeField] private float spreadAngle;
-    [SerializeField] private Projectile _projectile;
+    [SerializeField] private ProjectileData _projectile;
 
     public int AttackPatternID => _attackPatternID;
     public string AttackPatternName => _attackPatternName;
     public int NumberOfProjectiles => _numberOfProjectiles;
     public float FireRate => _fireRate;
     public float AttackCooldown => _AttackCooldown;
-    public Projectile Projectile => _projectile;
+    public ProjectileData Projectile => _projectile;
 
 }

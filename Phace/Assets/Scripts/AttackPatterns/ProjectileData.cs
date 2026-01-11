@@ -1,5 +1,6 @@
 using FishNet.Object;
 using UnityEngine;
+using System;
 
 [CreateAssetMenu(fileName = "NewProjectileData", menuName = "AttackPatterns/Projectile Data")]
 public class ProjectileData : ScriptableObject
@@ -31,7 +32,7 @@ public enum HitType
     Piercing,
     DamageOverTime
 }
-[System.Serializable]
+[Serializable]
 public struct ProjectileStats
 {
     public float Speed;

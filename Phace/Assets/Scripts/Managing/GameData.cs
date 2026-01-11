@@ -4,6 +4,7 @@ using UnityEngine;
 /// </summary>
 /// 
 #region Scriptable Objects
+[CreateAssetMenu(fileName = "GameData", menuName = "Game Data/Game Data")]
 public class GameData : ScriptableObject
 {
     [SerializeField] private int _Level;
@@ -12,9 +13,10 @@ public class GameData : ScriptableObject
     public int Level => _Level;
     public float DefaultVolume => _defaultVolume;
     public float DefaultBrightness => _defaultBrightness;
+    public GameState CurrentState;
 }
 
-[CreateAssetMenu(fileName = "LevelData", menuName = "Game Data/Level Data", order = 1)]
+[CreateAssetMenu(fileName = "LevelData", menuName = "Game Data/Level Data")]
 public class LevelData : ScriptableObject
 {
     [SerializeField] private int _levelID;
@@ -35,10 +37,10 @@ public enum AssociationType
 }
 public enum GameState
 {
+    MainMenu,
     Lobby,
-    Starting,
-    Playing,
-    PostGame
+    InGame,
+    PostGame,
 }
 
 #endregion

@@ -7,13 +7,11 @@ public class SoundManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(this);
+            return;
         }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
+        Instance = this;
+        DontDestroyOnLoad(this);
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

@@ -1,5 +1,4 @@
 using UnityEngine;
-using FishNet.Object;
 /// <summary>
 /// Configuration data for spacecraft. ID, stats, abilities, etc.
 /// </summary>
@@ -17,7 +16,7 @@ public class SpacecraftData : ScriptableObject
     [SerializeField] private float _baseShield;
     [SerializeField] private float _baseShieldRegen;
     [SerializeField] private float _baseShieldRegenDelay;
-    [SerializeField] private NetworkObject _spacecraftPrefab;
+    [SerializeField] private GameObject _spacecraftPrefab;
     [SerializeField] private AttackPatternData _primaryAttackPattern;
     [SerializeField] private AttackPatternData _secondaryAttackPattern;
 
@@ -30,7 +29,7 @@ public class SpacecraftData : ScriptableObject
     public float BaseShield => _baseShield;
     public float BaseShieldRegen => _baseShieldRegen;
     public float BaseShieldRegenDelay => _baseShieldRegenDelay;
-    public NetworkObject SpacecraftPrefab => _spacecraftPrefab;
+    public GameObject SpacecraftPrefab => _spacecraftPrefab;
     public AttackPatternData PrimaryAttackPattern => _primaryAttackPattern;
     public AttackPatternData SecondaryAttackPattern => _secondaryAttackPattern;
 
