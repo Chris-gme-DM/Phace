@@ -9,6 +9,8 @@ public class Spacecraft : NetworkBehaviour
     #region Data/Networking
     public readonly SpacecraftData SpacecraftData;
     public readonly SyncVar<SpacecraftStats> Stats = new();
+    public readonly SyncVar<Transform> SpawnInformation = new();
+    public readonly SyncVar<AssociationType> Association = new();
 
     public override void OnStartServer()
     {
@@ -26,6 +28,7 @@ public class Spacecraft : NetworkBehaviour
             MoveSpeed = 0f,
             MaxSpeed = SpacecraftData.BaseMaxSpeed,
 
+            Association = SpacecraftData.Association,
         };
     }
     #endregion

@@ -47,5 +47,6 @@ public class Bootstrapper : MonoBehaviour
         SceneLoadData sld = new (sceneName);
         sld.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadGlobalScenes(sld);
+        UIManager.Instance.ShowLoadingScreen();
     }
 }

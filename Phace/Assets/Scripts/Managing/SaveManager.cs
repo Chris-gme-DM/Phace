@@ -1,6 +1,8 @@
 using UnityEngine;
+using System;
 using System.IO;
-
+using System.Security.Cryptography;
+using System.Text;
 /// <summary>
 /// Provides functionality for saving and loading the player's profile data to persistent storage. Implements a
 /// singleton pattern to ensure a single instance throughout the application's lifetime.
@@ -35,4 +37,6 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(_saveFilePath);
         return JsonUtility.FromJson<PlayerProfile>(json);
     }
+    // Encryption of playerdata
+    // Decypher PlayerData
 }

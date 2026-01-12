@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using FishNet;
 using FishNet.Transporting;
 using FishNet.Object.Synchronizing;
+using System;
 
 public class LobbyManager : NetworkBehaviour
 {
@@ -22,10 +23,35 @@ public class LobbyManager : NetworkBehaviour
         base.OnStartServer();
         Instance = this;
         InstanceFinder.ServerManager.OnRemoteConnectionState += OnRemoteConnectionState;
+        // Subscribe to additional server events here
+        GameEvents.OnPlayerStatusChanged.AddListener(HandleStatusChange);
+        GameEvents.OnGameStateChanged.AddListener(HandleGameStateChanged);
+    }
 
+    private void HandleGameStateChanged(GameState newState)
+    {
+        if (newState == GameState.Lobby) EnterLobby();
+        if (newState == GameState.InGame) StartGame();
+
+        throw new NotImplementedException();
+    }
+
+    private void HandleStatusChange(PlayerLobbyData arg0)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void OnStopServer()
+    {
+        base.OnStopServer();
+        InstanceFinder.ServerManager.OnRemoteConnectionState -= OnRemoteConnectionState;
+    }
+    private void EnterLobby()
+    {
         SceneLoadData sld = new(_lobbySceneName);
         sld.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadGlobalScenes(sld);
+        UIManager.Instance.ShowLoadingScreen();
     }
     private void OnRemoteConnectionState(NetworkConnection conn, RemoteConnectionStateArgs args)
     {
@@ -48,20 +74,23 @@ public class LobbyManager : NetworkBehaviour
     [Server]
     public void CheckAllPlayersReady()
     {
-        if (ActiveSessions.Count == 0)
+        if (ActiveSessions.Count <= 2)  // Minimum players to start
             return;
         foreach (var session in ActiveSessions.Values)
         {
             if (!session.IsReady.Value) return;
         }
-        StartGame();
+        // Move this to the button handler later
+        // StartGame();
     }
 
-    private void StartGame()
+    [Server]
+    public void StartGame()
     {
         SceneLoadData sld = new SceneLoadData(_gameSceneName);
         sld.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadGlobalScenes(sld);
+        UIManager.Instance.ShowLoadingScreen();
     }
 
 }

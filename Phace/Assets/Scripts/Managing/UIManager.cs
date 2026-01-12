@@ -2,19 +2,21 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class UIManager : MonoBehaviour
 {
+    #region Settings
     public static UIManager Instance { get; private set; }
-
-    [SerializeField] private GameObject gamePanel;
-    [SerializeField] private GameObject mainMenuPanel;
-    [SerializeField] private GameObject lobbyPanel;
-    [SerializeField] private GameObject optionsPanel;
-    [SerializeField] private GameObject backgroundPanel;
-    [SerializeField] private GameObject loadingPanel;
+    [Header("UI Panels")]
+    [SerializeField] private GameObject _gamePanel;
+    [SerializeField] private GameObject _mainMenuPanel;
+    [SerializeField] private GameObject _lobbyPanel;
+    [SerializeField] private GameObject _optionsPanel;
+    [SerializeField] private GameObject _backgroundPanel;
+    [SerializeField] private GameObject _loadingPanel;
 
     private PlayerInput _playerInput;
-    private GameState CurrentGameState; // Since this follows the GameState that is set in the Lobby Manager
-    private bool IsAnyMenuOpen => optionsPanel.activeSelf || mainMenuPanel.activeSelf || lobbyPanel.activeSelf;
-
+    private GameState CurrentGameState;
+    private bool IsAnyMenuOpen => _optionsPanel.activeSelf || _mainMenuPanel.activeSelf || _lobbyPanel.activeSelf;
+    #endregion
+    #region Initialization
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -26,28 +28,31 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
     private void Start() => _playerInput = GetComponent<PlayerInput>();
-    public void OnGameStateChanged(GameState newState)
+    private void OnEnable()
+    {
+        GameEvents.OnGameStateChanged.AddListener(HandleGameStateChange);
+        GameEvents.OnPlayerStatusChanged.AddListener(HandlePlayerLobbyStatus);
+    }
+    private void OnDisable()
+    {
+        GameEvents.OnGameStateChanged.RemoveListener(HandleGameStateChange);
+        GameEvents.OnPlayerStatusChanged.RemoveListener(HandlePlayerLobbyStatus);
+    }
+    #endregion
+    #region Event Handlers
+    private void HandleGameStateChange(GameState newState)
     {
         CurrentGameState = newState;
-        mainMenuPanel.SetActive(false);
-        lobbyPanel.SetActive(false);
-        gamePanel.SetActive(false);
-
-        switch (newState)
-        {
-            case GameState.MainMenu:
-                mainMenuPanel.SetActive(true);
-                break;
-            case GameState.Lobby:
-                lobbyPanel.SetActive(true);
-                break;
-            case GameState.InGame:
-                gamePanel.SetActive(true);
-                break;
-        }
+        _gamePanel.SetActive(newState == GameState.InGame);
+        _mainMenuPanel.SetActive(newState == GameState.MainMenu);
+        _lobbyPanel.SetActive(newState == GameState.Lobby || newState == GameState.PostGame); // If we make a post game panel, change this
         UpdateInputFocus();
     }
-    public void UpdateInputFocus()
+    private void HandlePlayerLobbyStatus(PlayerLobbyData playerLobbyData)
+    {
+        // Update lobby UI based on player status
+    }
+    private void UpdateInputFocus()
     {
         if (CurrentGameState == GameState.InGame && !IsAnyMenuOpen)
         {
@@ -58,18 +63,20 @@ public class UIManager : MonoBehaviour
             _playerInput.SwitchCurrentActionMap("UI");
         }
     }
+    #endregion
+    #region Public Methods
     public void ToggleOptions()
     {
-        bool isActive = !optionsPanel.activeSelf;
-        optionsPanel.SetActive(isActive);
+        bool isActive = !_optionsPanel.activeSelf;
+        _optionsPanel.SetActive(isActive);
         UpdateInputFocus();
     }
-    public void OpenLobby()
+    public void ShowLoadingScreen()
     {
-
+        _loadingPanel.SetActive(true);
+        // Wait for a few seconds to simulate loading
+        WaitForSecondsRealtime wait = new(3f);
+        _loadingPanel.SetActive(false);
     }
-    public void OpenMainMenu()
-    {
-
-    }
+    #endregion
 }

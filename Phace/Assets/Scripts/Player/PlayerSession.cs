@@ -14,8 +14,17 @@ public class PlayerSession : NetworkBehaviour
         PlayerID.Value = playerID;
         PlayerName.Value = name;
         SpacecraftID.Value = spacecraftID;
-        IsReady.Value = true;
+        IsReady.Value = false;
+    }
 
-        LobbyManager.Instance.CheckAllPlayersReady();
+    public void SetReadyStatus(bool prev, bool next, bool asServer)
+    {
+        GameEvents.OnPlayerStatusChanged.Invoke(new PlayerLobbyData {
+            PlayerID = this.PlayerID.Value,
+            PlayerName = this.PlayerName.Value,
+            SelectedSpacecraftID = this.SpacecraftID.Value,
+            IsReady = next
+        });
+
     }
 }
