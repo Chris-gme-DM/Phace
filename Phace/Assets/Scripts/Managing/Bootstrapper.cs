@@ -1,13 +1,13 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using FishNet;
 using FishNet.Object;
-using FishNet.Managing.Scened;
 using System.Collections;
 using System.Collections.Generic;
 public class Bootstrapper : MonoBehaviour
 {
     [Header("Scene to Load")]
-    [SerializeField] private string sceneName = "Game_1";
+    [SerializeField] private string sceneName = "MainMenu_1";
 
     [Header("Networked Managers")]
     [SerializeField] private List<NetworkObject> networkedManagersPrefabs;
@@ -44,9 +44,8 @@ public class Bootstrapper : MonoBehaviour
     }
     private void LoadMainMenu()
     {
-        SceneLoadData sld = new (sceneName);
-        sld.ReplaceScenes = ReplaceOption.All;
-        InstanceFinder.SceneManager.LoadGlobalScenes(sld);
+        // Unity Scene Manager. Load Main Menu Scene
+        SceneManager.LoadScene(sceneName);
         UIManager.Instance.ShowLoadingScreen();
     }
 }

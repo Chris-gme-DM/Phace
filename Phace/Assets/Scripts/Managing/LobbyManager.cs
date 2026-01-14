@@ -32,8 +32,6 @@ public class LobbyManager : NetworkBehaviour
     {
         if (newState == GameState.Lobby) EnterLobby();
         if (newState == GameState.InGame) StartGame();
-
-        throw new NotImplementedException();
     }
 
     private void HandleStatusChange(PlayerLobbyData arg0)

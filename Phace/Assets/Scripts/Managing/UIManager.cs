@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _optionsPanel;
     [SerializeField] private GameObject _backgroundPanel;
     [SerializeField] private GameObject _loadingPanel;
+    [SerializeField] private GameObject _countDownImage;
 
     private PlayerInput _playerInput;
     private GameState CurrentGameState;
@@ -27,11 +28,15 @@ public class UIManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this);
     }
-    private void Start() => _playerInput = GetComponent<PlayerInput>();
+    private void Start() 
+    {
+        _playerInput = GetComponent<PlayerInput>();
+    }
     private void OnEnable()
     {
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChange);
         GameEvents.OnPlayerStatusChanged.AddListener(HandlePlayerLobbyStatus);
+
     }
     private void OnDisable()
     {
@@ -75,8 +80,12 @@ public class UIManager : MonoBehaviour
     {
         _loadingPanel.SetActive(true);
         // Wait for a few seconds to simulate loading
-        WaitForSecondsRealtime wait = new(3f);
+        WaitForSeconds wait = new(3f);
         _loadingPanel.SetActive(false);
+    }
+    public void CountDown()
+    {
+
     }
     #endregion
 }

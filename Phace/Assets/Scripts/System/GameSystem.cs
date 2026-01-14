@@ -21,7 +21,10 @@ public class GameSystem : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this);
     }
-
+    public void CreateNewGame()
+    {
+        _activeGameData = new GameData();
+    }
     public void SetGameState(GameState newState)
     {
         _activeGameData.CurrentState = newState;
@@ -32,7 +35,7 @@ public class GameSystem : MonoBehaviour
 [CreateAssetMenu(fileName = "GameData", menuName = "Game Data/Game Data")]
 public class GameData : ScriptableObject
 {
-    [SerializeField] private int _Level;
+    private int _Level;
     public int Level => _Level;
 
     public GameState CurrentState;

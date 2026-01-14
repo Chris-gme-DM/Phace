@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ddd19189f15c5c4a9785a8e1c83fbb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Game_1
+  sceneName: MainMenu_1
   networkedManagersPrefabs:
   - {fileID: 5729236883671825429, guid: 34cdb883b3ce29843868572cbc5614e1, type: 3}
   - {fileID: 9134066693978794151, guid: df55988986fe40443bc38090fb9a0585, type: 3}
@@ -278,5 +278,5 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1639271211}
-  - {fileID: 136929490}
   - {fileID: 1421969085}
+  - {fileID: 136929490}

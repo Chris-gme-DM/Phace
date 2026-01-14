@@ -17,6 +17,7 @@ public class PlayerSession : NetworkBehaviour
         IsReady.Value = false;
     }
 
+    [ServerRpc]
     public void SetReadyStatus(bool prev, bool next, bool asServer)
     {
         GameEvents.OnPlayerStatusChanged.Invoke(new PlayerLobbyData {

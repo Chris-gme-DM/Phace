@@ -13,6 +13,7 @@ using System.Text;
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
+    private const string FileName = "profile.dat";
     private string  _saveFilePath;
 
     private void Awake()
@@ -24,19 +25,79 @@ public class SaveManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(this);
-        _saveFilePath = Path.Combine(Application.persistentDataPath, "playerprofile.json");
+        _saveFilePath = Path.Combine(Application.persistentDataPath, FileName);
     }
     public void SavePlayerProfile(PlayerProfile profile)
     {
-        string json = JsonUtility.ToJson(profile);
-        File.WriteAllText(_saveFilePath, json);
+        try
+        {
+            string json = JsonUtility.ToJson(profile);
+            byte[] encrypted = SaveSystem.Encrypt(json);
+            File.WriteAllBytes(_saveFilePath, encrypted);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to save profile: {ex:Message}");
+        }
     }
     public PlayerProfile LoadPlayerProfile()
     {
         if (!File.Exists(_saveFilePath)) return new PlayerProfile();
-        string json = File.ReadAllText(_saveFilePath);
-        return JsonUtility.FromJson<PlayerProfile>(json);
+        try
+        {
+            byte[] encrypted = File.ReadAllBytes(_saveFilePath);
+            string decryptedJson = SaveSystem.Decrypt(encrypted);
+            return JsonUtility.FromJson<PlayerProfile>(decryptedJson);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error loading profile, returning new: {ex.Message}");
+            return new PlayerProfile();
+        }
     }
-    // Encryption of playerdata
-    // Decypher PlayerData
+    public static class SaveSystem
+    {
+        private static readonly byte[] Key = Encoding.UTF8.GetBytes("123456789abcdef");
+        private static readonly byte[] Iv = Encoding.UTF8.GetBytes("abcdef123456789");
+        public static byte[] Encrypt(string plainText)
+        {
+            if (string.IsNullOrEmpty(plainText))
+                throw new ArgumentNullException(nameof(plainText));
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Key;
+                aes.IV = Iv;
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                    using (StreamWriter writer = new StreamWriter(memoryStream))
+                    {
+                        writer.Write(plainText);
+                    }
+                    return memoryStream.ToArray();
+                }
+            }
+        }
+
+        public static string Decrypt(byte[] cipherData)
+        {
+            if (cipherData == null || cipherData.Length == 0)
+                throw new ArgumentNullException(nameof(cipherData));
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Key;
+                aes.IV = Iv;
+                using (MemoryStream memoryStream = new MemoryStream(cipherData))
+                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
+                using (StreamReader reader = new StreamReader(memoryStream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+    }
 }
