@@ -9,7 +9,7 @@ public class GameSystem : MonoBehaviour
 {
     public static GameSystem Instance { get; private set; }
 
-    [SerializeField] private GameData _activeGameData;
+    public GameState CurrentState;
 
     private void Awake()
     {
@@ -21,26 +21,13 @@ public class GameSystem : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this);
     }
-    public void CreateNewGame()
+    public void ApplyState(GameState newState)
     {
-        _activeGameData = new GameData();
-    }
-    public void SetGameState(GameState newState)
-    {
-        _activeGameData.CurrentState = newState;
+        CurrentState = newState;
         GameEvents.ChangeGameState(newState);
     }
 }
 #region Scriptable Objects
-[CreateAssetMenu(fileName = "GameData", menuName = "Game Data/Game Data")]
-public class GameData : ScriptableObject
-{
-    private int _Level;
-    public int Level => _Level;
-
-    public GameState CurrentState;
-
-}
 
 [CreateAssetMenu(fileName = "LevelData", menuName = "Game Data/Level Data")]
 public class LevelData : ScriptableObject
@@ -58,12 +45,18 @@ public class LevelData : ScriptableObject
 #endregion
 #region Structs
 [Serializable]
-public struct PlayerLobbyData
+public struct PlayerInfo
 {
     public int PlayerID;
     public string PlayerName;
-    public int SelectedSpacecraftID;
+    public int SpacecraftID;
     public bool IsReady;
+}
+[Serializable]
+public struct PlayerSummary
+{
+    public string PlayerName;
+    public int SpacecraftID;
 }
 
 #endregion
@@ -87,12 +80,12 @@ public enum GameState
 [Serializable]
 public static class GameEvents
 {
-    public static UnityEvent<GameState> OnGameStateChanged = new UnityEvent<GameState>();
-    public static UnityEvent<PlayerLobbyData> OnPlayerStatusChanged = new UnityEvent<PlayerLobbyData>();
-    public static UnityEvent<Spacecraft> OnEntitySpawn = new UnityEvent<Spacecraft>();
-    public static UnityEvent OnPlayerDestroyed = new UnityEvent();
-    public static UnityEvent OnEnemyDestroyed = new UnityEvent();
-    public static UnityEvent OnLevelChanged = new UnityEvent();
+    public static UnityEvent<GameState> OnGameStateChanged = new();
+    public static UnityEvent<PlayerInfo> OnPlayerStatusChanged = new();
+    public static UnityEvent<Spacecraft> OnEntitySpawn = new();
+    public static UnityEvent OnPlayerDestroyed = new();
+    public static UnityEvent OnEnemyDestroyed = new();
+    public static UnityEvent OnLevelChanged = new();
 
     public static void ChangeGameState(GameState newState)
     {

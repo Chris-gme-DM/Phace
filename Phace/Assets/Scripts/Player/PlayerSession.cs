@@ -3,27 +3,24 @@ using FishNet.Object.Synchronizing;
 
 public class PlayerSession : NetworkBehaviour
 {
-    public readonly SyncVar<int> PlayerID = new();
-    public readonly SyncVar<string> PlayerName = new();
-    public readonly SyncVar<int> SpacecraftID = new();
-    public readonly SyncVar<bool> IsReady = new();
+    public readonly SyncVar<string> PlayerName = new("Player");
+    public readonly SyncVar<int> SpacecraftID = new(0);
+    public readonly SyncVar<bool> IsReady = new(false);
 
-    [ServerRpc]
-    public void CmdInitialize(int playerID, string name, int spacecraftID)
+    public void SetFromProfile(PlayerProfile profile)
     {
-        PlayerID.Value = playerID;
-        PlayerName.Value = name;
-        SpacecraftID.Value = spacecraftID;
+        PlayerName.Value = profile.PlayerName;
+        SpacecraftID.Value = profile.SelectedSpacecraftID;
         IsReady.Value = false;
     }
 
     [ServerRpc]
     public void SetReadyStatus(bool prev, bool next, bool asServer)
     {
-        GameEvents.OnPlayerStatusChanged.Invoke(new PlayerLobbyData {
-            PlayerID = this.PlayerID.Value,
-            PlayerName = this.PlayerName.Value,
-            SelectedSpacecraftID = this.SpacecraftID.Value,
+        GameEvents.OnPlayerStatusChanged.Invoke(new PlayerInfo
+        {
+            PlayerName = PlayerName.Value,
+            SpacecraftID = SpacecraftID.Value,
             IsReady = next
         });
 

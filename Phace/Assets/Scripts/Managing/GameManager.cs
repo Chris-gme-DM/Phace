@@ -2,6 +2,7 @@ using FishNet;
 using FishNet.Object;
 using UnityEngine;
 using System.Collections;
+using FishNet.Object.Synchronizing;
 public class GameManager : NetworkBehaviour
 {
     #region Settings
@@ -9,19 +10,22 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private SpacecraftData[] _spaceCraftDatas;
     [SerializeField] private LevelData[] _levelDatas;
+    public readonly SyncVar<int> Level;
+
+
     #endregion
     #region Initialization
     public override void OnStartNetwork()
     {
         base.OnStartNetwork();
         Instance = this;
-        SpawnPlayers();
         // Subscribe to game events here
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChanged);
         GameEvents.OnEntitySpawn.AddListener(HandleEntitySpawn);
         GameEvents.OnPlayerDestroyed.AddListener(HandlePlayerDestroyed);
         GameEvents.OnEnemyDestroyed.AddListener(HandleEnemyDestroyed);
         GameEvents.OnLevelChanged.AddListener(HandleLevelChanged);
+
     }
 
     public override void OnStopNetwork()
@@ -48,6 +52,7 @@ public class GameManager : NetworkBehaviour
         // Initialize level with selectedLevel data
         Debug.Log($"Level {selectedLevel.LevelID} started with difficulty {selectedLevel.DifficultyRating}");
         // Additional level start logic here
+        // If any player is still dead, respawn them
         // Read the base on the selectedLevel properties
         // Adjust these settings accordingly
         // Setup enemies, spawn points, etc.

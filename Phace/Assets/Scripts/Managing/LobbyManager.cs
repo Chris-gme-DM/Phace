@@ -15,6 +15,7 @@ public class LobbyManager : NetworkBehaviour
     [SerializeField] private PlayerSession _playerSessionPrefab;
     [SerializeField] private string _gameSceneName;
     [SerializeField] private string _lobbySceneName;
+    public readonly SyncVar<GameState> CurrentState = new();
 
     public readonly Dictionary<int, PlayerSession> ActiveSessions = new();
 
@@ -22,19 +23,42 @@ public class LobbyManager : NetworkBehaviour
     {
         base.OnStartServer();
         Instance = this;
-        InstanceFinder.ServerManager.OnRemoteConnectionState += OnRemoteConnectionState;
         // Subscribe to additional server events here
         GameEvents.OnPlayerStatusChanged.AddListener(HandleStatusChange);
-        GameEvents.OnGameStateChanged.AddListener(HandleGameStateChanged);
-    }
 
-    private void HandleGameStateChanged(GameState newState)
+        CurrentState.OnChange += OnNetworkStateChanged_Server;
+
+    }
+    public override void OnStartClient()
     {
-        if (newState == GameState.Lobby) EnterLobby();
-        if (newState == GameState.InGame) StartGame();
+        base.OnStartClient();
+        CurrentState.OnChange += OnNetworkChanged_Client;
+
+        GameEvents.ChangeGameState(CurrentState.Value);
     }
 
-    private void HandleStatusChange(PlayerLobbyData arg0)
+    private void OnNetworkStateChanged_Server(GameState prev, GameState next, bool asServer)
+    {
+        if (asServer && IsHostStarted)
+        {
+            if (next == GameState.Lobby) EnterLobby();
+            if (next == GameState.InGame) StartGame();
+            GameEvents.ChangeGameState(next);
+
+        }
+    }
+
+    private void OnNetworkChanged_Client(GameState prev, GameState next, bool asServer)
+    {
+        GameEvents.ChangeGameState(next);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestChangeState(GameState request)
+    {
+        CurrentState.Value = request;
+    }
+    private void HandleStatusChange(PlayerInfo arg0)
     {
         throw new NotImplementedException();
     }
@@ -42,31 +66,26 @@ public class LobbyManager : NetworkBehaviour
     public override void OnStopServer()
     {
         base.OnStopServer();
-        InstanceFinder.ServerManager.OnRemoteConnectionState -= OnRemoteConnectionState;
+
+        foreach (var session in ActiveSessions.Values)
+        {
+            if (session != null)
+            {
+                InstanceFinder.ServerManager.Despawn(session);
+            }
+            ActiveSessions.Clear();
+
+            GameSystem.Instance.ApplyState(GameState.MainMenu);
+        }
     }
+
+    [ServerRpc]
     private void EnterLobby()
     {
         SceneLoadData sld = new(_lobbySceneName);
         sld.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadGlobalScenes(sld);
         UIManager.Instance.ShowLoadingScreen();
-    }
-    private void OnRemoteConnectionState(NetworkConnection conn, RemoteConnectionStateArgs args)
-    {
-        if(args.ConnectionState == RemoteConnectionState.Started)
-        {
-            SpawnPlayerSession(conn);
-        }
-        else if(args.ConnectionState == RemoteConnectionState.Stopped)
-        {
-            ActiveSessions.Remove(conn.ClientId);
-        }
-    }
-    private void SpawnPlayerSession(NetworkConnection conn)
-    {
-        PlayerSession session = Instantiate(_playerSessionPrefab);
-        InstanceFinder.ServerManager.Spawn(session.gameObject, conn);
-        ActiveSessions[conn.ClientId] = session;
     }
 
     [Server]
@@ -78,17 +97,46 @@ public class LobbyManager : NetworkBehaviour
         {
             if (!session.IsReady.Value) return;
         }
-        // Move this to the button handler later
+        
         // StartGame();
     }
-
+    /// <summary>
+    /// Host is able to start the game after all players are ready
+    /// </summary>
     [Server]
     public void StartGame()
     {
-        SceneLoadData sld = new SceneLoadData(_gameSceneName);
+        SceneLoadData sld = new(_gameSceneName);
         sld.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadGlobalScenes(sld);
+        GameEvents.ChangeGameState(GameState.InGame);
         UIManager.Instance.ShowLoadingScreen();
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestJoinLobby(PlayerSummary summ, NetworkConnection conn = null)
+    {
+        NetworkConnection caller = conn ?? base.Owner;
+        if (caller == null) return;
+
+        if (summ.SpacecraftID < 0)
+            summ.SpacecraftID = 0;
+        if (!ActiveSessions.TryGetValue(caller.ClientId, out PlayerSession session) || session == null)
+        {
+            session = Instantiate(_playerSessionPrefab);
+            InstanceFinder.ServerManager.Spawn(session.gameObject, caller);
+            ActiveSessions[caller.ClientId] = session;
+        }
+
+        var profile = new PlayerProfile { PlayerID = caller.ClientId, PlayerName = summ.PlayerName, SelectedSpacecraftID = summ.SpacecraftID };
+        session.SetFromProfile(profile);
+
+        GameEvents.OnPlayerStatusChanged.Invoke(new PlayerInfo
+        {
+            PlayerID = conn.ClientId,
+            PlayerName = summ.PlayerName,
+            SpacecraftID = summ.SpacecraftID,
+            IsReady = false,
+        });
+    }
 }

@@ -64,21 +64,17 @@ public class SaveManager : MonoBehaviour
             if (string.IsNullOrEmpty(plainText))
                 throw new ArgumentNullException(nameof(plainText));
 
-            using (Aes aes = Aes.Create())
+            using Aes aes = Aes.Create();
+            aes.Key = Key;
+            aes.IV = Iv;
+            using MemoryStream memoryStream = new();
+            ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+            using (CryptoStream cryptoStream = new(memoryStream, encryptor, CryptoStreamMode.Write))
+            using (StreamWriter writer = new(cryptoStream, Encoding.UTF8))
             {
-                aes.Key = Key;
-                aes.IV = Iv;
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-                    using (StreamWriter writer = new StreamWriter(memoryStream))
-                    {
-                        writer.Write(plainText);
-                    }
-                    return memoryStream.ToArray();
-                }
+                writer.Write(plainText);
             }
+            return memoryStream.ToArray();
         }
 
         public static string Decrypt(byte[] cipherData)
@@ -86,17 +82,13 @@ public class SaveManager : MonoBehaviour
             if (cipherData == null || cipherData.Length == 0)
                 throw new ArgumentNullException(nameof(cipherData));
 
-            using (Aes aes = Aes.Create())
-            {
-                aes.Key = Key;
-                aes.IV = Iv;
-                using (MemoryStream memoryStream = new MemoryStream(cipherData))
-                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
-                using (StreamReader reader = new StreamReader(memoryStream))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
+            using Aes aes = Aes.Create();
+            aes.Key = Key;
+            aes.IV = Iv;
+            using MemoryStream memoryStream = new(cipherData);
+            using CryptoStream cryptoStream = new(memoryStream, aes.CreateDecryptor(), CryptoStreamMode.Read);
+            using StreamReader reader = new(cryptoStream, Encoding.UTF8);
+            return reader.ReadToEnd();
         }
 
     }

@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(PlayerInput))]
 public class UIManager : MonoBehaviour
 {
     #region Settings
@@ -28,12 +30,9 @@ public class UIManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this);
     }
-    private void Start() 
-    {
-        _playerInput = GetComponent<PlayerInput>();
-    }
     private void OnEnable()
     {
+        _playerInput = GetComponent<PlayerInput>();
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChange);
         GameEvents.OnPlayerStatusChanged.AddListener(HandlePlayerLobbyStatus);
 
@@ -53,7 +52,7 @@ public class UIManager : MonoBehaviour
         _lobbyPanel.SetActive(newState == GameState.Lobby || newState == GameState.PostGame); // If we make a post game panel, change this
         UpdateInputFocus();
     }
-    private void HandlePlayerLobbyStatus(PlayerLobbyData playerLobbyData)
+    private void HandlePlayerLobbyStatus(PlayerInfo playerLobbyData)
     {
         // Update lobby UI based on player status
     }
