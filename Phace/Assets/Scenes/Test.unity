@@ -334,6 +334,109 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1227784998}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &670724421
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 670724424}
+  - component: {fileID: 670724423}
+  - component: {fileID: 670724422}
+  m_Layer: 0
+  m_Name: ProjectileSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &670724422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670724421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  WasActiveDuringEdit: 1
+  WasActiveDuringEdit_Set1: 1
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours: []
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 0
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  _initializedTimestamp: 0
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _graphicalObject: {fileID: 0}
+  _detachGraphicalObject: 0
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _ownerSmoothedProperties: 255
+  _adaptiveInterpolation: 3
+  _spectatorSmoothedProperties: 255
+  _spectatorInterpolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 65535
+  <SpawnableCollectionId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 0
+  SceneId: 4143878131
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Scale: {x: 0, y: 0, z: 0}
+    IsValid: 0
+--- !u!114 &670724423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670724421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 041183c1167c0b44c93a440e5ec39ac7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 670724422}
+  _networkObjectCache: {fileID: 0}
+  ProjectilePrefab: {fileID: 8677307905672516358, guid: 9ba27e44e54859a4aabec15458c8d764, type: 3}
+  HomingProjectilePrefab: {fileID: 3980280303514068580, guid: 693200078bf1c2c4c889b40046eda658, type: 3}
+--- !u!4 &670724424
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670724421}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.7040222, y: -1.7745332, z: 4.65895}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &676585026
 GameObject:
   m_ObjectHideFlags: 0
@@ -378,7 +481,7 @@ GameObject:
   - component: {fileID: 697457471}
   - component: {fileID: 697457470}
   - component: {fileID: 697457469}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Test_Enemy_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,12 +523,12 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
-  _synchronizeRotation: 1
+  _synchronizeRotation: 0
   _rotationSnapping:
     X: 0
     Y: 0
     Z: 0
-  _synchronizeScale: 1
+  _synchronizeScale: 0
   _scaleSensitivity: 0.001
   _scaleSnapping:
     X: 0
@@ -529,6 +632,10 @@ MonoBehaviour:
   - {fileID: 2068025277}
   - {fileID: 823475769}
   - {fileID: 1750730638}
+  detectionRadius: 4.98
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!4 &697457473
 Transform:
   m_ObjectHideFlags: 0
@@ -1038,6 +1145,10 @@ PrefabInstance:
     - target: {fileID: 762209814863994000, guid: f7db1ca93afe219479a997ea021d2ef2, type: 3}
       propertyPath: m_Name
       value: TinyShip7
+      objectReference: {fileID: 0}
+    - target: {fileID: 762209814863994000, guid: f7db1ca93afe219479a997ea021d2ef2, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3178404556274533205, guid: f7db1ca93afe219479a997ea021d2ef2, type: 3}
       propertyPath: m_SortingOrder
@@ -1706,3 +1817,4 @@ SceneRoots:
   - {fileID: 123464542}
   - {fileID: 1227784998}
   - {fileID: 697457473}
+  - {fileID: 670724424}

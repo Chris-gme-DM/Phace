@@ -21,6 +21,8 @@ public class TestShipProjectile : NetworkBehaviour
     }
     private void OnTick()
     {
+        if (!IsServerStarted)
+            return;
         if (rb != null) { 
             float delta = (float)TimeManager.TickDelta;
 
@@ -29,4 +31,8 @@ public class TestShipProjectile : NetworkBehaviour
             rb.MovePosition(nextPos);
         }
     }
+
+
+
+
 }
