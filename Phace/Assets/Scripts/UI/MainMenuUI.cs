@@ -1,16 +1,14 @@
 using FishNet;
 using UnityEngine;
-using TMPro;
 using System.Collections;
+using UnityEngine.InputSystem;
 public class MainMenuUI : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField _nameFieldInput;
-    [SerializeField] private TMP_InputField _ipAddressInput;
     private string ipAdress = null;
     private string playerName = null;
 
-    public void OnEditName() => playerName = _nameFieldInput.text;
-    public void OnEditIpAdress() => ipAdress = _ipAddressInput.text;
+    public void OnEditName(string text) => playerName = text;
+    public void OnEditIpAdress(string IPAdress) => ipAdress = IPAdress;
 
     public void OnClickHost()
     {
@@ -18,9 +16,21 @@ public class MainMenuUI : MonoBehaviour
         InstanceFinder.ClientManager.StartConnection();
 
         StartCoroutine(WaitAndJoinLobby());
-
     }
 
+    public void OnClickJoin()
+    {
+        // let the Save Manager check for the given Name and sav or load accordingly
+        string ip = string.IsNullOrEmpty(ipAdress) ? "localhost" : ipAdress;
+        InstanceFinder.ClientManager.StartConnection(ip);
+        StartCoroutine(WaitAndJoinLobby());
+    }
+    public void OnClickLeaveGame()
+    {
+        // CleanUp everything and close the game
+        InstanceFinder.ClientManager.StopConnection();
+        Application.Quit();
+    }
     private IEnumerator WaitAndJoinLobby()
     {
         while (LobbyManager.Instance == null || !InstanceFinder.ClientManager.Started)
@@ -37,18 +47,5 @@ public class MainMenuUI : MonoBehaviour
         };
 
         LobbyManager.Instance.RequestJoinLobby(summary);
-    }
-
-    public void OnClickJoin()
-    {
-        // let the Save Manager check for the given Name and sav or load accordingly
-        string ip = string.IsNullOrEmpty(ipAdress) ? "localhost" : ipAdress;
-        InstanceFinder.ClientManager.StartConnection(ip);
-        StartCoroutine(WaitAndJoinLobby());
-    }
-    public void OnClickLeaveGame()
-    {
-        // CleanUp everything and close the game
-
     }
 }

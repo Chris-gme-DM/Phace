@@ -45,8 +45,15 @@ public class Bootstrapper : MonoBehaviour
     public void LoadMainMenu()
     {
         // Unity Scene Manager. Load Main Menu Scene
+        if(UIManager.Instance != null)
+            UIManager.Instance.ShowLoadingScreen();
+        SceneManager.sceneLoaded += OnMainMenuLoaded;
         SceneManager.LoadScene(sceneName);
+    }
+    public void OnMainMenuLoaded(Scene scene, LoadSceneMode mode )
+    {
+        if (scene.name != sceneName) return;
+        SceneManager.sceneLoaded -= OnMainMenuLoaded;
         GameEvents.ChangeGameState(GameState.MainMenu);
-        UIManager.Instance.ShowLoadingScreen();
     }
 }

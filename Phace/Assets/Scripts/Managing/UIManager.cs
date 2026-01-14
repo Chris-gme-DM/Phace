@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,6 +34,7 @@ public class UIManager : MonoBehaviour
     private void OnEnable()
     {
         _playerInput = GetComponent<PlayerInput>();
+        _playerInput.SwitchCurrentActionMap("UI");
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChange);
         GameEvents.OnPlayerStatusChanged.AddListener(HandlePlayerLobbyStatus);
 
@@ -51,6 +53,7 @@ public class UIManager : MonoBehaviour
         _mainMenuPanel.SetActive(newState == GameState.MainMenu);
         _lobbyPanel.SetActive(newState == GameState.Lobby || newState == GameState.PostGame); // If we make a post game panel, change this
         UpdateInputFocus();
+        Debug.Log($"{CurrentGameState}");
     }
     private void HandlePlayerLobbyStatus(PlayerInfo playerLobbyData)
     {
@@ -82,9 +85,9 @@ public class UIManager : MonoBehaviour
         WaitForSeconds wait = new(3f);
         _loadingPanel.SetActive(false);
     }
-    public void CountDown()
+    public void CountDown(float cooldown)
     {
-
+        
     }
     #endregion
 }

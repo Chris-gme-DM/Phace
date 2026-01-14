@@ -90,6 +90,5 @@ public class SaveManager : MonoBehaviour
             using StreamReader reader = new(cryptoStream, Encoding.UTF8);
             return reader.ReadToEnd();
         }
-
     }
 }

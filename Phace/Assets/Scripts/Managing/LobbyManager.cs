@@ -41,8 +41,6 @@ public class LobbyManager : NetworkBehaviour
     {
         if (asServer && IsHostStarted)
         {
-            if (next == GameState.Lobby) EnterLobby();
-            if (next == GameState.InGame) StartGame();
             GameEvents.ChangeGameState(next);
 
         }
@@ -51,6 +49,8 @@ public class LobbyManager : NetworkBehaviour
     private void OnNetworkChanged_Client(GameState prev, GameState next, bool asServer)
     {
         GameEvents.ChangeGameState(next);
+        if (next == GameState.Lobby) EnterLobby();
+        if (next == GameState.InGame) StartGame();
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -24,7 +24,6 @@ public class GameSystem : MonoBehaviour
     public void ApplyState(GameState newState)
     {
         CurrentState = newState;
-        GameEvents.ChangeGameState(newState);
     }
 }
 #region Scriptable Objects
@@ -89,7 +88,18 @@ public static class GameEvents
 
     public static void ChangeGameState(GameState newState)
     {
-        OnGameStateChanged.Invoke(newState);
+        try
+        {
+            OnGameStateChanged?.Invoke(newState);
+
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Exception while invoking OnGameStateChanged for state{newState}: {ex}");
+        }
+        Debug.Log($"GameState changed to {newState}");
+        Debug.Log($", GameSystem: {GameSystem.Instance.CurrentState}");
+        GameSystem.Instance.ApplyState(newState);
     }
 }
 #endregion
