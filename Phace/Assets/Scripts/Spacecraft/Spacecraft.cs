@@ -7,7 +7,7 @@ using FishNet.Object.Synchronizing;
 public class Spacecraft : NetworkBehaviour
 {
     #region Data/Networking
-    public readonly SpacecraftData SpacecraftData;
+    public SpacecraftData SpacecraftData;
     public readonly SyncVar<SpacecraftStats> Stats = new();
     public readonly SyncVar<Transform> SpawnInformation = new();
     public readonly SyncVar<AssociationType> Association = new();
@@ -15,21 +15,29 @@ public class Spacecraft : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-        Stats.Value = new SpacecraftStats
-        {
-            CurrentHealth = SpacecraftData.BaseHealth,
-            MaxHealth = SpacecraftData.BaseHealth,
-            HealthRegenRate = SpacecraftData.BaseHealthRegen,
-            HealthRegenDelay = SpacecraftData.BaseHealthRegenDelay,
-            CurrentShield = SpacecraftData.BaseShield,
-            MaxShield = SpacecraftData.BaseShield,
-            ShieldRegenRate = SpacecraftData.BaseShieldRegen,
-            ShieldRegenDelay = SpacecraftData.BaseShieldRegenDelay,
-            MoveSpeed = 0f,
-            MaxSpeed = SpacecraftData.BaseMaxSpeed,
 
-            Association = SpacecraftData.Association,
-        };
+
+    }
+    public void Initialize(SpacecraftData data)
+    {
+        SpacecraftData = data;
+        var s = new SpacecraftStats();
+        if (data != null)
+        {
+            s.CurrentHealth = SpacecraftData.BaseHealth,
+            s.MaxHealth = SpacecraftData.BaseHealth,
+            s.HealthRegenRate = SpacecraftData.BaseHealthRegen,
+            s.HealthRegenDelay = SpacecraftData.BaseHealthRegenDelay,
+            s.CurrentShield = SpacecraftData.BaseShield,
+            s.MaxShield = SpacecraftData.BaseShield,
+            s.ShieldRegenRate = SpacecraftData.BaseShieldRegen,
+            s.ShieldRegenDelay = SpacecraftData.BaseShieldRegenDelay,
+            s.MoveSpeed = 0f;
+            s.MaxSpeed = SpacecraftData.BaseMaxSpeed,
+            
+            s.Association = SpacecraftData.Association,
+
+        }
     }
     #endregion
     #region Handlers

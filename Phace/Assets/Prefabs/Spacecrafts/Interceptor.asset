@@ -14,6 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spacecraftID: 0
   _spacecraftName: Interceptor
+  _spacecraftDescription: 
+  _association: 0
+  _spacecraftSize: 0
+  PlayerPrefab: {fileID: 0}
+  EnemyPrefab: {fileID: 0}
+  _goSpacecraftPrefab: {fileID: 0}
+  _primaryAttackPattern: {fileID: 0}
+  _secondaryAttackPattern: {fileID: 0}
   _baseMaxSpeed: 10
   _baseHealth: 100
   _baseHealthRegen: 2
@@ -21,6 +29,3 @@ MonoBehaviour:
   _baseShield: 100
   _baseShieldRegen: 5
   _baseShieldRegenDelay: 5
-  _spacecraftPrefab: {fileID: 0}
-  _primaryAttackPattern: {fileID: 0}
-  _secondaryAttackPattern: {fileID: 0}

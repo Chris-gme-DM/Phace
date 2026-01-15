@@ -1,7 +1,6 @@
 using FishNet;
 using UnityEngine;
 using System.Collections;
-using UnityEngine.InputSystem;
 public class MainMenuUI : MonoBehaviour
 {
     private string ipAdress = null;
@@ -28,7 +27,7 @@ public class MainMenuUI : MonoBehaviour
     public void OnClickLeaveGame()
     {
         // CleanUp everything and close the game
-        InstanceFinder.ClientManager.StopConnection();
+        InstanceFinder.ClientManager?.StopConnection();
         Application.Quit();
     }
     private IEnumerator WaitAndJoinLobby()
@@ -40,12 +39,9 @@ public class MainMenuUI : MonoBehaviour
 
         if (!string.IsNullOrWhiteSpace(playerName)) profile.PlayerName = playerName;
 
-        var summary = new PlayerSummary
-        {
-            PlayerName = profile.PlayerName,
-            SpacecraftID = profile.SelectedSpacecraftID
-        };
 
-        LobbyManager.Instance.RequestJoinLobby(summary);
+        LobbyManager.Instance.RequestJoinLobby(profile);
+
+        yield break;
     }
 }

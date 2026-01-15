@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using FishNet.Object;
 /// <summary>
 /// Configuration data for spacecraft. ID, stats, abilities, etc.
 /// </summary>
@@ -13,7 +14,7 @@ public class SpacecraftData : ScriptableObject
     [TextArea][SerializeField] private string _spacecraftDescription;
     [SerializeField] private AssociationType _association;
     [SerializeField] private float _spacecraftSize;
-    [SerializeField] private GameObject _spacecraftPrefab;
+    [SerializeField] private GameObject _goSpacecraftPrefab;
     [SerializeField] private AttackPatternData _primaryAttackPattern;
     [SerializeField] private AttackPatternData _secondaryAttackPattern;
 
@@ -39,12 +40,13 @@ public class SpacecraftData : ScriptableObject
     public float BaseShield => _baseShield;
     public float BaseShieldRegen => _baseShieldRegen;
     public float BaseShieldRegenDelay => _baseShieldRegenDelay;
-    public GameObject SpacecraftPrefab => _spacecraftPrefab;
+    public GameObject GOSpacecraftPrefab => _goSpacecraftPrefab;
     public AssociationType Association => _association;
     public AttackPatternData PrimaryAttackPattern => _primaryAttackPattern;
     public AttackPatternData SecondaryAttackPattern => _secondaryAttackPattern;
     public Vector2 SpawnPoint { get => _spawnPoint; set => _spawnPoint = value; }
     public Quaternion SpawnRotation { get => _spawnRotation; set => _spawnRotation = value; }
+
 }
 /// <summary>
 /// Holds current stats for a spacecraft instance.

@@ -48,7 +48,11 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 5729236883671825429}
   _networkObjectCache: {fileID: 5729236883671825429}
-  _spaceCraftDatas: []
+  _playerPrefab: {fileID: 1215856903430759559, guid: afa1b30d2c52c9e409dab360038311a3, type: 3}
+  _enemyPrefab: {fileID: -3392525328861023980, guid: 40aca47ad7c8e2f4f9f7ac21d0e6de17, type: 3}
+  _spaceCraftDatas:
+  - {fileID: 11400000, guid: 0d97e082a4002ab4082e3a8466c9c764, type: 2}
+  _levelDatas: []
 --- !u!114 &5729236883671825429
 MonoBehaviour:
   m_ObjectHideFlags: 0

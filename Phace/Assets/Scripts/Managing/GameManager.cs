@@ -3,16 +3,21 @@ using FishNet.Object;
 using UnityEngine;
 using System.Collections;
 using FishNet.Object.Synchronizing;
+using NUnit.Framework;
+using System.Collections.Generic;
 public class GameManager : NetworkBehaviour
 {
     #region Settings
     public static GameManager Instance { get; private set; }
 
-    [SerializeField] private SpacecraftData[] _spaceCraftDatas;
+    [SerializeField] private NetworkObject _playerPrefab;
+    [SerializeField] private NetworkObject _enemyPrefab;
+    [SerializeField] private SpacecraftData[] _playerSpacecraftDatas;
+    [SerializeField] private SpacecraftData[] _enemySpacecraftDatas;
+    [SerializeField] private SpacecraftData[] _bossSpacecraftDatas;
     [SerializeField] private LevelData[] _levelDatas;
+
     public readonly SyncVar<int> Level;
-
-
     #endregion
     #region Initialization
     public override void OnStartNetwork()
@@ -39,6 +44,9 @@ public class GameManager : NetworkBehaviour
         base.OnStopNetwork();
         Instance = null;
     }
+    #endregion
+    #region Helpers
+    public NetworkObject GetPrefabType(AssociationType assoc) => assoc == AssociationType.Player ? _playerPrefab : _enemyPrefab;
     #endregion
     #region EventHandlers
     private void HandleGameStateChanged(GameState newState)
@@ -86,16 +94,34 @@ public class GameManager : NetworkBehaviour
 
     #endregion
     #region Methods
-    private void SpawnPlayers()
+    [Server]
+    private void SpawnPlayer(PlayerSession session)
     {
-        foreach (var session in LobbyManager.Instance.ActiveSessions.Values)
+        int craftId = session.SpacecraftID.Value;
+        var data = GameSystem.Instance.GetSpacecraftDataById(craftId);
+        if (data == null) return;
+        GameObject go = Instantiate(_playerPrefab.gameObject, (Vector3)data.SpawnPoint, data.SpawnRotation);
+        var spacecraft = go.GetComponent<Spacecraft>();
+        if (spacecraft != null)
         {
-            SpacecraftData data = System.Array.Find(_spaceCraftDatas, sc => sc.SpacecraftID == session.SpacecraftID.Value);
-            if (data != null)
-            {
-                GameObject obj = Instantiate(data.SpacecraftPrefab);
-            }
+            spacecraft.Initialize(data);
         }
+        InstanceFinder.ServerManager.Spawn(go, session.Owner);
+
+        var netObj = go.GetComponent<NetworkObject>();
+        if (netObj != null) session.SetControlledSpacecraft(netObj);
+
+        // maybe deprecated
+        GameEvents.OnEntitySpawn.Invoke(spacecraft);
+        
+    }
+    private void SpawnEnemy()
+    {
+        throw new System.NotImplementedException(); 
+    }
+    private void SpawnBoss()
+    {
+        throw new System.NotImplementedException(); 
     }
     private void CleanUp()
     {

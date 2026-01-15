@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using System;
+using System.Collections.Generic;
 /// <summary>
 /// This script holds game-related data. Levels, settings, global stats, and structs used across multiple systems.
 /// </summary>
@@ -8,6 +9,8 @@ using System;
 public class GameSystem : MonoBehaviour
 {
     public static GameSystem Instance { get; private set; }
+
+    private readonly Dictionary<int, SpacecraftData> _spacecraftById = new();
 
     public GameState CurrentState;
 
@@ -24,6 +27,25 @@ public class GameSystem : MonoBehaviour
     public void ApplyState(GameState newState)
     {
         CurrentState = newState;
+    }
+    public void BuildSpacecraftRegistry(IEnumerable<SpacecraftData[]> arrays)
+    {
+        _spacecraftById.Clear();
+        foreach (var arr in arrays)
+        {
+            if (arr == null) continue;
+            foreach (var d in arr)
+            {
+                if (d == null) continue;
+                int id = d.SpacecraftID;
+                _spacecraftById.Add(id, d);
+            }
+        }
+    }
+    public SpacecraftData GetSpacecraftDataById(int id)
+    {
+        _spacecraftById.TryGetValue(id, out var data);
+        return data;
     }
 }
 #region Scriptable Objects
@@ -43,20 +65,6 @@ public class LevelData : ScriptableObject
 }
 #endregion
 #region Structs
-[Serializable]
-public struct PlayerInfo
-{
-    public int PlayerID;
-    public string PlayerName;
-    public int SpacecraftID;
-    public bool IsReady;
-}
-[Serializable]
-public struct PlayerSummary
-{
-    public string PlayerName;
-    public int SpacecraftID;
-}
 
 #endregion
 #region Enums
@@ -80,7 +88,7 @@ public enum GameState
 public static class GameEvents
 {
     public static UnityEvent<GameState> OnGameStateChanged = new();
-    public static UnityEvent<PlayerInfo> OnPlayerStatusChanged = new();
+    public static UnityEvent<PlayerSessionData> OnPlayerStatusChanged = new();
     public static UnityEvent<Spacecraft> OnEntitySpawn = new();
     public static UnityEvent OnPlayerDestroyed = new();
     public static UnityEvent OnEnemyDestroyed = new();

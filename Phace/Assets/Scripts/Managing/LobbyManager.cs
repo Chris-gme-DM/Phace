@@ -4,7 +4,6 @@ using FishNet.Managing.Scened;
 using UnityEngine;
 using System.Collections.Generic;
 using FishNet;
-using FishNet.Transporting;
 using FishNet.Object.Synchronizing;
 using System;
 
@@ -24,7 +23,7 @@ public class LobbyManager : NetworkBehaviour
         base.OnStartServer();
         Instance = this;
         // Subscribe to additional server events here
-        GameEvents.OnPlayerStatusChanged.AddListener(HandleStatusChange);
+        GameEvents.OnPlayerStatusChanged.AddListener(HandlePlayerStatusChange);
 
         CurrentState.OnChange += OnNetworkStateChanged_Server;
 
@@ -58,7 +57,7 @@ public class LobbyManager : NetworkBehaviour
     {
         CurrentState.Value = request;
     }
-    private void HandleStatusChange(PlayerInfo arg0)
+    private void HandlePlayerStatusChange(PlayerSessionData arg0)
     {
         throw new NotImplementedException();
     }
@@ -76,6 +75,7 @@ public class LobbyManager : NetworkBehaviour
             ActiveSessions.Clear();
 
             GameSystem.Instance.ApplyState(GameState.MainMenu);
+
         }
     }
 
@@ -97,7 +97,7 @@ public class LobbyManager : NetworkBehaviour
         {
             if (!session.IsReady.Value) return;
         }
-        
+        // Start a countdown and show it in the Lobby
         // StartGame();
     }
     /// <summary>
@@ -114,13 +114,13 @@ public class LobbyManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void RequestJoinLobby(PlayerSummary summ, NetworkConnection conn = null)
+    public void RequestJoinLobby(PlayerProfile summ, NetworkConnection conn = null)
     {
         NetworkConnection caller = conn ?? base.Owner;
         if (caller == null) return;
 
-        if (summ.SpacecraftID < 0)
-            summ.SpacecraftID = 0;
+        if (summ.SelectedSpacecraftID < 0)
+            summ.SelectedSpacecraftID = 0;
         if (!ActiveSessions.TryGetValue(caller.ClientId, out PlayerSession session) || session == null)
         {
             session = Instantiate(_playerSessionPrefab);
@@ -128,15 +128,9 @@ public class LobbyManager : NetworkBehaviour
             ActiveSessions[caller.ClientId] = session;
         }
 
-        var profile = new PlayerProfile { PlayerID = caller.ClientId, PlayerName = summ.PlayerName, SelectedSpacecraftID = summ.SpacecraftID };
+        var profile = new PlayerProfile { PlayerID = caller.ClientId, PlayerName = summ.PlayerName, SelectedSpacecraftID = summ.SelectedSpacecraftID };
         session.SetFromProfile(profile);
 
-        GameEvents.OnPlayerStatusChanged.Invoke(new PlayerInfo
-        {
-            PlayerID = conn.ClientId,
-            PlayerName = summ.PlayerName,
-            SpacecraftID = summ.SpacecraftID,
-            IsReady = false,
-        });
+        GameEvents.OnPlayerStatusChanged.Invoke(session.GetSnapshot());
     }
 }

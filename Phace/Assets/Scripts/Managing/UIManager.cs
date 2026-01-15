@@ -55,9 +55,10 @@ public class UIManager : MonoBehaviour
         UpdateInputFocus();
         Debug.Log($"{CurrentGameState}");
     }
-    private void HandlePlayerLobbyStatus(PlayerInfo playerLobbyData)
+    private void HandlePlayerLobbyStatus(PlayerSessionData playerSessionData)
     {
         // Update lobby UI based on player status
+        
     }
     private void UpdateInputFocus()
     {
