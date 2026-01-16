@@ -1,14 +1,11 @@
 using FishNet;
 using FishNet.Object;
 using UnityEngine;
-using System.Collections;
 using FishNet.Object.Synchronizing;
-using NUnit.Framework;
-using System.Collections.Generic;
-public class GameManager : NetworkBehaviour
+
+public class GameManager : SingletonNetworkBehaviour<GameManager>
 {
     #region Settings
-    public static GameManager Instance { get; private set; }
 
     [SerializeField] private NetworkObject _playerPrefab;
     [SerializeField] private NetworkObject _enemyPrefab;
@@ -23,7 +20,6 @@ public class GameManager : NetworkBehaviour
     public override void OnStartNetwork()
     {
         base.OnStartNetwork();
-        Instance = this;
         // Subscribe to game events here
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChanged);
         GameEvents.OnEntitySpawn.AddListener(HandleEntitySpawn);
@@ -42,7 +38,6 @@ public class GameManager : NetworkBehaviour
         GameEvents.OnLevelChanged.RemoveAllListeners();
 
         base.OnStopNetwork();
-        Instance = null;
     }
     #endregion
     #region Helpers

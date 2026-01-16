@@ -12,8 +12,6 @@ public class GameSystem : MonoBehaviour
 
     private readonly Dictionary<int, SpacecraftData> _spacecraftById = new();
 
-    public GameState CurrentState;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -23,10 +21,6 @@ public class GameSystem : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(this);
-    }
-    public void ApplyState(GameState newState)
-    {
-        CurrentState = newState;
     }
     public void BuildSpacecraftRegistry(IEnumerable<SpacecraftData[]> arrays)
     {
@@ -99,15 +93,12 @@ public static class GameEvents
         try
         {
             OnGameStateChanged?.Invoke(newState);
-
         }
         catch (Exception ex)
         {
             Debug.LogError($"Exception while invoking OnGameStateChanged for state{newState}: {ex}");
         }
         Debug.Log($"GameState changed to {newState}");
-        Debug.Log($", GameSystem: {GameSystem.Instance.CurrentState}");
-        GameSystem.Instance.ApplyState(newState);
     }
 }
 #endregion

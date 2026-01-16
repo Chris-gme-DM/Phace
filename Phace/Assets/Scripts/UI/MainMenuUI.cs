@@ -13,7 +13,6 @@ public class MainMenuUI : MonoBehaviour
     {
         InstanceFinder.ServerManager.StartConnection();
         InstanceFinder.ClientManager.StartConnection();
-
         StartCoroutine(WaitAndJoinLobby());
     }
 
@@ -32,15 +31,10 @@ public class MainMenuUI : MonoBehaviour
     }
     private IEnumerator WaitAndJoinLobby()
     {
-        while (LobbyManager.Instance == null || !InstanceFinder.ClientManager.Started)
-        { yield return null; }
 
         PlayerProfile profile = SaveManager.Instance.LoadPlayerProfile();
 
         if (!string.IsNullOrWhiteSpace(playerName)) profile.PlayerName = playerName;
-
-
-        LobbyManager.Instance.RequestJoinLobby(profile);
 
         yield break;
     }

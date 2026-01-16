@@ -24,20 +24,24 @@ public class Spacecraft : NetworkBehaviour
         var s = new SpacecraftStats();
         if (data != null)
         {
-            s.CurrentHealth = SpacecraftData.BaseHealth,
-            s.MaxHealth = SpacecraftData.BaseHealth,
-            s.HealthRegenRate = SpacecraftData.BaseHealthRegen,
-            s.HealthRegenDelay = SpacecraftData.BaseHealthRegenDelay,
-            s.CurrentShield = SpacecraftData.BaseShield,
-            s.MaxShield = SpacecraftData.BaseShield,
-            s.ShieldRegenRate = SpacecraftData.BaseShieldRegen,
-            s.ShieldRegenDelay = SpacecraftData.BaseShieldRegenDelay,
+            s.CurrentHealth = data.BaseHealth;
+            s.MaxHealth = data.BaseHealth;
+            s.HealthRegenRate = data.BaseHealthRegen;
+            s.HealthRegenDelay = data.BaseHealthRegenDelay;
+            s.CurrentShield = data.BaseShield;
+            s.MaxShield = data.BaseShield;
+            s.ShieldRegenRate = data.BaseShieldRegen;
+            s.ShieldRegenDelay = data.BaseShieldRegenDelay;
             s.MoveSpeed = 0f;
-            s.MaxSpeed = SpacecraftData.BaseMaxSpeed,
-            
-            s.Association = SpacecraftData.Association,
+            s.MaxSpeed = data.BaseMaxSpeed;
+
+            s.Association = SpacecraftData.Association;
 
         }
+    }
+    public void Respawn()
+    {
+        
     }
     #endregion
     #region Handlers
@@ -49,7 +53,7 @@ public class Spacecraft : NetworkBehaviour
     [ServerRpc]
     public void Repair(float amount)
     {
-
+        
     }
     [ServerRpc]
     public void RechargeShield(float amount)
