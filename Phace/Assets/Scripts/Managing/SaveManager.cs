@@ -29,20 +29,22 @@ public class SaveManager : MonoBehaviour
     }
     public void SavePlayerProfile(PlayerProfile profile)
     {
+        _saveFilePath = Path.Combine(Application.persistentDataPath, profile.PlayerName + "_profile.dat");
         try
         {
             string json = JsonUtility.ToJson(profile);
             byte[] encrypted = SaveSystem.Encrypt(json);
             File.WriteAllBytes(_saveFilePath, encrypted);
+            Debug.Log($"Player: {profile.PlayerName} saved now");
         }
         catch (Exception ex)
         {
             Debug.LogError($"Failed to save profile: {ex:Message}");
         }
     }
-    public PlayerProfile LoadPlayerProfile()
+    public PlayerProfile LoadPlayerProfile(string name)
     {
-        if (!File.Exists(_saveFilePath)) return new PlayerProfile();
+        _saveFilePath = Path.Combine(Application.persistentDataPath, name + "_profile.dat");
         try
         {
             byte[] encrypted = File.ReadAllBytes(_saveFilePath);
@@ -52,13 +54,13 @@ public class SaveManager : MonoBehaviour
         catch (Exception ex)
         {
             Debug.LogError($"Error loading profile, returning new: {ex.Message}");
-            return new PlayerProfile();
+            return new PlayerProfile { PlayerName = name };
         }
     }
     public static class SaveSystem
     {
-        private static readonly byte[] Key = Encoding.UTF8.GetBytes("123456789abcdef");
-        private static readonly byte[] Iv = Encoding.UTF8.GetBytes("abcdef123456789");
+        private static readonly byte[] Key = Encoding.UTF8.GetBytes("0123456789abcdef");
+        private static readonly byte[] Iv = Encoding.UTF8.GetBytes("abcdef0123456789");
         public static byte[] Encrypt(string plainText)
         {
             if (string.IsNullOrEmpty(plainText))

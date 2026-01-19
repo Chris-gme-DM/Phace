@@ -1,41 +1,46 @@
 using FishNet;
 using UnityEngine;
-using System.Collections;
+using TMPro;
+using Unity.VisualScripting;
 public class MainMenuUI : MonoBehaviour
 {
-    private string ipAdress = null;
-    private string playerName = null;
+    [SerializeField] private TMP_InputField playerNameInputField;
+    [SerializeField] private TMP_InputField ipAdressInputField;
+    private string ipAdress;
+    private string playerName;
 
-    public void OnEditName(string text) => playerName = text;
-    public void OnEditIpAdress(string IPAdress) => ipAdress = IPAdress;
+    public void OnEditName()
+    {
+        playerName =  playerNameInputField.text;
+        Debug.Log($"Player: {playerName} would like to exist");
+    }
+    public void OnEditIpAdress()
+    {
+        ipAdress = ipAdressInputField.text;
+        Debug.Log($"This player would like to join Lobby on ip Adress: {ipAdress}");
+    } 
 
     public void OnClickHost()
     {
+        GameSystem.Instance.SetActiveProfile(playerName);
         InstanceFinder.ServerManager.StartConnection();
         InstanceFinder.ClientManager.StartConnection();
-        StartCoroutine(WaitAndJoinLobby());
+        OwnLobbyManager.Instance.RequestJoinLobby(GameSystem.Instance.ActiveProfile);
     }
 
     public void OnClickJoin()
     {
+        // Hate on manual assignment of OnEditName, because reasons
+        GameSystem.Instance.SetActiveProfile(playerName);
         // let the Save Manager check for the given Name and sav or load accordingly
         string ip = string.IsNullOrEmpty(ipAdress) ? "localhost" : ipAdress;
         InstanceFinder.ClientManager.StartConnection(ip);
-        StartCoroutine(WaitAndJoinLobby());
+        OwnLobbyManager.Instance.RequestJoinLobby(GameSystem.Instance.ActiveProfile);
     }
     public void OnClickLeaveGame()
     {
         // CleanUp everything and close the game
-        InstanceFinder.ClientManager?.StopConnection();
+        InstanceFinder.ClientManager.StopConnection();
         Application.Quit();
-    }
-    private IEnumerator WaitAndJoinLobby()
-    {
-
-        PlayerProfile profile = SaveManager.Instance.LoadPlayerProfile();
-
-        if (!string.IsNullOrWhiteSpace(playerName)) profile.PlayerName = playerName;
-
-        yield break;
     }
 }

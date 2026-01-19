@@ -12,6 +12,7 @@ public class GameSystem : MonoBehaviour
 
     private readonly Dictionary<int, SpacecraftData> _spacecraftById = new();
 
+    public PlayerProfile ActiveProfile { get; private set; }
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -35,6 +36,14 @@ public class GameSystem : MonoBehaviour
                 _spacecraftById.Add(id, d);
             }
         }
+    }
+    public void SetActiveProfile(string playerName)
+    {
+        PlayerProfile profile = SaveManager.Instance.LoadPlayerProfile(playerName);
+        profile.PlayerName = playerName;
+        SaveManager.Instance.SavePlayerProfile(profile);
+        ActiveProfile = profile;
+        Debug.Log($"GameSystem: Profile locked for Player {profile.PlayerName}");
     }
     public SpacecraftData GetSpacecraftDataById(int id)
     {

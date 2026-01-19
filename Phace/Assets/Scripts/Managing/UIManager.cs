@@ -83,7 +83,7 @@ public class UIManager : MonoBehaviour
     {
         _loadingPanel.SetActive(true);
         // Wait for a few seconds to simulate loading
-        WaitForSeconds wait = new(3f);
+        new WaitForSeconds(3f);
         _loadingPanel.SetActive(false);
     }
     public void CountDown(float cooldown)

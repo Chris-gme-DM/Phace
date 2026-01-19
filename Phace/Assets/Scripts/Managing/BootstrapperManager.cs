@@ -16,6 +16,7 @@ public class BootstrapperManager : MonoBehaviour
 
     [Header("Local Managers")]
     [SerializeField] private List<GameObject> localManagerPrefabs;
+
     // Only called once. Loads the main scene after bootstrapper is done readying the Managers.
     private void Awake()
     {
@@ -44,14 +45,6 @@ public class BootstrapperManager : MonoBehaviour
             DontDestroyOnLoad(go);
             Debug.Log($"Manager {go} loaded");
 
-        }
-        // Instantiate networked Managers if Server is started.
-        foreach (var netPrefab in networkedManagersPrefabs)
-        {
-            if (netPrefab == null) continue;
-            NetworkObject no = Instantiate(netPrefab);
-            InstanceFinder.ServerManager.Spawn(no);
-            Debug.Log($"Manager {no} loaded");
         }
     }
     public void LoadMainMenu()

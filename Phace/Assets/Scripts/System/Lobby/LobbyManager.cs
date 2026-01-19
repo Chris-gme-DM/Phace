@@ -136,7 +136,7 @@ public class LobbyManager : SingletonNetworkBehaviour<LobbyManager>
         else
         {
             lobby = _lobbies.Find(l => l.CanJoin);
-            if (lobby == null) lobby = CreateNewLobby();
+            lobby ??= CreateNewLobby();
         }
 
         lobby.ClientJoin(client);
@@ -147,7 +147,7 @@ public class LobbyManager : SingletonNetworkBehaviour<LobbyManager>
     private void LoadLobbySceneForClient(Lobby lobby, NetworkConnection client)
     {
         // Loads the current lobby scene for a client
-        SceneLoadData sld = new SceneLoadData(lobby.Scene);
+        SceneLoadData sld = new(lobby.Scene);
         sld.Options.AllowStacking = true;
         sld.Options.LocalPhysics = LocalPhysicsMode.Physics3D;
         sld.ReplaceScenes = ReplaceOption.All;
@@ -160,7 +160,7 @@ public class LobbyManager : SingletonNetworkBehaviour<LobbyManager>
     private void LoadLobbySceneForClientsInLobby(Lobby lobby)
     {
         // Loads the current lobby scene for all clients in the lobby
-        SceneLoadData sld = new SceneLoadData(lobby.Scene);
+        SceneLoadData sld = new(lobby.Scene);
         sld.Options.AllowStacking = true;
         sld.Options.LocalPhysics = LocalPhysicsMode.Physics3D;
         sld.ReplaceScenes = ReplaceOption.All;

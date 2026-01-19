@@ -13,8 +13,8 @@ public class PlayerProfile
     public int SelectedSpacecraftID;
 
     // Settings
-    public int PreferredMasterVolume;
-    public int PreferredMusicVolume;
-    public int PreferredSFXVolume;
+    public float PreferredMasterVolume = 1f;
+    public float PreferredMusicVolume = 1f;
+    public float PreferredSFXVolume = 1f;
 
 }

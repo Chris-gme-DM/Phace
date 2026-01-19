@@ -5267,7 +5267,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8665641315410417551
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5484,6 +5484,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ade5002a83cd074a83ab1e0c6bf49f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerNameInputField: {fileID: 836338352695900548}
+  ipAdressInputField: {fileID: 269084325839044483}
 --- !u!114 &8772229280137553281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6014,7 +6016,7 @@ MonoBehaviour:
       - m_Target: {fileID: 2554378084074063318}
         m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
         m_MethodName: OnClickJoin
-        m_Mode: 5
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

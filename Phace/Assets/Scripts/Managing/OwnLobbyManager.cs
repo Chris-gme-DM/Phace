@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using GameKit.Dependencies.Utilities.Types;
+using UnityEngine.SceneManagement;
 
 public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 {
     #region Configuration
     [Header("Scene Settings")]
     [SerializeField, Min(1)] private int _maxPooledScenes = 1;
-    [GameKit.Dependencies.Utilities.Types.Scene, SerializeField] private string _lobbyScene;
+    [Scene, SerializeField] private string _lobbyScene;
     [Scene, SerializeField] private string _gameScene;
 
     [Header("Lobby Settings")]
@@ -22,6 +23,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     [Min(1)] public int MinLobbyClients = 1;
     [Header("Prefabs")]
     [SerializeField] private PlayerSession _playerSessionPrefab;
+
     #endregion
 
     #region State
@@ -32,8 +34,8 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     public readonly Dictionary<int, PlayerSession> ActiveSessions = new();
 
     // Scene Pooling Lists
-    private readonly List<UnityEngine.SceneManagement.Scene> _pooledLobbyScenes = new();
-    private readonly List<UnityEngine.SceneManagement.Scene> _pooledGameScenes = new();
+    private readonly List<Scene> _pooledLobbyScenes = new();
+    private readonly List<Scene> _pooledGameScenes = new();
     #endregion
 
     protected override void Awake()
@@ -74,6 +76,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     [ServerRpc(RequireOwnership = false)]
     public void RequestJoinLobby(PlayerProfile profile, NetworkConnection caller = null)
     {
+        if (caller == null) return;
         Lobby lobby = GetAvailableLobby();
         lobby.ClientJoin(caller);
 
@@ -86,7 +89,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 
         // Apply Profile Data
         session.SetFromProfile(profile);
-        LoadLobbySceneForClient(lobby, caller);
+        LoadLobbySceneForClient(lobby, caller, session.NetworkObject);
 
         Debug.Log($"Player {profile.PlayerName} joined Lobby {lobby.Id}");
     }
@@ -108,7 +111,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
             }
         }
         // If everyone is ready show the start button 
-        StartGame(lobby);
+//        StartGame(lobby);
     }
 
     [Server]
@@ -127,10 +130,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
         // Try to find an open lobby
         Lobby lobby = _lobbies.Find(l => l.CanJoin);
         // If none exist, create a new one
-        if (lobby == null)
-        {
-            lobby = CreateNewLobby();
-        }
+        lobby ??= CreateNewLobby();
         return lobby;
     }
 
@@ -148,12 +148,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 
         // Clean up Lobby
         Lobby lobby = FindLobbyOfClient(client);
-        if (lobby != null)
-        {
-            lobby.ClientLeft(client);
-            // Optional: If lobby is empty, clean it up?
-            if (lobby.Clients.Length == 0) CleanupLobby(lobby);
-        }
+        lobby?.ClientLeft(client);
     }
     [Server]
     private Lobby CreateNewLobby()
@@ -169,19 +164,22 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
         {
             Debug.LogWarning("No pooled lobby scenes available! Waiting for pool...");
         }
-
-        // Replenish the pool
         LobbyScenePooling();
         return lobby;
     }
 
     [Server]
-    private void LoadLobbySceneForClient(Lobby lobby, NetworkConnection client)
+    private void LoadLobbySceneForClient(Lobby lobby, NetworkConnection client, NetworkObject sessionObj)
     {
-        SceneLoadData sld = new SceneLoadData(lobby.Scene);
+        SceneLoadData sld = new (lobby.Scene);
         sld.Options.AllowStacking = true;
         sld.ReplaceScenes = ReplaceOption.All; // Unload Main Menu, load Lobby
-        sld.MovedNetworkObjects = new NetworkObject[] { client.Objects.ElementAt(0) }; // Move the Player (if it exists)
+        List<NetworkObject> objectsToMove = new();
+        if (client.FirstObject != null) objectsToMove.Add(client.FirstObject); // Player
+        objectsToMove.Add(sessionObj); // Player Session Data
+
+        sld.MovedNetworkObjects = objectsToMove.ToArray();
+
         InstanceFinder.SceneManager.LoadConnectionScenes(client, sld);
     }
 
@@ -189,7 +187,6 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     public void SwitchToGameScene(Lobby lobby)
     {
         lobby.StartLobby(); // Locks the lobby
-        UnityEngine.SceneManagement.Scene oldLobbyScene = lobby.Scene;
 
         if (_pooledGameScenes.Count > 0)
         {
@@ -198,12 +195,12 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
             _pooledGameScenes.RemoveAt(0);
 
             // Move everyone to the new Game Scene
-            SceneLoadData sld = new SceneLoadData(lobby.Scene);
-            sld.Options.AllowStacking = true;
+            SceneLoadData sld = new (lobby.Scene);
+            sld.Options.AllowStacking = false;
             sld.ReplaceScenes = ReplaceOption.All;
 
             // Grab all player objects to move
-            List<NetworkObject> objectsToMove = new List<NetworkObject>();
+            List<NetworkObject> objectsToMove = new();
             foreach (var client in lobby.Clients)
             {
                 // Add the connection's main object
@@ -216,26 +213,9 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 
             InstanceFinder.SceneManager.LoadConnectionScenes(lobby.Clients, sld);
         }
-
-        // Replenish pools and cleanup old scene
         GameScenePooling();
-        StartCoroutine(CoroUnloadScene(oldLobbyScene));
     }
 
-    [Server]
-    public void CleanupLobby(Lobby lobby)
-    {
-        UnityEngine.SceneManagement.Scene lobbyScene = lobby.Scene;
-        _lobbies.Remove(lobby);
-        StartCoroutine(CoroUnloadScene(lobbyScene));
-    }
-
-    private IEnumerator CoroUnloadScene(UnityEngine.SceneManagement.Scene scene)
-    {
-        // Wait until clients are gone (basic check)
-        yield return new WaitForSeconds(1f);
-        InstanceFinder.SceneManager.UnloadConnectionScenes(new SceneUnloadData(scene));
-    }
     #endregion
     #region Pooling Logic
     [Server]
@@ -256,9 +236,9 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 
     private void LoadSceneToPool(string sceneName)
     {
-        SceneLoadData sld = new SceneLoadData(sceneName);
+        SceneLoadData sld = new (sceneName);
         sld.Options.AllowStacking = true;
-        sld.Options.AutomaticallyUnload = false; 
+        sld.Options.AutomaticallyUnload = true; 
         InstanceFinder.SceneManager.LoadConnectionScenes(sld);
     }
 
