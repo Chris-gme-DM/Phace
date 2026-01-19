@@ -7,7 +7,7 @@ using FishNet.Object.Synchronizing;
 
 public class TestEnemyScript : NetworkBehaviour
 {
-
+    
     private NavMeshAgent _agent;
     private int positionIndex;
     private List<Transform> patrolPoints;
@@ -23,8 +23,12 @@ public class TestEnemyScript : NetworkBehaviour
     public float RotationZ => _syncedRotationZ.Value;
     private EnemySpawnManager spawner;
 
+
+    [SerializeField] private int health = 1;
+
     public override void OnStartServer()
     {
+        
         _agent = GetComponent<NavMeshAgent>();
         spawner = FindAnyObjectByType<EnemySpawnManager>();
         patrolPoints = spawner.patrolPoints;
@@ -39,6 +43,7 @@ public class TestEnemyScript : NetworkBehaviour
 
         // Run detection on a timer (NOT every frame)
         InvokeRepeating(nameof(UpdateTarget), 0f, 0.25f);
+
 
 
     }
@@ -189,6 +194,15 @@ public class TestEnemyScript : NetworkBehaviour
         //transform.rotation = Quaternion.Euler(rot);
     }
 
+    [Server]
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            NetworkObject.Despawn();
+        }
+    }
 
 
 }

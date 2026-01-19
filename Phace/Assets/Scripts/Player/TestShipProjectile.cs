@@ -8,6 +8,7 @@ public class TestShipProjectile : NetworkBehaviour
     public readonly SyncVar<float> syncSpeed = new SyncVar<float>();
     private Rigidbody2D rb;
     [SerializeField] private float speed;
+    [SerializeField] private int damage = 1;
 
     private void Awake()
     {
@@ -32,7 +33,23 @@ public class TestShipProjectile : NetworkBehaviour
         }
     }
 
+    [Server]
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TestEnemyScript enemy = collision.GetComponentInParent<TestEnemyScript>();
+           
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
 
+            if (NetworkObject != null)
+            {
+                NetworkObject.Despawn();
+            }
+        }
 
-
+    }
 }

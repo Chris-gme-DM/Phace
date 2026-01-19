@@ -8,7 +8,8 @@ public class TestShiptHoming : NetworkBehaviour
 {
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private LayerMask enemyLayer;
-     [SerializeField] private float speed;
+    [SerializeField] private float speed;
+    [SerializeField] private int damage = 3;
     private readonly List<Collider2D> results = new List<Collider2D>(5);
     private ContactFilter2D enemyFilter;
     private Transform enemyInRange;
@@ -119,5 +120,31 @@ public class TestShiptHoming : NetworkBehaviour
             }
         }
     }
+
+    [Server]
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            TestEnemyScript enemy = other.GetComponentInParent<TestEnemyScript>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
+            if (NetworkObject != null)
+            {
+                NetworkObject.Despawn();
+            }
+        }
+        else if (other.gameObject.CompareTag("FriendlyProjectile") || other.gameObject.CompareTag("Player"))
+        {
+            Physics2D.IgnoreCollision(other, GetComponent<Collider2D>());
+            return;
+        }
+
+            NetworkObject.Despawn();
+    }
+
+
 
 }
