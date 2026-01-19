@@ -1,85 +1,69 @@
 using FishNet;
+using FishNet.CodeGenerating;
 using FishNet.Connection;
 using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using System.Collections;
+using FishNet.Transporting;
 using System.Collections.Generic;
-using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
-using GameKit.Dependencies.Utilities.Types;
-using UnityEngine.SceneManagement;
 
 public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 {
     #region Configuration
-    [Header("Scene Settings")]
-    [SerializeField, Min(1)] private int _maxPooledScenes = 1;
-    [Scene, SerializeField] private string _lobbyScene;
-    [Scene, SerializeField] private string _gameScene;
-
     [Header("Lobby Settings")]
     [Min(1)] public int MaxLobbyClients = 4;
     [Min(1)] public int MinLobbyClients = 1;
     [Header("Prefabs")]
     [SerializeField] private PlayerSession _playerSessionPrefab;
 
+    public readonly Dictionary<int, PlayerSession> ActiveSessions = new();
+    public readonly SyncDictionary<int, PlayerSessionData> LobbyPlayers = new();
     #endregion
 
     #region State
-    // Tracks all active lobbies (Rooms)
-    private readonly List<Lobby> _lobbies = new();
+    [AllowMutableSyncType] private readonly SyncVar<GameState> _networkedGameState = new();
 
-    // Tracks active PlayerSessions by ClientId
-    public readonly Dictionary<int, PlayerSession> ActiveSessions = new();
-
-    // Scene Pooling Lists
-    private readonly List<Scene> _pooledLobbyScenes = new();
-    private readonly List<Scene> _pooledGameScenes = new();
-    #endregion
-
-    protected override void Awake()
+    private void OnGameStateSynced(GameState prev, GameState next, bool asServer)
     {
-        base.Awake();
-        // Basic validation to ensure you didn't forget to assign scenes
-        if (string.IsNullOrEmpty(_lobbyScene) || string.IsNullOrEmpty(_gameScene))
+        GameEvents.ChangeGameState(next);
+    }
+
+    [Server]
+    public void SetGlobalState(GameState newState)
+    {
+        _networkedGameState.Value = newState;
+        if (IsServerInitialized)
         {
-            Debug.LogError("OwnLobbyManager: Scene names are missing in Inspector!");
-            enabled = false;
+            GameEvents.ChangeGameState(newState);
         }
     }
+    #endregion
 
     public override void OnStartServer()
     {
         base.OnStartServer();
-
-        // Start pooling scenes so they are ready when players join
-        LobbyScenePooling();
-        GameScenePooling();
-
-        // Listen for disconnects to clean up players
+        _networkedGameState.OnChange += OnGameStateSynced;
         InstanceFinder.ServerManager.OnRemoteConnectionState += RemoteConnectionStateChanged;
+        InstanceFinder.SceneManager.OnClientLoadedStartScenes += OnClientLoadedScenes;
     }
-
     public override void OnStopServer()
     {
         base.OnStopServer();
+        _networkedGameState.OnChange -= OnGameStateSynced;
         InstanceFinder.ServerManager.OnRemoteConnectionState -= RemoteConnectionStateChanged;
-        _pooledLobbyScenes.Clear();
-        _pooledGameScenes.Clear();
-        _lobbies.Clear();
+        InstanceFinder.SceneManager.OnClientLoadedStartScenes -= OnClientLoadedScenes;
+
         ActiveSessions.Clear();
     }
-
-    #region Public API (Your Game Logic)
+    
 
     [ServerRpc(RequireOwnership = false)]
     public void RequestJoinLobby(PlayerProfile profile, NetworkConnection caller = null)
     {
         if (caller == null) return;
-        Lobby lobby = GetAvailableLobby();
-        lobby.ClientJoin(caller);
-
+            
         if (!ActiveSessions.TryGetValue(caller.ClientId, out PlayerSession session))
         {
             session = Instantiate(_playerSessionPrefab);
@@ -89,191 +73,75 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 
         // Apply Profile Data
         session.SetFromProfile(profile);
-        LoadLobbySceneForClient(lobby, caller, session.NetworkObject);
 
-        Debug.Log($"Player {profile.PlayerName} joined Lobby {lobby.Id}");
+        Debug.Log($"Player {profile.PlayerName} joined");
+    }
+    [Server]
+    private void SpawnPlayer(NetworkConnection conn)
+    {
+        PlayerSession session = Instantiate(_playerSessionPrefab);
+        InstanceFinder.ServerManager.Spawn(session.gameObject, conn);
+
+        ActiveSessions[conn.ClientId] = session;
+
+        LobbyPlayers.Add(conn.ClientId, session.GetSnapshot());
+
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public void RpcUpdatePlayerData(PlayerProfile profile, NetworkConnection caller = null)
+    {
+        if (ActiveSessions.TryGetValue(caller.ClientId, out PlayerSession session))
+        {
+            session.SetFromProfile(profile);
+            LobbyPlayers[caller.ClientId] = session.GetSnapshot();
+        }
+    }
+    [Server]
+    public void OnPlayerReadyStatusChanged()
+    {
+        if (ActiveSessions.Count < MinLobbyClients) return;
+        bool allReady = true;
+        foreach (var session in ActiveSessions.Values)
+        {
+            if (!session.IsReady.Value)
+            {
+                allReady = false;
+                break;
+            }
+        }
+        if (allReady)
+        {
+            // Enable the start game button in the Host UI
+        }
+    }
+    [Server]
+    private void OnClientLoadedScenes(NetworkConnection conn, bool asServer)
+    {
+        if (!ActiveSessions.ContainsKey(conn.ClientId))
+        SpawnPlayer(conn);
+    }
+    [Server]
+    private void StartGame()
+    {
+        // Tell that motherfucker to start a countdown and then the fucking game
     }
 
     [Server]
-    public void CheckAllPlayersReady(NetworkConnection sender)
+    private void RemoteConnectionStateChanged(NetworkConnection client, RemoteConnectionStateArgs args)
     {
-        Lobby lobby = FindLobbyOfClient(sender);
-        if (lobby == null) return;
-
-        if (lobby.Clients.Length < MinLobbyClients) return;
-
-        // Check if everyone in THIS lobby is ready
-        foreach (var client in lobby.Clients)
+        //if (args.ConnectionState == RemoteConnectionState.Started)
+        //{
+        //    // Spawning Logic of PLayerSessions and their fucking data
+        //    SpawnPlayer(client);
+        //}
+        if (args.ConnectionState != RemoteConnectionState.Stopped)
         {
             if (ActiveSessions.TryGetValue(client.ClientId, out PlayerSession session))
             {
-                if (!session.IsReady.Value) return; // Someone isn't ready
+                session.NetworkObject.Despawn();
+                ActiveSessions.Remove(client.ClientId);
             }
-        }
-        // If everyone is ready show the start button 
-//        StartGame(lobby);
-    }
-
-    [Server]
-    private void StartGame(Lobby lobby)
-    {
-        SwitchToGameScene(lobby);
-    }
-
-    #endregion
-
-    #region Functions from LobbyManager
-
-    [Server]
-    private Lobby GetAvailableLobby()
-    {
-        // Try to find an open lobby
-        Lobby lobby = _lobbies.Find(l => l.CanJoin);
-        // If none exist, create a new one
-        lobby ??= CreateNewLobby();
-        return lobby;
-    }
-
-    [Server]
-    public Lobby FindLobbyOfClient(NetworkConnection client) => _lobbies.FirstOrDefault(x => x.HasClient(client));
-
-    [Server]
-    private void RemoteConnectionStateChanged(NetworkConnection client, FishNet.Transporting.RemoteConnectionStateArgs args)
-    {
-        if (args.ConnectionState != FishNet.Transporting.RemoteConnectionState.Stopped) return;
-
-        // Clean up Session
-        if (ActiveSessions.ContainsKey(client.ClientId))
-            ActiveSessions.Remove(client.ClientId);
-
-        // Clean up Lobby
-        Lobby lobby = FindLobbyOfClient(client);
-        lobby?.ClientLeft(client);
-    }
-    [Server]
-    private Lobby CreateNewLobby()
-    {
-        Lobby lobby = null;
-        if (_pooledLobbyScenes.Count > 0)
-        {
-            lobby = new Lobby(_pooledLobbyScenes[0]);
-            _lobbies.Add(lobby);
-            _pooledLobbyScenes.RemoveAt(0);
-        }
-        else
-        {
-            Debug.LogWarning("No pooled lobby scenes available! Waiting for pool...");
-        }
-        LobbyScenePooling();
-        return lobby;
-    }
-
-    [Server]
-    private void LoadLobbySceneForClient(Lobby lobby, NetworkConnection client, NetworkObject sessionObj)
-    {
-        SceneLoadData sld = new (lobby.Scene);
-        sld.Options.AllowStacking = true;
-        sld.ReplaceScenes = ReplaceOption.All; // Unload Main Menu, load Lobby
-        List<NetworkObject> objectsToMove = new();
-        if (client.FirstObject != null) objectsToMove.Add(client.FirstObject); // Player
-        objectsToMove.Add(sessionObj); // Player Session Data
-
-        sld.MovedNetworkObjects = objectsToMove.ToArray();
-
-        InstanceFinder.SceneManager.LoadConnectionScenes(client, sld);
-    }
-
-    [Server]
-    public void SwitchToGameScene(Lobby lobby)
-    {
-        lobby.StartLobby(); // Locks the lobby
-
-        if (_pooledGameScenes.Count > 0)
-        {
-            // Assign new Game Scene
-            lobby.Scene = _pooledGameScenes[0];
-            _pooledGameScenes.RemoveAt(0);
-
-            // Move everyone to the new Game Scene
-            SceneLoadData sld = new (lobby.Scene);
-            sld.Options.AllowStacking = false;
-            sld.ReplaceScenes = ReplaceOption.All;
-
-            // Grab all player objects to move
-            List<NetworkObject> objectsToMove = new();
-            foreach (var client in lobby.Clients)
-            {
-                // Add the connection's main object
-                if (client.FirstObject != null) objectsToMove.Add(client.FirstObject);
-                // Add their PlayerSession object too!
-                if (ActiveSessions.TryGetValue(client.ClientId, out PlayerSession session))
-                    objectsToMove.Add(session.NetworkObject);
-            }
-            sld.MovedNetworkObjects = objectsToMove.ToArray();
-
-            InstanceFinder.SceneManager.LoadConnectionScenes(lobby.Clients, sld);
-        }
-        GameScenePooling();
-    }
-
-    #endregion
-    #region Pooling Logic
-    [Server]
-    private void LobbyScenePooling()
-    {
-        if (_pooledLobbyScenes.Count >= _maxPooledScenes) return;
-        InstanceFinder.SceneManager.OnLoadEnd += LobbyScenePooling_OnLoadEnd;
-        LoadSceneToPool(_lobbyScene);
-    }
-
-    [Server]
-    private void GameScenePooling()
-    {
-        if (_pooledGameScenes.Count >= _maxPooledScenes) return;
-        InstanceFinder.SceneManager.OnLoadEnd += GameScenePooling_OnLoadEnd;
-        LoadSceneToPool(_gameScene);
-    }
-
-    private void LoadSceneToPool(string sceneName)
-    {
-        SceneLoadData sld = new (sceneName);
-        sld.Options.AllowStacking = true;
-        sld.Options.AutomaticallyUnload = true; 
-        InstanceFinder.SceneManager.LoadConnectionScenes(sld);
-    }
-
-    private void LobbyScenePooling_OnLoadEnd(SceneLoadEndEventArgs args)
-    {
-        if (HandlePoolLoad(args, _lobbyScene, _pooledLobbyScenes))
-        {
-            if (_pooledLobbyScenes.Count >= _maxPooledScenes)
-                InstanceFinder.SceneManager.OnLoadEnd -= LobbyScenePooling_OnLoadEnd;
+            LobbyPlayers.Remove(client.ClientId);
         }
     }
-
-    private void GameScenePooling_OnLoadEnd(SceneLoadEndEventArgs args)
-    {
-        if (HandlePoolLoad(args, _gameScene, _pooledGameScenes))
-        {
-            if (_pooledGameScenes.Count >= _maxPooledScenes)
-                InstanceFinder.SceneManager.OnLoadEnd -= GameScenePooling_OnLoadEnd;
-        }
-    }
-
-    private bool HandlePoolLoad(SceneLoadEndEventArgs args, string targetScene, List<UnityEngine.SceneManagement.Scene> pool)
-    {
-        if (args.LoadedScenes.Length != 1) return false;
-        UnityEngine.SceneManagement.Scene loaded = args.LoadedScenes[0];
-        if (loaded.path != targetScene && loaded.name != targetScene) return false;
-
-        if (!pool.Contains(loaded))
-        {
-            pool.Add(loaded);
-            // Hide the scene physically so it doesn't clutter the view? 
-            // Usually you might move root objects far away, but for now we just hold it.
-            return true;
-        }
-        return false;
-    }
-    #endregion
 }

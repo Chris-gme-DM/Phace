@@ -1,7 +1,6 @@
 ﻿using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
-using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Events;
@@ -14,7 +13,6 @@ public class Lobby
     public UnityEvent OnClientJoin = new();
     public UnityEvent OnClientLeave = new();
     public UnityEvent OnStartLobby = new();
-
     public Lobby(Scene scene)
     {
         Id = "1";
@@ -50,9 +48,9 @@ public class Lobby
         OnStartLobby?.Invoke();
     }
 
-    public bool CanStart => _clients.Count >= LobbyManager.Instance.MinLobbyClients;
+    public bool CanStart => _clients.Count >= OwnLobbyManager.Instance.MinLobbyClients;
 
-    public bool CanJoin => !_hasStarted && !Locked && _clients.Count < LobbyManager.Instance.MaxLobbyClients;
+    public bool CanJoin => !_hasStarted && !Locked && _clients.Count < OwnLobbyManager.Instance.MaxLobbyClients;
 
     public bool Locked { get; set; }
 

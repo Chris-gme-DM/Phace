@@ -1,3 +1,4 @@
+using FishNet.CodeGenerating;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System;
@@ -33,8 +34,8 @@ public class PlayerSession : NetworkBehaviour
     public void SetReadyStatus(bool ready)
     {
         IsReady.Value = ready;
-
-        GameEvents.OnPlayerStatusChanged.Invoke(GetSnapshot());
+        OwnLobbyManager.Instance.LobbyPlayers[Owner.ClientId] = GetSnapshot();
+        OwnLobbyManager.Instance.OnPlayerReadyStatusChanged();
     }
 
     public void SetControlledSpacecraft(NetworkObject spacecraftNO)

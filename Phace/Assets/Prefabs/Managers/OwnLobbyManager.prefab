@@ -49,8 +49,8 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 9134066693978794151}
   _networkObjectCache: {fileID: 9134066693978794151}
   _maxPooledScenes: 1
-  _lobbyScene: Assets/Scenes/Lobby_0.unity
-  _gameScene: Assets/Scenes/Game_1.unity
+  _lobbyScene: 
+  _gameScene: 
   MaxLobbyClients: 4
   MinLobbyClients: 1
   _playerSessionPrefab: {fileID: 9177799630169863052, guid: 418c7263fe95ac64980476616b331992, type: 3}
@@ -84,7 +84,7 @@ MonoBehaviour:
   _initializeOrder: 2
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584327700405692811
+  _initializedTimestamp: -8584327566651217231
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

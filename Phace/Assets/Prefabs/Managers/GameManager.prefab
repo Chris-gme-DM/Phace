@@ -80,11 +80,11 @@ MonoBehaviour:
   RuntimeChildNetworkBehaviours: []
   _isNetworked: 1
   _isSpawnable: 1
-  _isGlobal: 0
+  _isGlobal: 1
   _initializeOrder: 1
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584330257752689670
+  _initializedTimestamp: -8584327606825308676
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
