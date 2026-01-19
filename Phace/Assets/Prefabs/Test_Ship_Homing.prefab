@@ -107,7 +107,7 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 3980280303514068580}
   _networkObjectCache: {fileID: 0}
-  detectionRadius: 30
+  detectionRadius: 2
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256

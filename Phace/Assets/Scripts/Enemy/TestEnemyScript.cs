@@ -7,10 +7,10 @@ using FishNet.Object.Synchronizing;
 
 public class TestEnemyScript : NetworkBehaviour
 {
-    
+
     private NavMeshAgent _agent;
     private int positionIndex;
-    [SerializeField] private List<Transform> patrolPoints;
+    private List<Transform> patrolPoints;
     [SerializeField] private float detectionRadius = 30f;
     [SerializeField] private LayerMask playerLayer;
     private readonly List<Collider2D> results = new List<Collider2D>(16);
@@ -21,18 +21,14 @@ public class TestEnemyScript : NetworkBehaviour
     //[SerializeField] private float SyncedRotationZ;
     private readonly SyncVar<float> _syncedRotationZ = new SyncVar<float>();
     public float RotationZ => _syncedRotationZ.Value;
-
-    public override void OnStartClient()
-    {
-        if (IsServerStarted) return;
-
-        Destroy(GetComponent<NavMeshAgent>());
-    }
+    private EnemySpawnManager spawner;
 
     public override void OnStartServer()
     {
-        base.OnStartServer();
         _agent = GetComponent<NavMeshAgent>();
+        spawner = FindAnyObjectByType<EnemySpawnManager>();
+        patrolPoints = spawner.patrolPoints;
+
         positionIndex = 0;
         _agent.SetDestination(patrolPoints[positionIndex].position);
 
@@ -43,22 +39,28 @@ public class TestEnemyScript : NetworkBehaviour
 
         // Run detection on a timer (NOT every frame)
         InvokeRepeating(nameof(UpdateTarget), 0f, 0.25f);
-        
+
 
     }
+    public override void OnStartClient()
+    {
+        if (IsServerStarted) return;
 
+        Destroy(GetComponent<NavMeshAgent>());
+    }
 
     public override void OnStopServer()
     {
         base.OnStopServer();
         CancelInvoke(nameof(UpdateTarget));
+        spawner?.NotifyEnemyDestroyed(GetComponent<NetworkObject>());
     }
 
     void Update()
     {
         if (IsServerStarted)
         {
-            
+
             if (playerInRange == null)
             {
                 if (!_agent.pathPending && _agent.remainingDistance <= 0.2f)
@@ -73,7 +75,7 @@ public class TestEnemyScript : NetworkBehaviour
             // Server: calculate and send rotation
             UpdateRotation();
         }
-        
+
 
     }
 
@@ -126,7 +128,7 @@ public class TestEnemyScript : NetworkBehaviour
 
         playerInRange = closest;
         return closest;
-       
+
     }
 
     [Server]
@@ -180,12 +182,13 @@ public class TestEnemyScript : NetworkBehaviour
             transform.rotation = Quaternion.Euler(rot);
             transform.rotation = Quaternion.Euler(0f, 0f, RotationZ);
 
-        }          
-       
+        }
+
         //rot.x = 0;
         //rot.y = 0;
         //transform.rotation = Quaternion.Euler(rot);
     }
 
-}
 
+
+}
