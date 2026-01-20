@@ -12,12 +12,12 @@ using FishNet.Demo.HashGrid; // <- New Input System
 public class Guns : NetworkBehaviour
 {
     //public NetworkObject ProjectilePrefab;
-    private ProjectileSpawnManager spawner;
+    private ProjectileSpawnManager bulletSpawner;
 
     private void Start()
     {
         
-        spawner = FindAnyObjectByType<ProjectileSpawnManager>();
+        bulletSpawner = FindAnyObjectByType<ProjectileSpawnManager>();
     }
 
     private void Update()
@@ -63,8 +63,8 @@ public class Guns : NetworkBehaviour
     [ServerRpc]
     private void GunsSpawnSingleProjectile()
     {
-        Debug.Log(spawner == null);
-        spawner.SpawnSingleProjectile(transform.position, transform.up);
+        Debug.Log(bulletSpawner == null);
+        bulletSpawner.SpawnSingleProjectile(transform.position, transform.up);
     }
 
     [ServerRpc]
@@ -81,13 +81,13 @@ public class Guns : NetworkBehaviour
         // Rechts rotieren
         var spreadRight = Quaternion.Euler(0, 0, spreadAngle) * baseDirection;
 
-        spawner.SpawnSpreadShot(transform.position, baseDirection, spreadLeft, spreadRight);
+        bulletSpawner.SpawnSpreadShot(transform.position, baseDirection, spreadLeft, spreadRight);
     }
 
     [ServerRpc]
     private void GunsSpawnHomingShot()
     {
-        spawner.SpawnHomingShot(transform.position, transform.up);
+        bulletSpawner.SpawnHomingShot(transform.position, transform.up);
     }
 
 

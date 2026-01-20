@@ -429,7 +429,7 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 630618123}
   _networkObjectCache: {fileID: 0}
-  patrolPoints:
+  patrolPointsA:
   - {fileID: 1334479516}
   - {fileID: 676585027}
   - {fileID: 808440450}
@@ -437,8 +437,10 @@ MonoBehaviour:
   - {fileID: 2068025277}
   - {fileID: 823475769}
   - {fileID: 1750730638}
-  enemyTypeA: {fileID: 4556797933271260862, guid: 5b67d03c2853f6d4f9627a3fc3773a49, type: 3}
-  enemyTypeB: {fileID: 4556797933271260862, guid: 5b67d03c2853f6d4f9627a3fc3773a49, type: 3}
+  patrolPointsB: []
+  patrolPointsC: []
+  enemyTypeA: {fileID: 7036945429704097465, guid: 16155b56b6841494d840600b7b5b9de6, type: 3}
+  enemyTypeB: {fileID: 0}
   spawnPointsA:
   - {fileID: 66415143}
   - {fileID: 530633282}
@@ -474,7 +476,7 @@ MonoBehaviour:
   _isNetworked: 1
   _isSpawnable: 1
   _isGlobal: 0
-  _initializeOrder: 0
+  _initializeOrder: -2
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
   _initializedTimestamp: 0
@@ -560,7 +562,7 @@ MonoBehaviour:
   _isNetworked: 1
   _isSpawnable: 0
   _isGlobal: 0
-  _initializeOrder: 0
+  _initializeOrder: -2
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
   _initializedTimestamp: 0
@@ -604,6 +606,7 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 0}
   ProjectilePrefab: {fileID: 8677307905672516358, guid: 9ba27e44e54859a4aabec15458c8d764, type: 3}
   HomingProjectilePrefab: {fileID: 3980280303514068580, guid: 693200078bf1c2c4c889b40046eda658, type: 3}
+  EnemyProjectileTypeAPrefab: {fileID: 3741622911742609991, guid: d1479b11c12e2a94e8970a6967616be2, type: 3}
 --- !u!4 &670724424
 Transform:
   m_ObjectHideFlags: 0

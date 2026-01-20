@@ -9,6 +9,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
 {
     public NetworkObject ProjectilePrefab;
     public NetworkObject HomingProjectilePrefab;
+    public NetworkObject EnemyProjectileTypeAPrefab;
     [Server]
     public void SpawnSingleProjectile(Vector3 position, Vector3 direction)
     {
@@ -59,6 +60,18 @@ public class ProjectileSpawnManager : NetworkBehaviour
         if (homingProjectile != null)
         {
             Destroy(homingProjectile.gameObject, 5f);
+        }
+    }
+
+    [Server]
+    public void SpawnEnemyProjectileTypeA(Vector3 position, Vector3 direction)
+        {
+        NetworkObject enemyProjectile = Instantiate(EnemyProjectileTypeAPrefab, position, Quaternion.identity);
+        enemyProjectile.transform.up = direction; // Orient the projectile to match the gun's direction.
+        Spawn(enemyProjectile); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
+        if (enemyProjectile != null)
+        {
+            Destroy(enemyProjectile.gameObject, 2f);
         }
     }
 

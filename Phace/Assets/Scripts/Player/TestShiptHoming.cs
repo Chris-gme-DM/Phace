@@ -122,27 +122,31 @@ public class TestShiptHoming : NetworkBehaviour
     }
 
     [Server]
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Enemy"))
         {
-            TestEnemyScript enemy = other.GetComponentInParent<TestEnemyScript>();
-            if (enemy != null)
+            var damageable = collision.GetComponentInParent<IDamageable>();
+            if (damageable != null)
             {
-                enemy.TakeDamage(damage);
+                damageable.TakeDamage(damage);
             }
+
             if (NetworkObject != null)
             {
                 NetworkObject.Despawn();
             }
         }
-        else if (other.gameObject.CompareTag("FriendlyProjectile") || other.gameObject.CompareTag("Player"))
+        else if (collision.gameObject.CompareTag("FriendlyProjectile") || collision.gameObject.CompareTag("Player"))
         {
-            Physics2D.IgnoreCollision(other, GetComponent<Collider2D>());
+            Physics2D.IgnoreCollision(collision, GetComponent<Collider2D>());
             return;
         }
 
+        if (NetworkObject != null)
+        {
             NetworkObject.Despawn();
+        }
     }
 
 

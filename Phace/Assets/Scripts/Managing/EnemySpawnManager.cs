@@ -6,7 +6,9 @@ using System;
 
 public class EnemySpawnManager : NetworkBehaviour
 {
-    [SerializeField] public List<Transform> patrolPoints;
+    [SerializeField] public List<Transform> patrolPointsA;
+    [SerializeField] public List<Transform> patrolPointsB;
+    [SerializeField] public List <Transform> patrolPointsC;
     [SerializeField] private NetworkObject enemyTypeA;
     [SerializeField] private NetworkObject enemyTypeB;
     [SerializeField] private Transform[] spawnPointsA;

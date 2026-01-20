@@ -5,9 +5,9 @@ using UnityEngine.AI;
 using System;
 using FishNet.Object.Synchronizing;
 
-public class TestEnemyScript : NetworkBehaviour
+public class EnemyTypeA : NetworkBehaviour, IDamageable
 {
-    
+
     private NavMeshAgent _agent;
     private int positionIndex;
     private List<Transform> patrolPoints;
@@ -22,15 +22,20 @@ public class TestEnemyScript : NetworkBehaviour
     private readonly SyncVar<float> _syncedRotationZ = new SyncVar<float>();
     public float RotationZ => _syncedRotationZ.Value;
     private EnemySpawnManager spawner;
+    private ProjectileSpawnManager bulletSpawner;
+    private float shootInterval = 0f;
+    [SerializeField] private float shootDelay = 2f;
 
 
     [SerializeField] private int health = 1;
+
 
     public override void OnStartServer()
     {
         base.OnStartServer();
         _agent = GetComponent<NavMeshAgent>();
         spawner = FindAnyObjectByType<EnemySpawnManager>();
+        bulletSpawner = FindAnyObjectByType<ProjectileSpawnManager>();
         patrolPoints = spawner.patrolPointsA;
 
         positionIndex = 0;
@@ -43,10 +48,9 @@ public class TestEnemyScript : NetworkBehaviour
 
         // Run detection on a timer (NOT every frame)
         InvokeRepeating(nameof(UpdateTarget), 0f, 0.25f);
-
-
-
+        TimeManager.OnTick += OnTick;
     }
+    
     public override void OnStartClient()
     {
         if (IsServerStarted) return;
@@ -58,30 +62,22 @@ public class TestEnemyScript : NetworkBehaviour
     {
         base.OnStopServer();
         CancelInvoke(nameof(UpdateTarget));
+        TimeManager.OnTick -= OnTick;
         spawner?.NotifyEnemyDestroyed(GetComponent<NetworkObject>());
     }
+
 
     void Update()
     {
         if (IsServerStarted)
         {
-
-            if (playerInRange == null)
+            if (!_agent.pathPending && _agent.remainingDistance <= 0.2f)
             {
-                if (!_agent.pathPending && _agent.remainingDistance <= 0.2f)
-                {
-                    NextPosition();
-                }
+                NextPosition();
             }
-            else
-            {
-                Chaseplayer();
-            }
-            // Server: calculate and send rotation
+            
             UpdateRotation();
         }
-
-
     }
 
 
@@ -93,6 +89,23 @@ public class TestEnemyScript : NetworkBehaviour
             transform.rotation = Quaternion.Euler(0f, 0f, RotationZ);
         }
     }
+    private void OnTick()
+    {
+        if (!IsServerInitialized)
+            return;
+        float tickDelta = (float)TimeManager.TickDelta;
+        if (shootInterval > 0f)
+        {
+            shootInterval -= tickDelta;
+        }
+        else if (shootInterval <= 0f)
+        {
+            shootAtPlayer();
+            shootInterval += shootDelay;
+        }
+    }
+
+
 
     [Server]
     private int DetectPlayers()
@@ -149,15 +162,6 @@ public class TestEnemyScript : NetworkBehaviour
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 
-    [Server]
-    private void Chaseplayer()
-    {
-        if (playerInRange != null)
-        {
-            _agent.SetDestination(playerInRange.position);
-        }
-    }
-
 
     [Server]
     private void NextPosition()
@@ -196,6 +200,19 @@ public class TestEnemyScript : NetworkBehaviour
     }
 
     [Server]
+    private void shootAtPlayer()
+    {
+        if (playerInRange != null && bulletSpawner != null)
+        {
+
+            var directionToPlayer = (playerInRange.position - transform.position).normalized;
+            bulletSpawner.SpawnEnemyProjectileTypeA(transform.position, directionToPlayer);
+             
+        }
+    }
+
+
+    [Server]
     public void TakeDamage(int damage)
     {
         health -= damage;
@@ -204,6 +221,4 @@ public class TestEnemyScript : NetworkBehaviour
             NetworkObject.Despawn();
         }
     }
-
-
 }
