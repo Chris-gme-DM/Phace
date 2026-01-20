@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class OptionsUI : MonoBehaviour
 {
+    [Header("Information")]
     [SerializeField] private float _masterVolume;
     [SerializeField] private float _musicVolume;
     [SerializeField] private float _sfxVolume;
-
+    [Header("Configuration")]
+    [SerializeField] private GameObject _masterVolumeSlider;
+    [SerializeField] private GameObject _musicVolumeSlider;
+    [SerializeField] private GameObject _sfxVolumeSlider;
     public float MasterVolume => _masterVolume;
     public float MusicVolume => _musicVolume;
     public float SFXVolume => _sfxVolume;

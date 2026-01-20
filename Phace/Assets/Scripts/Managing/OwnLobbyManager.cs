@@ -1,12 +1,10 @@
 using FishNet;
 using FishNet.CodeGenerating;
 using FishNet.Connection;
-using FishNet.Managing.Scened;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using System.Collections.Generic;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
@@ -25,11 +23,6 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     #region State
     [AllowMutableSyncType] private readonly SyncVar<GameState> _networkedGameState = new();
 
-    private void OnGameStateSynced(GameState prev, GameState next, bool asServer)
-    {
-        GameEvents.ChangeGameState(next);
-    }
-
     [Server]
     public void SetGlobalState(GameState newState)
     {
@@ -37,7 +30,19 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
         if (IsServerInitialized)
         {
             GameEvents.ChangeGameState(newState);
+            Debug.Log($"THE GAME STATE IS: {newState}, MF");
         }
+    }
+    private void OnGameStateSynced(GameState prev, GameState next, bool asServer)
+    {
+        if (IsClientInitialized)
+        {
+            HandleStateChange(next);
+        }
+    }
+    private void HandleStateChange(GameState newState)
+    {
+        GameEvents.ChangeGameState(newState);
     }
     #endregion
 
@@ -57,45 +62,43 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 
         ActiveSessions.Clear();
     }
-    
 
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestJoinLobby(PlayerProfile profile, NetworkConnection caller = null)
+    [Server]
+    private void SpawnPlayerSession(NetworkConnection conn)
     {
-        if (caller == null) return;
-            
-        if (!ActiveSessions.TryGetValue(caller.ClientId, out PlayerSession session))
+        if (!ActiveSessions.TryGetValue(conn.ClientId, out PlayerSession session))
         {
             session = Instantiate(_playerSessionPrefab);
-            InstanceFinder.ServerManager.Spawn(session.gameObject, caller);
-            ActiveSessions[caller.ClientId] = session;
+            InstanceFinder.ServerManager.Spawn(session.gameObject, conn);
+            ActiveSessions[conn.ClientId] = session;
         }
-
-        // Apply Profile Data
-        session.SetFromProfile(profile);
-
-        Debug.Log($"Player {profile.PlayerName} joined");
-    }
-    [Server]
-    private void SpawnPlayer(NetworkConnection conn)
-    {
-        PlayerSession session = Instantiate(_playerSessionPrefab);
-        InstanceFinder.ServerManager.Spawn(session.gameObject, conn);
-
-        ActiveSessions[conn.ClientId] = session;
-
         LobbyPlayers.Add(conn.ClientId, session.GetSnapshot());
 
     }
+
     [ServerRpc(RequireOwnership = false)]
-    public void RpcUpdatePlayerData(PlayerProfile profile, NetworkConnection caller = null)
+    public void RpcRequestProfileUpdate(PlayerSessionData data, NetworkConnection caller = null)
     {
-        if (ActiveSessions.TryGetValue(caller.ClientId, out PlayerSession session))
-        {
-            session.SetFromProfile(profile);
-            LobbyPlayers[caller.ClientId] = session.GetSnapshot();
-        }
+        // Validate the connection
+        if (caller == null || !ActiveSessions.TryGetValue(caller.ClientId, out PlayerSession session))
+            return;
+
+        // Use the internal server method to apply the data
+        UpdatePlayerSessionInternal(session, data);
     }
+
+    [Server]
+    private void UpdatePlayerSessionInternal(PlayerSession session, PlayerSessionData data)
+    {
+        session.PlayerName.Value = data.PlayerName;
+        session.SpacecraftID.Value = data.SpacecraftID;
+        session.IsReady.Value = data.IsReady;
+
+        LobbyPlayers[session.Owner.ClientId] = session.GetSnapshot();
+
+        Debug.Log($"[Server] Session synced for: {data.PlayerName}");
+    }
+
     [Server]
     public void OnPlayerReadyStatusChanged()
     {
@@ -118,12 +121,14 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     private void OnClientLoadedScenes(NetworkConnection conn, bool asServer)
     {
         if (!ActiveSessions.ContainsKey(conn.ClientId))
-        SpawnPlayer(conn);
+        SpawnPlayerSession(conn);
+        
     }
     [Server]
     private void StartGame()
     {
         // Tell that motherfucker to start a countdown and then the fucking game
+        SetGlobalState(GameState.InGame);
     }
 
     [Server]

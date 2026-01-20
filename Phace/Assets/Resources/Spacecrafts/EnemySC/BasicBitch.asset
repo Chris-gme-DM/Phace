@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa97d289b340167478fcb7d75afdec7f, type: 3}
-  m_Name: Interceptor
+  m_Name: BasicBitch
   m_EditorClassIdentifier: 
-  _spacecraftID: 0
-  _spacecraftName: Interceptor
-  _spacecraftDescription: 
-  _association: 0
-  _spacecraftSize: 0
-  PlayerPrefab: {fileID: 0}
-  EnemyPrefab: {fileID: 0}
+  _spacecraftID: 201
+  _spacecraftName: basicbitch
+  _spacecraftDescription: A basic bitch
+  _association: 1
+  _spacecraftSize: 1
   _goSpacecraftPrefab: {fileID: 0}
   _primaryAttackPattern: {fileID: 0}
   _secondaryAttackPattern: {fileID: 0}
-  _baseMaxSpeed: 10
-  _baseHealth: 100
-  _baseHealthRegen: 2
-  _baseHealthRegenDelay: 10
-  _baseShield: 100
-  _baseShieldRegen: 5
-  _baseShieldRegenDelay: 5
+  _baseMaxSpeed: 5
+  _baseHealth: 50
+  _baseHealthRegen: 0
+  _baseHealthRegenDelay: 0
+  _baseShield: 0
+  _baseShieldRegen: 0
+  _baseShieldRegenDelay: 0

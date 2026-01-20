@@ -1,7 +1,10 @@
+using FishNet;
 using FishNet.CodeGenerating;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System;
+using System.Collections;
+using UnityEngine;
 
 public class PlayerSession : NetworkBehaviour
 {
@@ -11,13 +14,34 @@ public class PlayerSession : NetworkBehaviour
     public readonly SyncVar<bool> IsReady = new(false);
 
     private NetworkObject _controlledSpacecraft;
-    public void SetFromProfile(PlayerProfile profile)
+
+    public override void OnStartClient()
     {
-        PlayerName.Value = profile.PlayerName;
-        SpacecraftID.Value = profile.SelectedSpacecraftID;
-        PlayerScore.Value = 0;          // New PlayerSessions have a score of 0
-        IsReady.Value = false;          // Assume players are not ready yet
+        base.OnStartClient();
+        if (IsOwner)
+        {
+            StartCoroutine(DelayedLobbyJoin());
+        }
     }
+    private IEnumerator DelayedLobbyJoin()
+    {
+        yield return new WaitForSeconds(0.5f);
+        while (!InstanceFinder.ClientManager.Started) yield return null;
+
+        PlayerProfile profile = GameSystem.Instance.ActiveProfile;
+        if (profile != null)
+        {
+            PlayerSessionData data = new() 
+            {
+                PlayerName = profile.PlayerName,
+                SpacecraftID = profile.SelectedSpacecraftID,
+                IsReady = false
+            };
+            OwnLobbyManager.Instance.RpcRequestProfileUpdate(data);
+        }
+        GameEvents.ChangeGameState(GameState.Lobby);
+    }
+
     public PlayerSessionData GetSnapshot()
     {
         return new PlayerSessionData

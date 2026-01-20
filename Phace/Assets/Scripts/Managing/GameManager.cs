@@ -17,9 +17,9 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     public readonly SyncVar<int> Level;
     #endregion
     #region Initialization
-    public override void OnStartNetwork()
+    public override void OnStartServer()
     {
-        base.OnStartNetwork();
+        base.OnStartServer();
         // Subscribe to game events here
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChanged);
         GameEvents.OnEntitySpawn.AddListener(HandleEntitySpawn);
@@ -29,7 +29,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
 
     }
 
-    public override void OnStopNetwork()
+    public override void OnStopServer()
     {
         GameEvents.OnGameStateChanged.RemoveAllListeners();
         GameEvents.OnEntitySpawn.RemoveAllListeners();
@@ -37,7 +37,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         GameEvents.OnEnemyDestroyed.RemoveAllListeners();
         GameEvents.OnLevelChanged.RemoveAllListeners();
 
-        base.OnStopNetwork();
+        base.OnStopServer();
     }
     #endregion
     #region Helpers
@@ -90,12 +90,12 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     #endregion
     #region Methods
     [Server]
-    private void SpawnPlayer(PlayerSession session)
+    private void SpawnPlayerCraft(PlayerSession session)
     {
         int craftId = session.SpacecraftID.Value;
         var data = GameSystem.Instance.GetSpacecraftDataById(craftId);
         if (data == null) return;
-        GameObject go = Instantiate(_playerPrefab.gameObject, (Vector3)data.SpawnPoint, data.SpawnRotation);
+        GameObject go = Instantiate(_playerPrefab.gameObject);
         var spacecraft = go.GetComponent<Spacecraft>();
         if (spacecraft != null)
         {

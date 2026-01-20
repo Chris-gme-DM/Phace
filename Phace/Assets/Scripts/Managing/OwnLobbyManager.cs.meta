@@ -1,2 +1,14 @@
 fileFormatVersion: 2
 guid: a8a6384b37cb7cd47b04fdf25428408c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _addedNetworkObject: {instanceID: 0}
+  - _networkObjectCache: {instanceID: 0}
+  - _playerSessionPrefab: {fileID: 9177799630169863052, guid: 418c7263fe95ac64980476616b331992, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

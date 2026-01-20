@@ -11,6 +11,13 @@ public class GameSystem : MonoBehaviour
     public static GameSystem Instance { get; private set; }
 
     private readonly Dictionary<int, SpacecraftData> _spacecraftById = new();
+    private readonly Dictionary<int, LevelData> _leveldictById = new();
+
+    public readonly List<LevelData> _levelDatas = new();
+
+    public readonly List<SpacecraftData> PlayerSpacecrafts = new();
+    public readonly List<SpacecraftData> EnemySpacecrafts = new();
+    public readonly List<SpacecraftData> BossSpacecrafts = new();
 
     public PlayerProfile ActiveProfile { get; private set; }
     private void Awake()
@@ -22,20 +29,62 @@ public class GameSystem : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(this);
+        BuildSpacecraftRegistry();
+        RegisterLevels("Levels", _levelDatas);
     }
-    public void BuildSpacecraftRegistry(IEnumerable<SpacecraftData[]> arrays)
+    public void BuildSpacecraftRegistry()
     {
         _spacecraftById.Clear();
-        foreach (var arr in arrays)
+        PlayerSpacecrafts.Clear();
+        EnemySpacecrafts.Clear();
+        BossSpacecrafts.Clear();
+
+        RegisterCategory("Spacecrafts/PlayerSC", PlayerSpacecrafts);
+        RegisterCategory("Spacecrafts/EnemySC", EnemySpacecrafts);
+        RegisterCategory("Spacecrafts/BossSC", BossSpacecrafts);
+        Debug.Log($"Registry complete! Total ships in Dictionary: {_spacecraftById.Count}");
+    }
+
+    private void RegisterCategory(string path, List<SpacecraftData> categoryList)
+    {
+        SpacecraftData[] assets = Resources.LoadAll<SpacecraftData>(path);
+
+        foreach (var data in assets)
         {
-            if (arr == null) continue;
-            foreach (var d in arr)
-            {
-                if (d == null) continue;
-                int id = d.SpacecraftID;
-                _spacecraftById.Add(id, d);
-            }
+            if (data == null) continue;
+            categoryList.Add(data);
+            if (!_spacecraftById.TryAdd(data.SpacecraftID, data)) continue;
         }
+    }
+    private void RegisterLevels(string path, List<LevelData> levelDatas)
+    {
+        LevelData[] assets = Resources.LoadAll<LevelData>(path);
+
+        foreach (var data in assets)
+        {
+            if (data == null) continue;
+            levelDatas.Add(data);
+            if (!_leveldictById.TryAdd(data.LevelID, data)) continue;
+        }
+    }
+    public SpacecraftData GetSpacecraftDataById(int id)
+    {
+        _spacecraftById.TryGetValue(id, out var data);
+        return data;
+    }
+    public int GetNextPlayerShipId(int currentId)
+    {
+        int index = PlayerSpacecrafts.FindIndex(s => s.SpacecraftID == currentId);
+        index = (index + 1) % PlayerSpacecrafts.Count;
+        return PlayerSpacecrafts[index].SpacecraftID;
+    }
+
+    public int GetPrevPlayerShipId(int currentId)
+    {
+        int index = PlayerSpacecrafts.FindIndex(s => s.SpacecraftID == currentId);
+        index--;
+        if (index < 0) index = PlayerSpacecrafts.Count - 1;
+        return PlayerSpacecrafts[index].SpacecraftID;
     }
     public void SetActiveProfile(string playerName)
     {
@@ -44,11 +93,6 @@ public class GameSystem : MonoBehaviour
         SaveManager.Instance.SavePlayerProfile(profile);
         ActiveProfile = profile;
         Debug.Log($"GameSystem: Profile locked for Player {profile.PlayerName}");
-    }
-    public SpacecraftData GetSpacecraftDataById(int id)
-    {
-        _spacecraftById.TryGetValue(id, out var data);
-        return data;
     }
 }
 #region Scriptable Objects
@@ -75,6 +119,7 @@ public enum AssociationType
 {
     Player,
     Enemy,
+    Boss,
     Neutral
 }
 public enum GameState

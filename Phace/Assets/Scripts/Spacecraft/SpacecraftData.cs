@@ -17,7 +17,6 @@ public class SpacecraftData : ScriptableObject
     [SerializeField] private GameObject _goSpacecraftPrefab;
     [SerializeField] private AttackPatternData _primaryAttackPattern;
     [SerializeField] private AttackPatternData _secondaryAttackPattern;
-
     [Header("Base Stats")]
     [SerializeField] private float _baseMaxSpeed;
     [SerializeField] private float _baseHealth;
@@ -26,9 +25,6 @@ public class SpacecraftData : ScriptableObject
     [SerializeField] private float _baseShield;
     [SerializeField] private float _baseShieldRegen;
     [SerializeField] private float _baseShieldRegenDelay;
-
-    private Vector2 _spawnPoint;
-    private Quaternion _spawnRotation;
 
     public int SpacecraftID => _spacecraftID;
     public string SpacecraftName => _spacecraftName;
@@ -41,12 +37,10 @@ public class SpacecraftData : ScriptableObject
     public float BaseShieldRegen => _baseShieldRegen;
     public float BaseShieldRegenDelay => _baseShieldRegenDelay;
     public GameObject GOSpacecraftPrefab => _goSpacecraftPrefab;
+    public Sprite Icon => _goSpacecraftPrefab.GetComponent<SpriteRenderer>().sprite;
     public AssociationType Association => _association;
     public AttackPatternData PrimaryAttackPattern => _primaryAttackPattern;
     public AttackPatternData SecondaryAttackPattern => _secondaryAttackPattern;
-    public Vector2 SpawnPoint { get => _spawnPoint; set => _spawnPoint = value; }
-    public Quaternion SpawnRotation { get => _spawnRotation; set => _spawnRotation = value; }
-
 }
 /// <summary>
 /// Holds current stats for a spacecraft instance.
@@ -67,9 +61,7 @@ public struct SpacecraftStats
     public float MoveSpeed;
     public float MaxSpeed;
 
-    // Transformation data for spawn point, rotation and size
+    // Other Stuff
     public AssociationType Association;
-    public Vector2 SpawnPoint;
-    public Quaternion SpawnRotation;
     public float SpacecraftSize;
 }
