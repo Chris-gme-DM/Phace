@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa97d289b340167478fcb7d75afdec7f, type: 3}
+  m_Name: BoOrgMothership
+  m_EditorClassIdentifier: 
+  _spacecraftID: 301
+  _spacecraftName: BoOrg Mothership
+  _spacecraftDescription: 
+  _association: 2
+  _spacecraftSize: 5
+  _goSpacecraftPrefab: {fileID: 5931337330674805499, guid: 733f5c50d61a8044da85a08e55214037, type: 3}
+  _primaryAttackPattern: {fileID: 0}
+  _secondaryAttackPattern: {fileID: 0}
+  _baseMaxSpeed: 2
+  _baseHealth: 10000
+  _baseHealthRegen: 100
+  _baseHealthRegenDelay: 20
+  _baseShield: 0
+  _baseShieldRegen: 0
+  _baseShieldRegenDelay: 0

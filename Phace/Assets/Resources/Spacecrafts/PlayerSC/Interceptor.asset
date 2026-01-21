@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa97d289b340167478fcb7d75afdec7f, type: 3}
+  m_Name: Interceptor
+  m_EditorClassIdentifier: 
+  _spacecraftID: 101
+  _spacecraftName: Interceptor
+  _spacecraftDescription: Fast Attack craft
+  _association: 0
+  _spacecraftSize: 1
+  _goSpacecraftPrefab: {fileID: 1184559574030090596, guid: 3529a10e9bec949468f7d6a631d1eb58, type: 3}
+  _primaryAttackPattern: {fileID: 11400000, guid: 938326b0eebfe314783fba6770be3f2a, type: 2}
+  _secondaryAttackPattern: {fileID: 11400000, guid: 57fcb9925d7a87c40b13bcd335eff6e5, type: 2}
+  _baseMaxSpeed: 5
+  _baseHealth: 500
+  _baseHealthRegen: 10
+  _baseHealthRegenDelay: 10
+  _baseShield: 100
+  _baseShieldRegen: 10
+  _baseShieldRegenDelay: 5
