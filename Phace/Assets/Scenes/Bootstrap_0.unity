@@ -224,6 +224,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5451780320557857344, guid: 544483b224ef97f47ab8684331d92fd7, type: 3}
+      propertyPath: sceneName
+      value: Test
+      objectReference: {fileID: 0}
     - target: {fileID: 8498845226486910369, guid: 544483b224ef97f47ab8684331d92fd7, type: 3}
       propertyPath: m_Name
       value: BootstrapManager

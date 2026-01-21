@@ -45,30 +45,6 @@ public class Guns : NetworkBehaviour
         bulletSpawner = FindAnyObjectByType<ProjectileSpawnManager>();
     }
 
-    //private void Update()
-    //{
-    //    // Nur der lokale Spieler darf diese Aktionen ausführen.
-    //    if (!IsOwner)
-    //        return;
-
-    //    if ( Mouse.current.leftButton.wasPressedThisFrame)
-    //    {
-
-    //        GunsSpawnSingleProjectile();
-    //    }
-
-    //    if (Mouse.current.rightButton.wasPressedThisFrame)
-    //    {
-    //        GunsSpawnSpreadShot();
-    //    }
-
-    //    if (Keyboard.current.spaceKey.wasPressedThisFrame)
-    //    {
-    //        GunsSpawnHomingShot();
-    //    }
-
-
-    //}
     private void OnTick()
     {
         if (!IsServerInitialized)

@@ -32,15 +32,18 @@ public class NetworkBootstrapper : MonoBehaviour
 
     private void SpawnNetworkManagers()
     {
-        foreach (var netPrefab in networkManagerPrefabs)
-        {
-            if (netPrefab == null) continue;
-            NetworkObject no = Instantiate(netPrefab);
-            InstanceFinder.ServerManager.Spawn(no);
-            // Add this item to the lsit of objects that should be moved
+        try {   
+            foreach (var netPrefab in networkManagerPrefabs)
+            {
+                if (netPrefab == null) continue;
+                NetworkObject no = Instantiate(netPrefab);
+                InstanceFinder.ServerManager.Spawn(no);
+                // Add this item to the lsit of objects that should be moved
 
-            Debug.Log($"Manager {no} loaded");
+                Debug.Log($"Manager {no} loaded");
+            }
+
         }
-
+        catch { }
     }
 }

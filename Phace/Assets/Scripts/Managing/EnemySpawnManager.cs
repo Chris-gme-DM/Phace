@@ -12,23 +12,33 @@ public class EnemySpawnManager : NetworkBehaviour
     [SerializeField] public List <Transform> patrolPointsC;
     [SerializeField] private NetworkObject enemyTypeA;
     [SerializeField] private NetworkObject enemyTypeB;
+    [SerializeField] private NetworkObject enemyTypeC;
     [SerializeField] private Transform[] spawnPointsA;
     [SerializeField] private Transform[] spawnPointsB;
+    [SerializeField] private Transform[] spawnPointsC;
     [SerializeField] private float spawnInterval = 3f;
     [SerializeField] private int spawnLimitA = 20;
     [SerializeField] private int spawnLimitB = 20;
+    [SerializeField]  private int spawnLimitC = 20;
     private float spawnReset;
   
     private List<NetworkObject> activeEnemiesA = new List<NetworkObject>();
     private List<NetworkObject> activeEnemiesB = new List<NetworkObject>();
+    private List<NetworkObject> activeEnemiesC = new List<NetworkObject>();
     private int spawnedAmountA = 0;
     private int spawnedAmountB = 0;
+    private int spawnedAmountC = 0;
     private bool waveAComplete = false;
     private bool waveBComplete = false;
+    private bool waveCComplete = false;
     private bool waveADestroyed = false;
     private bool waveBDestroyed = false;
+    private bool waveCDestroyed = false;
     private bool secondWaveDelayed = false;
+    private bool thirdWaveDelayed = false;
     private bool secondWaveCanStart = false;
+    private bool thirdWaveCanStart = false;
+
 
     public static EnemySpawnManager Instance;
 
@@ -47,7 +57,7 @@ public class EnemySpawnManager : NetworkBehaviour
     {
         if (!IsServerInitialized)
             return;
-
+        // Check wave completion
         if (spawnedAmountA >= spawnLimitA)
         {
             waveAComplete = true;
@@ -57,7 +67,13 @@ public class EnemySpawnManager : NetworkBehaviour
         {
             waveBComplete = true;
         }
-
+         
+        if( spawnedAmountC >= spawnLimitC)
+        {
+            waveCComplete = true;
+        }
+       
+        // Check wave destruction
         if ( activeEnemiesA.Count == 0 && waveAComplete && !waveADestroyed)
         {
 
@@ -66,6 +82,10 @@ public class EnemySpawnManager : NetworkBehaviour
         else if ( activeEnemiesB.Count == 0 && waveBComplete && !waveBDestroyed)
         {
             waveBDestroyed = true;
+        }
+        else if ( activeEnemiesC.Count == 0 && waveCComplete && !waveCDestroyed)
+        {
+            waveCDestroyed = true;
         }
         Debug.Log( waveAComplete );
         Debug.Log( waveADestroyed ); 
@@ -119,10 +139,20 @@ public class EnemySpawnManager : NetworkBehaviour
             Spawn(enemyObj);
             activeEnemiesB.Add(enemyObj);
         }
-        else if (waveBComplete && waveBDestroyed)
+        else if (waveBComplete && waveBDestroyed && !waveCDestroyed)
         {
-            // All waves complete
-            TimeManager.OnTick -= OnTick; // Stop spawning
+            if (!thirdWaveDelayed)
+            {
+                StartCoroutine(DelayThirdWave());
+                thirdWaveDelayed = true;
+            }
+            
+            if (!thirdWaveCanStart) return;
+            spawnedAmountC++;
+            int spawnIndex = UnityEngine.Random.Range(0, spawnPointsA.Length);
+            NetworkObject enemyObj = Instantiate(enemyTypeC, spawnPointsC[spawnIndex].position, Quaternion.identity);
+            Spawn(enemyObj);
+            activeEnemiesC.Add(enemyObj);
         }
     }
     [Server]
@@ -130,6 +160,8 @@ public class EnemySpawnManager : NetworkBehaviour
     {
         if (activeEnemiesA.Remove(enemy)) return;
         if (activeEnemiesB.Remove(enemy)) return;
+        if (activeEnemiesC.Remove(enemy)) return;
+
     }
 
     [Server]
@@ -140,6 +172,11 @@ public class EnemySpawnManager : NetworkBehaviour
         secondWaveCanStart = true;
     }
 
+    IEnumerator DelayThirdWave()
+    {
+        yield return new WaitForSeconds(7f);
+        thirdWaveCanStart = true;
+    }
 }
 
 

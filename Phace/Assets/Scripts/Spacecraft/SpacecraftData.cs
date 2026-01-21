@@ -37,7 +37,7 @@ public class SpacecraftData : ScriptableObject
     public float BaseShieldRegen => _baseShieldRegen;
     public float BaseShieldRegenDelay => _baseShieldRegenDelay;
     public GameObject GOSpacecraftPrefab => _goSpacecraftPrefab;
-    public Sprite Icon => _goSpacecraftPrefab.GetComponent<SpriteRenderer>().sprite;
+    public Sprite Icon => _goSpacecraftPrefab.GetComponentInChildren<SpriteRenderer>().sprite;
     public AssociationType Association => _association;
     public AttackPatternData PrimaryAttackPattern => _primaryAttackPattern;
     public AttackPatternData SecondaryAttackPattern => _secondaryAttackPattern;

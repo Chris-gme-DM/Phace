@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using System;
 using FishNet.Object.Synchronizing;
 
-public class TestEnemyScript : NetworkBehaviour, IDamageable
+public class EnemyTypeB : NetworkBehaviour, IDamageable
 {
     
     private NavMeshAgent _agent;
