@@ -110,7 +110,7 @@ public class PlayerMovement : NetworkBehaviour
         _moveDirection = ctx.ReadValue<Vector2>();
     }
 
-    public void ChangeSpeedInput(InputAction.CallbackContext ctx)
+    public void OnChangeSpeedInput(InputAction.CallbackContext ctx)
     {
         if (!IsOwner)
             return;

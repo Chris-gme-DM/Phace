@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using System;
 using FishNet.Object.Synchronizing;
 
-public class TestEnemyScript : NetworkBehaviour
+public class TestEnemyScript : NetworkBehaviour, IDamageable
 {
     
     private NavMeshAgent _agent;
@@ -22,14 +22,17 @@ public class TestEnemyScript : NetworkBehaviour
     private readonly SyncVar<float> _syncedRotationZ = new SyncVar<float>();
     public float RotationZ => _syncedRotationZ.Value;
     private EnemySpawnManager spawner;
+    private ProjectileSpawnManager bulletSpawner;
 
-
-    [SerializeField] private int health = 1;
+    [SerializeField] private int health = 5;
+    private float shootInterval = 0f;
+    [SerializeField] private float shootDelay = 2f;
 
     public override void OnStartServer()
     {
         base.OnStartServer();
         _agent = GetComponent<NavMeshAgent>();
+        bulletSpawner = FindAnyObjectByType<ProjectileSpawnManager>();
         spawner = FindAnyObjectByType<EnemySpawnManager>();
         patrolPoints = spawner.patrolPointsA;
 
@@ -40,7 +43,7 @@ public class TestEnemyScript : NetworkBehaviour
         playerFilter = new ContactFilter2D();
         playerFilter.SetLayerMask(playerLayer);
         playerFilter.useTriggers = true;
-
+        TimeManager.OnTick += OnTick;
         // Run detection on a timer (NOT every frame)
         InvokeRepeating(nameof(UpdateTarget), 0f, 0.25f);
 
@@ -58,6 +61,7 @@ public class TestEnemyScript : NetworkBehaviour
     {
         base.OnStopServer();
         CancelInvoke(nameof(UpdateTarget));
+        TimeManager.OnTick -= OnTick;
         spawner?.NotifyEnemyDestroyed(GetComponent<NetworkObject>());
     }
 
@@ -91,6 +95,22 @@ public class TestEnemyScript : NetworkBehaviour
         {
             // Client: apply synchronized rotation
             transform.rotation = Quaternion.Euler(0f, 0f, RotationZ);
+        }
+    }
+
+    private void OnTick()
+    {
+        if (!IsServerInitialized)
+            return;
+        float tickDelta = (float)TimeManager.TickDelta;
+        if (shootInterval > 0f)
+        {
+            shootInterval -= tickDelta;
+        }
+        else if (shootInterval <= 0f)
+        {
+            shootAtPlayer();
+            shootInterval += shootDelay;
         }
     }
 
@@ -202,6 +222,24 @@ public class TestEnemyScript : NetworkBehaviour
         //rot.x = 0;
         //rot.y = 0;
         //transform.rotation = Quaternion.Euler(rot);
+    }
+
+
+    [Server]
+    private void shootAtPlayer()
+    {
+        if (playerInRange != null && bulletSpawner != null)
+        {
+            float spreadAngle = 15f;
+            var baseDirection = (playerInRange.position - transform.position).normalized;
+            // Links rotieren
+            var spreadLeft = Quaternion.Euler(0, 0, -spreadAngle) * baseDirection;
+            // Rechts rotieren
+            var spreadRight = Quaternion.Euler(0, 0, spreadAngle) * baseDirection;
+            
+            bulletSpawner.SpawnEnemySpreadShot(transform.position, baseDirection, spreadLeft, spreadRight);
+
+        }
     }
 
     [Server]

@@ -13,36 +13,112 @@ public class Guns : NetworkBehaviour
 {
     //public NetworkObject ProjectilePrefab;
     private ProjectileSpawnManager bulletSpawner;
+    private float shootIntervalSingleShot = 0f;
+    private float shootIntervalSpreadShot = 0f;
+    private float shootIntervalHomingShot = 0f;
 
+    [SerializeField] private float shootDelaySingleShot = 0.5f;
+    [SerializeField] private float shootDelaySpreadShot = 1.5f;
+    [SerializeField] private float shootDelayHomingShot = 4f;
+
+    private bool canShootSingle = true;
+    private bool canShootSpread = true;
+    private bool canShootHoming = true;
+
+
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        TimeManager.OnTick += OnTick;
+
+    }
     private void Start()
     {
         
         bulletSpawner = FindAnyObjectByType<ProjectileSpawnManager>();
     }
 
-    private void Update()
+    //private void Update()
+    //{
+    //    // Nur der lokale Spieler darf diese Aktionen ausführen.
+    //    if (!IsOwner)
+    //        return;
+
+    //    if ( Mouse.current.leftButton.wasPressedThisFrame)
+    //    {
+
+    //        GunsSpawnSingleProjectile();
+    //    }
+
+    //    if (Mouse.current.rightButton.wasPressedThisFrame)
+    //    {
+    //        GunsSpawnSpreadShot();
+    //    }
+
+    //    if (Keyboard.current.spaceKey.wasPressedThisFrame)
+    //    {
+    //        GunsSpawnHomingShot();
+    //    }
+
+
+    //}
+    private void OnTick()
     {
-        // Nur der lokale Spieler darf diese Aktionen ausführen.
-        if (!IsOwner)
+        if (!IsServerInitialized)
             return;
-
-        if ( Mouse.current.leftButton.wasPressedThisFrame)
+        float tickDelta = (float)TimeManager.TickDelta;
+        if (shootIntervalSingleShot > 0f)
         {
+            shootIntervalSingleShot -= tickDelta;
+            canShootSingle = false;
 
-            GunsSpawnSingleProjectile();
         }
-    
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        else if (shootIntervalSingleShot <= 0f)
         {
-            GunsSpawnSpreadShot();
-        }
-
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            GunsSpawnHomingShot();
+            canShootSingle = true;
+            
         }
 
+        if (shootIntervalSpreadShot > 0f)
+        {
+            shootIntervalSpreadShot -= tickDelta;
+            canShootSpread = false;
+        }
+        else if (shootIntervalSpreadShot <= 0f)
+        {
+            canShootSpread = true;
+        }
 
+        if (shootIntervalHomingShot > 0f)
+        {
+            shootIntervalHomingShot -= tickDelta;
+            canShootHoming = false;
+        }
+        else if (shootIntervalHomingShot <= 0f)
+        {
+            canShootHoming = true;
+        }
+    }
+    public void OnAttackPrimary(InputAction.CallbackContext ctx) 
+    { 
+        if(!IsOwner || !canShootSingle) return;    
+        GunsSpawnSingleProjectile();
+        shootIntervalSingleShot = shootDelaySingleShot;
+    }
+
+    public void OnAttackSecondary(InputAction.CallbackContext ctx) 
+    { 
+        if(!IsOwner || !canShootSpread) return;    
+        GunsSpawnSpreadShot();
+        shootIntervalSpreadShot = shootDelaySpreadShot;
+    }
+
+    public void OnHomingMissle(InputAction.CallbackContext ctx) 
+    { 
+        if(!IsOwner || !canShootHoming) return;    
+        GunsSpawnHomingShot();
+        shootIntervalHomingShot = shootDelayHomingShot;
     }
 
 

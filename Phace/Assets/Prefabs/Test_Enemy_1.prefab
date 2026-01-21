@@ -51,11 +51,12 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 4556797933271260862}
   _networkObjectCache: {fileID: 4556797933271260862}
-  detectionRadius: 1.53
+  detectionRadius: 5
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
   health: 3
+  shootDelay: 2
 --- !u!114 &4556797933271260862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,8 +168,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 3120286977348176897}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.24
-  m_Speed: 3.5
+  m_Radius: 0.4
+  m_Speed: 5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -176,8 +177,8 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 0.26
-  m_BaseOffset: 0
+  m_Height: 0.37
+  m_BaseOffset: 0.17
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!1001 &3086426288005516116

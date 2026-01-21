@@ -270,4 +270,4 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 3741622911742609991}
   _networkObjectCache: {fileID: 0}
   speed: 6
-  damage: 10
+  damage: 1

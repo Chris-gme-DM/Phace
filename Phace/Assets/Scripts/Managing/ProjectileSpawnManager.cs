@@ -4,12 +4,14 @@ using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using FishNet.Connection;
 using FishNet.Object;
+using System.Collections;
 
 public class ProjectileSpawnManager : NetworkBehaviour
 {
     public NetworkObject ProjectilePrefab;
     public NetworkObject HomingProjectilePrefab;
     public NetworkObject EnemyProjectileTypeAPrefab;
+    public NetworkObject EnemyProjectileTypeBPrefab;
     [SerializeField] private float lifetimeSecondsProjectile = 3f;
     [SerializeField] private float lifetimeSecondsHomingProjectile = 5f;
     [Server]
@@ -20,7 +22,8 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(projectile); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (projectile != null)
         {
-            Destroy(projectile.gameObject, 2f);
+            
+            StartCoroutine(DespawnAfterTime(projectile, lifetimeSecondsProjectile));
         }
     }
 
@@ -77,5 +80,38 @@ public class ProjectileSpawnManager : NetworkBehaviour
         }
     }
 
+    [Server]
+    public void SpawnEnemySpreadShot(Vector3 position, Vector3 direction, Vector3 directionLeft, Vector3 directionRight)
+    {
 
+
+
+        NetworkObject spreadProjectile1 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
+        spreadProjectile1.transform.up = directionLeft;
+        Spawn(spreadProjectile1); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
+        if (spreadProjectile1 != null)
+        {
+            Destroy(spreadProjectile1.gameObject, lifetimeSecondsProjectile);
+        }
+        NetworkObject spreadProjectile2 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
+        spreadProjectile2.transform.up = direction;
+        Spawn(spreadProjectile2); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
+        if (spreadProjectile2 != null)
+        {
+            Destroy(spreadProjectile2.gameObject, lifetimeSecondsProjectile);
+        }
+        NetworkObject spreadProjectile3 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
+        spreadProjectile3.transform.up = directionRight;
+        Spawn(spreadProjectile3); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
+        if (spreadProjectile3 != null)
+        {
+            Destroy(spreadProjectile3.gameObject, lifetimeSecondsProjectile);
+        }
+    }
+
+    IEnumerator DespawnAfterTime(NetworkObject obj, float time)
+    {
+        yield return new WaitForSeconds(time);
+        Despawn(obj, DespawnType.Destroy);
+    }
 }
