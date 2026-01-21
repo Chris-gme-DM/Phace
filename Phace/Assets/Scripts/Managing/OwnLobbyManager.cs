@@ -18,40 +18,22 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 
     public readonly Dictionary<int, PlayerSession> ActiveSessions = new();
     public readonly SyncDictionary<int, PlayerSessionData> LobbyPlayers = new();
+
     #endregion
-
-    #region State
-    [AllowMutableSyncType] private readonly SyncVar<GameState> _networkedGameState = new();
-
-    [Server]
-    public void SetGlobalState(GameState newState)
-    {
-        _networkedGameState.Value = newState;
-        if (IsServerInitialized)
-        {
-            GameEvents.ChangeGameState(newState);
-            Debug.Log($"THE GAME STATE IS: {newState}, MF");
-        }
-    }
-    private void OnGameStateSynced(GameState prev, GameState next, bool asServer)
-    {
-        if (IsClientInitialized)
-        {
-            HandleStateChange(next);
-        }
-    }
-    private void HandleStateChange(GameState newState)
-    {
-        GameEvents.ChangeGameState(newState);
-    }
-    #endregion
-
+    #region Initialization
     public override void OnStartServer()
     {
         base.OnStartServer();
         _networkedGameState.OnChange += OnGameStateSynced;
         InstanceFinder.ServerManager.OnRemoteConnectionState += RemoteConnectionStateChanged;
         InstanceFinder.SceneManager.OnClientLoadedStartScenes += OnClientLoadedScenes;
+
+        SetGlobalState(GameState.Lobby);
+    }
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        _networkedGameState.OnChange += OnGameStateSynced;
     }
     public override void OnStopServer()
     {
@@ -62,7 +44,35 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 
         ActiveSessions.Clear();
     }
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        _networkedGameState.OnChange -= OnGameStateSynced;
+    }
+    #endregion
+    #region State
+    [AllowMutableSyncType] private readonly SyncVar<GameState> _networkedGameState = new();
 
+    [Server]
+    public void SetGlobalState(GameState newState)
+    {
+        Debug.Log($"Server: Requesting state change to {newState}");
+        _networkedGameState.Value = newState;
+        GameEvents.ChangeGameState(newState);
+        Debug.Log($"THE GAME STATE IS: {newState}, MF");
+    }
+    private void OnGameStateSynced(GameState prev, GameState next, bool asServer)
+    {
+        Debug.Log($"[SyncVar] GameState changed from {prev} to {next}");
+        HandleStateChange(next);
+    }
+    private void HandleStateChange(GameState newState)
+    {
+        GameEvents.ChangeGameState(newState);
+        Debug.Log($"GameState: {newState}");
+    }
+    #endregion
+    #region Handlers
     [Server]
     private void SpawnPlayerSession(NetworkConnection conn)
     {
@@ -79,11 +89,9 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     [ServerRpc(RequireOwnership = false)]
     public void RpcRequestProfileUpdate(PlayerSessionData data, NetworkConnection caller = null)
     {
-        // Validate the connection
         if (caller == null || !ActiveSessions.TryGetValue(caller.ClientId, out PlayerSession session))
             return;
 
-        // Use the internal server method to apply the data
         UpdatePlayerSessionInternal(session, data);
     }
 
@@ -96,7 +104,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
 
         LobbyPlayers[session.Owner.ClientId] = session.GetSnapshot();
 
-        Debug.Log($"[Server] Session synced for: {data.PlayerName}");
+        OnPlayerReadyStatusChanged();
     }
 
     [Server]
@@ -114,7 +122,9 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
         }
         if (allReady)
         {
+            if(ActiveSessions.Count >= MinLobbyClients)
             // Enable the start game button in the Host UI
+            UIManager.Instance.StartButton.SetActive(true);
         }
     }
     [Server]
@@ -124,11 +134,18 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
         SpawnPlayerSession(conn);
         
     }
+    [ServerRpc(RequireOwnership = false)]
+    public void RpcRequestStartGame()
+    {
+        Instance.StartGame();
+    }
     [Server]
     private void StartGame()
     {
+        Debug.Log("UI: Host Button Clicked");
         // Tell that motherfucker to start a countdown and then the fucking game
-        SetGlobalState(GameState.InGame);
+        Instance.SetGlobalState(GameState.InGame);
+        UIManager.Instance.StartButton.SetActive(false);
     }
 
     [Server]
@@ -149,4 +166,5 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
             LobbyPlayers.Remove(client.ClientId);
         }
     }
+    #endregion
 }

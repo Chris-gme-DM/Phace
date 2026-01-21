@@ -1,10 +1,13 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerInput))]
 public class UIManager : MonoBehaviour
 {
+    private static readonly WaitForSeconds _waitForSeconds3 = new(3f);
     #region Settings
     public static UIManager Instance { get; private set; }
     [Header("UI Panels")]
@@ -14,10 +17,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _optionsPanel;
     [SerializeField] private GameObject _backgroundPanel;
     [SerializeField] private GameObject _loadingPanel;
-    [SerializeField] private GameObject _countDownImage;
+    [SerializeField] private GameObject _countDownObject;
+    [SerializeField] private GameObject _startButton;
+    public GameObject StartButton => _startButton;
 
     private PlayerInput _playerInput;
     private GameState CurrentGameState;
+    private TMP_Text _countDownText;
     private bool IsAnyMenuOpen => _optionsPanel.activeSelf || _mainMenuPanel.activeSelf || _lobbyPanel.activeSelf;
     #endregion
     #region Initialization
@@ -37,6 +43,8 @@ public class UIManager : MonoBehaviour
         _playerInput.SwitchCurrentActionMap("UI");
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChange);
         GameEvents.OnPlayerStatusChanged.AddListener(HandlePlayerLobbyStatus);
+
+        _countDownText = _countDownObject.GetComponent<TMP_Text>();
 
     }
     private void OnDisable()
@@ -79,16 +87,40 @@ public class UIManager : MonoBehaviour
         _optionsPanel.SetActive(isActive);
         UpdateInputFocus();
     }
-    public void ShowLoadingScreen()
+    public IEnumerator ShowLoadingScreen()
     {
         _loadingPanel.SetActive(true);
         // Wait for a few seconds to simulate loading
-        new WaitForSeconds(3f);
+        yield return _waitForSeconds3;
         _loadingPanel.SetActive(false);
     }
-    public void CountDown(float cooldown)
+    public void RequestStartGame()
     {
-        
+        OwnLobbyManager.Instance.RpcRequestStartGame();
+    }
+
+    public IEnumerator CountDown(int seconds)
+    {
+        _countDownObject.SetActive(true);
+        while (seconds > 0)
+        {
+            _countDownText.text = seconds.ToString();
+            float elapsed = 0f;
+            float duration = 1f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float progress = elapsed / duration;
+                float scale = Mathf.Lerp(2.5f, 0.5f, progress);
+                _countDownText.transform.localScale = new Vector3(scale, scale, 1);
+                _countDownText.alpha = Mathf.Lerp(1f, 0f, progress);
+
+                yield return null;
+            }
+            seconds--;
+        }
+        _countDownObject.SetActive(false);
     }
     #endregion
 }

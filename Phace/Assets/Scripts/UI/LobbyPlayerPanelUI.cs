@@ -1,6 +1,5 @@
 using FishNet;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 /// <summary>
@@ -49,6 +48,15 @@ public class LobbyPlayerPanelUI : MonoBehaviour
         _readyButton.SetActive(isLocalPlayer);
         _prevButton.SetActive(isLocalPlayer);
         _nextButton.SetActive(isLocalPlayer);
+        // Ready Button
+        if (_readyButton.TryGetComponent<Image>(out var btnImage)) btnImage.color = _isReady ? Color.green : new Color(1f, 0.5f, 0f);
+        TMP_Text btnText = _readyButton.GetComponentInChildren<TMP_Text>();
+        if (btnText != null)
+        {
+            btnText.text = _isReady ? "READY!" : "READY?";
+        }
+        if (playerNameDisplay.TryGetComponent<Text>(out var nameText)) nameText.color = _isReady ? Color.green : new Color(1f, 0.5f, 0f);
+        Debug.Log($"{playerNameDisplay} is ready: {_isReady}");
     }
     // Set this in the fucking button
     public void OnClickPrev()
@@ -69,6 +77,7 @@ public class LobbyPlayerPanelUI : MonoBehaviour
     public void OnClickReady()
     {
         RequestUpdate(_currentShipId, !_isReady);
+
     }
     private void RequestUpdate(int nextId, bool readyStatus)
     {

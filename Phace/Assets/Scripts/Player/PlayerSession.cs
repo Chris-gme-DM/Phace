@@ -8,8 +8,9 @@ using UnityEngine;
 
 public class PlayerSession : NetworkBehaviour
 {
+    private static readonly WaitForSeconds _waitForSeconds0_5 = new(0.5f);
     public readonly SyncVar<string> PlayerName = new("Player");
-    public readonly SyncVar<int> SpacecraftID = new();
+    public readonly SyncVar<int> SpacecraftID = new(101);
     public readonly SyncVar<int> PlayerScore = new(0);
     public readonly SyncVar<bool> IsReady = new(false);
 
@@ -25,7 +26,7 @@ public class PlayerSession : NetworkBehaviour
     }
     private IEnumerator DelayedLobbyJoin()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return _waitForSeconds0_5;
         while (!InstanceFinder.ClientManager.Started) yield return null;
 
         PlayerProfile profile = GameSystem.Instance.ActiveProfile;

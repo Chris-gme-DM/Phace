@@ -31,7 +31,6 @@ public class BootstrapperManager : MonoBehaviour
     }
     private void Start()
     {
-
         StartCoroutine(LoadMainApp());
         SpawnAllManagers();
     }
@@ -65,7 +64,7 @@ public class BootstrapperManager : MonoBehaviour
         while (InstanceFinder.NetworkManager == null)
         {
             if (UIManager.Instance != null)
-                UIManager.Instance.ShowLoadingScreen();
+                StartCoroutine(UIManager.Instance.ShowLoadingScreen());
             yield return null;
         }
 
