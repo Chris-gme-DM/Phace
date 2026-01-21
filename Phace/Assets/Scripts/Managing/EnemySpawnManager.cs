@@ -95,9 +95,6 @@ public class EnemySpawnManager : NetworkBehaviour
             int spawnIndex = UnityEngine.Random.Range(0, spawnPointsA.Length);
             NetworkObject enemyObj = Instantiate(enemyTypeA, spawnPointsA[spawnIndex].position, Quaternion.identity);
 
-            // Assign patrol points before spawning
-            TestEnemyScript enemyScript = enemyObj.GetComponent<TestEnemyScript>();
-            //enemyScript.Initialize(patrolPoints);
 
             Spawn(enemyObj);
             activeEnemiesA.Add(enemyObj);
@@ -110,9 +107,6 @@ public class EnemySpawnManager : NetworkBehaviour
             int spawnIndex = UnityEngine.Random.Range(0, spawnPointsB.Length);
             NetworkObject enemyObj = Instantiate(enemyTypeB, spawnPointsB[spawnIndex].position, Quaternion.identity);
 
-            // Assign patrol points before spawning
-            TestEnemyScript enemyScript = enemyObj.GetComponent<TestEnemyScript>();
-            //enemyScript.Initialize(patrolPoints);
 
             Spawn(enemyObj);
             activeEnemiesB.Add(enemyObj);

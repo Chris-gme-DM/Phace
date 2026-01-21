@@ -10,6 +10,8 @@ public class ProjectileSpawnManager : NetworkBehaviour
     public NetworkObject ProjectilePrefab;
     public NetworkObject HomingProjectilePrefab;
     public NetworkObject EnemyProjectileTypeAPrefab;
+    [SerializeField] private float lifetimeSecondsProjectile = 3f;
+    [SerializeField] private float lifetimeSecondsHomingProjectile = 5f;
     [Server]
     public void SpawnSingleProjectile(Vector3 position, Vector3 direction)
     {
@@ -30,7 +32,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(spreadProjectile1); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (spreadProjectile1 != null)
         {
-            Destroy(spreadProjectile1.gameObject, 2f);
+            Destroy(spreadProjectile1.gameObject, lifetimeSecondsProjectile);
         }
 
         NetworkObject spreadProjectile2 = Instantiate(ProjectilePrefab, position, Quaternion.identity);
@@ -38,7 +40,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(spreadProjectile2); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (spreadProjectile2 != null)
         {
-            Destroy(spreadProjectile2.gameObject, 2f);
+            Destroy(spreadProjectile2.gameObject, lifetimeSecondsProjectile);
         }
 
         NetworkObject spreadProjectile3 = Instantiate(ProjectilePrefab, position, Quaternion.identity);
@@ -46,7 +48,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(spreadProjectile3); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (spreadProjectile3 != null)
         {
-            Destroy(spreadProjectile3.gameObject, 2f);
+            Destroy(spreadProjectile3.gameObject, lifetimeSecondsProjectile);
         }
 
     }
@@ -59,7 +61,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(homingProjectile); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (homingProjectile != null)
         {
-            Destroy(homingProjectile.gameObject, 5f);
+            Destroy(homingProjectile.gameObject, lifetimeSecondsHomingProjectile);
         }
     }
 
@@ -71,7 +73,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(enemyProjectile); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (enemyProjectile != null)
         {
-            Destroy(enemyProjectile.gameObject, 2f);
+            Destroy(enemyProjectile.gameObject, lifetimeSecondsProjectile);
         }
     }
 

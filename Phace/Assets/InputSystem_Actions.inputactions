@@ -1058,6 +1058,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "HomingMissle",
+                    "type": "Button",
+                    "id": "b72e16d6-b4a2-4444-9c85-4412ff242a82",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeSpeedInput",
+                    "type": "Button",
+                    "id": "c8a85800-49c8-44ac-a405-eb7a21379c34",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1295,11 +1313,44 @@
                 {
                     "name": "",
                     "id": "60b54716-da79-40a9-abd5-9517d954fe36",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/p",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "ShipMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "30e6cc40-5e2d-4af7-9247-53253ed4c799",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HomingMissle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e053336b-9b01-48ae-93ae-3f9d9e25b66b",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeSpeedInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "27c6a9ca-f4e7-4b0b-8c8e-366ed64e02f8",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeSpeedInput",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

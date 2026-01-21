@@ -8,7 +8,7 @@ public class ProjectileEnemyTypeA : NetworkBehaviour
     public readonly SyncVar<float> syncSpeed = new SyncVar<float>();
     private Rigidbody2D rb;
     [SerializeField] private float speed;
-    [SerializeField] private int damage = 1;
+    [SerializeField] private int damage = 10;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -40,12 +40,16 @@ public class ProjectileEnemyTypeA : NetworkBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            var damageable = collision.GetComponentInParent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(damage);
+            }
+
             if (NetworkObject != null)
             {
                 NetworkObject.Despawn();
             }
-
         }
-
     }
 }

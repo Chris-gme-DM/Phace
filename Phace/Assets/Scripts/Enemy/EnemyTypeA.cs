@@ -179,24 +179,41 @@ public class EnemyTypeA : NetworkBehaviour, IDamageable
     [Server]
     private void UpdateRotation()
     {
-        if (_agent.velocity.sqrMagnitude > 0.01f)
-        {
-            Vector3 dir = _agent.velocity.normalized;
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            //transform.rotation = Quaternion.Euler(0f, 0f, angle);
-            transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
-            transform.Rotate(0, 0, +90f);
-            var rot = transform.eulerAngles;
-            // Set the value of the SyncVar, not the SyncVar itself
-            _syncedRotationZ.Value = rot.z + 90;
-            transform.rotation = Quaternion.Euler(rot);
-            transform.rotation = Quaternion.Euler(0f, 0f, RotationZ);
+        //if (_agent.velocity.sqrMagnitude > 0.01f)
+        //{
+        //    Vector3 dir = _agent.velocity.normalized;
+        //    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        //    //transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        //    transform.rotation = Quaternion.LookRotation(Vector3.forward, dir);
+        //    transform.Rotate(0, 0, +90f);
+        //    var rot = transform.eulerAngles;
+        //    // Set the value of the SyncVar, not the SyncVar itself
+        //    _syncedRotationZ.Value = rot.z + 90;
+        //    transform.rotation = Quaternion.Euler(rot);
+        //    transform.rotation = Quaternion.Euler(0f, 0f, RotationZ);
 
-        }
+        //}
 
         //rot.x = 0;
         //rot.y = 0;
         //transform.rotation = Quaternion.Euler(rot);
+        if (_agent.velocity.sqrMagnitude > 0.01f)
+        {
+            Vector2 dir = _agent.velocity.normalized;
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            angle -= 90f; // Sprite correction
+
+            _syncedRotationZ.Value = angle;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
+
+
+
+
+
+
     }
 
     [Server]

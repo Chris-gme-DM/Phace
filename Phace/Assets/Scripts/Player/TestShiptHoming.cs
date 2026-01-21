@@ -3,7 +3,7 @@ using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+using UnityEngine.InputSystem;
 public class TestShiptHoming : NetworkBehaviour
 {
     [SerializeField] private float detectionRadius = 5f;
@@ -16,6 +16,7 @@ public class TestShiptHoming : NetworkBehaviour
     public Transform CurrentTarget { get; private set; }
     public readonly SyncVar<float> syncSpeed = new SyncVar<float>();
     private Rigidbody2D rb;
+    private Vector2 dir;
 
     public override void OnStartServer()
     {
@@ -48,6 +49,21 @@ public class TestShiptHoming : NetworkBehaviour
     {
         TimeManager.OnTick += OnTick;
     }
+
+    //private void LateUpdate()
+    //{
+
+    //    if (IsServerStarted || IsClientStarted)
+    //    {
+    //        Vector2 dir = transform.up;
+    //        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+    //        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+    //    }
+    //}
+
+
+
+
 
     [Server]
     private void UpdateTarget()
@@ -106,7 +122,10 @@ public class TestShiptHoming : NetworkBehaviour
             {
                 transform.up = (enemyInRange.position - transform.position).normalized;
                 float delta = (float)TimeManager.TickDelta;
-
+                Vector2 dir = transform.up;
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                angle -= 90f;
+                transform.rotation = Quaternion.Euler(0f, 0f, angle);
                 Vector2 nextPos = rb.position + (Vector2)(transform.up * speed * delta);
 
                 rb.MovePosition(nextPos);
@@ -115,6 +134,10 @@ public class TestShiptHoming : NetworkBehaviour
             else
             {
                 float delta = (float)TimeManager.TickDelta;
+                Vector2 dir = transform.up;
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                angle -= 90f;
+                transform.rotation = Quaternion.Euler(0f, 0f, angle);
                 Vector2 nextPos = rb.position + (Vector2)(transform.up * speed * delta);
                 rb.MovePosition(nextPos);
             }

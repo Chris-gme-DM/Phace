@@ -49,6 +49,28 @@ public class TestShipProjectile : NetworkBehaviour
                 NetworkObject.Despawn();
             }
         }
-
     }
+
+    //private void OnTriggerEnter2D(Collider2D collision) 
+    //{ 
+    //    if (collision.gameObject.CompareTag("Enemy")) 
+    //    { 
+    //        TestEnemyScript enemy = collision.GetComponentInParent<TestEnemyScript>(); 
+    //        if (enemy != null) 
+    //        { 
+    //            enemy.TakeDamage(damage); 
+    //        } 
+    //        if (NetworkObject != null) 
+    //        { 
+    //            NetworkObject.Despawn(); 
+    //        } 
+    //    } 
+    //}
 }
+
+
+
+
+
+
+
