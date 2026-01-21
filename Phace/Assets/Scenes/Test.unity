@@ -446,7 +446,7 @@ MonoBehaviour:
   spawnPointsB:
   - {fileID: 66415143}
   spawnInterval: 3
-  spawnLimitA: 10
+  spawnLimitA: 3
   spawnLimitB: 7
 --- !u!114 &630618123
 MonoBehaviour:

@@ -3,6 +3,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
 using System;
+using System.Collections;
 
 public class EnemySpawnManager : NetworkBehaviour
 {
@@ -26,6 +27,8 @@ public class EnemySpawnManager : NetworkBehaviour
     private bool waveBComplete = false;
     private bool waveADestroyed = false;
     private bool waveBDestroyed = false;
+    private bool secondWaveDelayed = false;
+    private bool secondWaveCanStart = false;
 
     public static EnemySpawnManager Instance;
 
@@ -101,9 +104,14 @@ public class EnemySpawnManager : NetworkBehaviour
         }
         else if (waveAComplete && waveADestroyed && !waveBComplete)
         {
+            if (!secondWaveDelayed)
+            {
+                StartCoroutine(DelaySecondWave());
+                secondWaveDelayed = true;
+            }
+            
+            if (!secondWaveCanStart) return;
             spawnedAmountB++;
-
-
             int spawnIndex = UnityEngine.Random.Range(0, spawnPointsB.Length);
             NetworkObject enemyObj = Instantiate(enemyTypeB, spawnPointsB[spawnIndex].position, Quaternion.identity);
 
@@ -124,7 +132,13 @@ public class EnemySpawnManager : NetworkBehaviour
         if (activeEnemiesB.Remove(enemy)) return;
     }
 
-
+    [Server]
+    IEnumerator DelaySecondWave()
+    {
+        
+        yield return new WaitForSeconds(7f);
+        secondWaveCanStart = true;
+    }
 
 }
 
