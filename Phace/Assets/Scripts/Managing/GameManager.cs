@@ -15,7 +15,8 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     [SerializeField] private SpacecraftData[] _bossSpacecraftDatas;
     [SerializeField] private LevelData[] _levelDatas;
 
-    public readonly SyncVar<int> Level;
+    private int _level;
+    public int Level => _level;
     private readonly SyncStopwatch _stopwatch;
     #endregion
     #region Initialization
@@ -64,7 +65,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         }
         // Read the base on the selectedLevel properties
         // Adjust these settings accordingly
-        // Setup enemies, spawn points, etc.
+        // Setup enemies, spawn points, etc.    Currently EnemySpawnManager is handling this
     }
     // Make this a Coroutine
     private void HandleEntitySpawn(Spacecraft spacecraft)
@@ -74,7 +75,6 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         // Identify the spacecraft owner
         // If it is an enemy and needs to be adjusted to the level
         // If it is a player and has adjusted stats, spawn exactly that
-        throw new System.NotImplementedException();
 
     }
     // Make this a Coroutine
@@ -83,14 +83,25 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         // Score the points to the player that destroyed the enemy
         // Check if any active enemies are left
         // Decide if the level is comleted
-        throw new System.NotImplementedException();
+        foreach (var session in OwnLobbyManager.Instance.ActiveSessions.Values)
+        { session.PlayerScore.Value += 100; }
+        var esm = EnemySpawnManager.Instance;
+        if (esm.WaveDestroyed)
+        {
+            _level++;
+            GameEvents.OnLevelChanged.Invoke();
+        }
     }
     private void HandlePlayerDestroyed()
     {
         // Check if both players are dead
         // if all of them are, initiate GameOver
         // Respawn a player ship with its stats repaired
-        throw new System.NotImplementedException();
+        foreach(var session in OwnLobbyManager.Instance.ActiveSessions.Values)
+        {
+            session.PlayerScore.Value -= 1000;
+            
+        }
     }
 
     #endregion
@@ -131,11 +142,6 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     {
         // Set the level back to 1, just as a precaution
         // Empty the field
-    }
-    // Method to check if any enemy is alive
-    private IEnumerator CheckForAlive()
-    {
-        foreach(var session )
     }
     #endregion
 }

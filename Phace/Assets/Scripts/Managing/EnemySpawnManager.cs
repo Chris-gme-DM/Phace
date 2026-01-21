@@ -33,6 +33,7 @@ public class EnemySpawnManager : NetworkBehaviour
     public static EnemySpawnManager Instance;
     // Additions
     private bool isPlaying = false;
+    public bool WaveDestroyed => waveADestroyed ||waveBDestroyed;
     public override void OnStartServer()
     {
         spawnReset = spawnInterval;
