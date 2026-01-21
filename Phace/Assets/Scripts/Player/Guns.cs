@@ -33,6 +33,12 @@ public class Guns : NetworkBehaviour
         TimeManager.OnTick += OnTick;
 
     }
+
+    public override void OnStopServer()
+    {
+        base.OnStopServer();
+        TimeManager.OnTick -= OnTick;
+    }
     private void Start()
     {
         
@@ -74,10 +80,9 @@ public class Guns : NetworkBehaviour
             canShootSingle = false;
 
         }
-        else if (shootIntervalSingleShot <= 0f)
+        else
         {
             canShootSingle = true;
-            
         }
 
         if (shootIntervalSpreadShot > 0f)
@@ -85,7 +90,7 @@ public class Guns : NetworkBehaviour
             shootIntervalSpreadShot -= tickDelta;
             canShootSpread = false;
         }
-        else if (shootIntervalSpreadShot <= 0f)
+        else
         {
             canShootSpread = true;
         }
@@ -95,7 +100,7 @@ public class Guns : NetworkBehaviour
             shootIntervalHomingShot -= tickDelta;
             canShootHoming = false;
         }
-        else if (shootIntervalHomingShot <= 0f)
+        else
         {
             canShootHoming = true;
         }

@@ -28,7 +28,10 @@ public class ProjectileEnemyTypeA : NetworkBehaviour
         if (rb != null)
         {
             float delta = (float)TimeManager.TickDelta;
-
+            Vector2 dir = transform.up;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            angle -= 90f;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
             Vector2 nextPos = rb.position + (Vector2)(transform.up * speed * delta);
 
             rb.MovePosition(nextPos);

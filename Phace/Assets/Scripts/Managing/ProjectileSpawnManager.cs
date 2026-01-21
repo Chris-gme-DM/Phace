@@ -1,10 +1,11 @@
-using UnityEngine;
+using FishNet.Connection;
 using FishNet.Managing.Timing;
+using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
-using FishNet.Connection;
-using FishNet.Object;
+using GameKit.Dependencies.Utilities.ObjectPooling.Examples;
 using System.Collections;
+using UnityEngine;
 
 public class ProjectileSpawnManager : NetworkBehaviour
 {
@@ -18,7 +19,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
     public void SpawnSingleProjectile(Vector3 position, Vector3 direction)
     {
         NetworkObject projectile = Instantiate(ProjectilePrefab, position, Quaternion.identity);
-        projectile.transform.up = direction; // Orient the projectile to match the gun's direction.
+        projectile.transform.up = direction;
         Spawn(projectile); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (projectile != null)
         {
@@ -35,7 +36,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(spreadProjectile1); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (spreadProjectile1 != null)
         {
-            Destroy(spreadProjectile1.gameObject, lifetimeSecondsProjectile);
+            StartCoroutine(DespawnAfterTime(spreadProjectile1, lifetimeSecondsProjectile));
         }
 
         NetworkObject spreadProjectile2 = Instantiate(ProjectilePrefab, position, Quaternion.identity);
@@ -43,7 +44,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(spreadProjectile2); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (spreadProjectile2 != null)
         {
-            Destroy(spreadProjectile2.gameObject, lifetimeSecondsProjectile);
+            StartCoroutine(DespawnAfterTime(spreadProjectile2, lifetimeSecondsProjectile));
         }
 
         NetworkObject spreadProjectile3 = Instantiate(ProjectilePrefab, position, Quaternion.identity);
@@ -51,7 +52,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(spreadProjectile3); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (spreadProjectile3 != null)
         {
-            Destroy(spreadProjectile3.gameObject, lifetimeSecondsProjectile);
+            StartCoroutine(DespawnAfterTime(spreadProjectile3, lifetimeSecondsProjectile));
         }
 
     }
@@ -64,9 +65,12 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(homingProjectile); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (homingProjectile != null)
         {
-            Destroy(homingProjectile.gameObject, lifetimeSecondsHomingProjectile);
+            StartCoroutine(DespawnAfterTime(homingProjectile, lifetimeSecondsHomingProjectile)); 
         }
     }
+    
+    
+    //Gegnerische Projektile//---------------------------------------------------------
 
     [Server]
     public void SpawnEnemyProjectileTypeA(Vector3 position, Vector3 direction)
@@ -76,42 +80,42 @@ public class ProjectileSpawnManager : NetworkBehaviour
         Spawn(enemyProjectile); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (enemyProjectile != null)
         {
-            Destroy(enemyProjectile.gameObject, lifetimeSecondsProjectile);
+            StartCoroutine(DespawnAfterTime(enemyProjectile, lifetimeSecondsProjectile));
         }
     }
 
     [Server]
     public void SpawnEnemySpreadShot(Vector3 position, Vector3 direction, Vector3 directionLeft, Vector3 directionRight)
     {
-
-
-
-        NetworkObject spreadProjectile1 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
-        spreadProjectile1.transform.up = directionLeft;
-        Spawn(spreadProjectile1); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
-        if (spreadProjectile1 != null)
+         NetworkObject enemySpreadProjectile1 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
+        enemySpreadProjectile1.transform.up = directionLeft;
+        Spawn(enemySpreadProjectile1); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
+        if (enemySpreadProjectile1 != null)
         {
-            Destroy(spreadProjectile1.gameObject, lifetimeSecondsProjectile);
+            StartCoroutine(DespawnAfterTime(enemySpreadProjectile1, lifetimeSecondsProjectile));
         }
-        NetworkObject spreadProjectile2 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
-        spreadProjectile2.transform.up = direction;
-        Spawn(spreadProjectile2); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
-        if (spreadProjectile2 != null)
+        NetworkObject enemySpreadProjectile2 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
+        enemySpreadProjectile2.transform.up = direction;
+        Spawn(enemySpreadProjectile2); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
+        if (enemySpreadProjectile2 != null)
         {
-            Destroy(spreadProjectile2.gameObject, lifetimeSecondsProjectile);
+            StartCoroutine(DespawnAfterTime(enemySpreadProjectile2, lifetimeSecondsProjectile));
         }
-        NetworkObject spreadProjectile3 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
-        spreadProjectile3.transform.up = directionRight;
-        Spawn(spreadProjectile3); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
-        if (spreadProjectile3 != null)
+        NetworkObject enemySpreadProjectile3 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
+        enemySpreadProjectile3.transform.up = directionRight;
+        Spawn(enemySpreadProjectile3); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
+        if (enemySpreadProjectile3 != null)
         {
-            Destroy(spreadProjectile3.gameObject, lifetimeSecondsProjectile);
+            StartCoroutine(DespawnAfterTime(enemySpreadProjectile3, lifetimeSecondsProjectile));
         }
     }
 
     IEnumerator DespawnAfterTime(NetworkObject obj, float time)
     {
         yield return new WaitForSeconds(time);
-        Despawn(obj, DespawnType.Destroy);
+        if (obj != null)
+        {
+            Despawn(obj, DespawnType.Destroy);
+        }
     }
 }

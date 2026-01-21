@@ -56,7 +56,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   shootDelay: 2
-  health: 1
+  health: 3
 --- !u!114 &7036945429704097465
 MonoBehaviour:
   m_ObjectHideFlags: 0
