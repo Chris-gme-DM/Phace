@@ -2,6 +2,7 @@ using FishNet;
 using FishNet.Object;
 using UnityEngine;
 using FishNet.Object.Synchronizing;
+using System.Collections;
 
 public class GameManager : SingletonNetworkBehaviour<GameManager>
 {
@@ -15,6 +16,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     [SerializeField] private LevelData[] _levelDatas;
 
     public readonly SyncVar<int> Level;
+    private readonly SyncStopwatch _stopwatch;
     #endregion
     #region Initialization
     public override void OnStartServer()
@@ -56,6 +58,10 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         Debug.Log($"Level {selectedLevel.LevelID} started with difficulty {selectedLevel.DifficultyRating}");
         // Additional level start logic here
         // If any player is still dead, respawn them
+        foreach(var session in OwnLobbyManager.Instance.ActiveSessions.Values)
+        {
+            SpawnPlayerCraft(session);
+        }
         // Read the base on the selectedLevel properties
         // Adjust these settings accordingly
         // Setup enemies, spawn points, etc.
@@ -65,6 +71,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     {
         // Initialize spacecraft stats based on its SpacecraftData
         // Read spacecraft stats
+        // Identify the spacecraft owner
         // If it is an enemy and needs to be adjusted to the level
         // If it is a player and has adjusted stats, spawn exactly that
         throw new System.NotImplementedException();
@@ -78,7 +85,6 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         // Decide if the level is comleted
         throw new System.NotImplementedException();
     }
-
     private void HandlePlayerDestroyed()
     {
         // Check if both players are dead
@@ -110,6 +116,9 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         GameEvents.OnEntitySpawn.Invoke(spacecraft);
         
     }
+    /// <summary>
+    /// Currently handled by EnemySpawnManager
+    /// </summary>
     private void SpawnEnemy()
     {
         throw new System.NotImplementedException(); 
@@ -124,5 +133,9 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         // Empty the field
     }
     // Method to check if any enemy is alive
+    private IEnumerator CheckForAlive()
+    {
+        foreach(var session )
+    }
     #endregion
 }

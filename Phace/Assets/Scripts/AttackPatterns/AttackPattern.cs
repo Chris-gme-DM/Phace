@@ -1,9 +1,5 @@
 using UnityEngine;
-using FishNet.Object;
 
-public class AttackPattern : NetworkBehaviour
+public abstract class AttackPattern
 {
-     private void Awake() { }
-
-     private void Update() { }
 }

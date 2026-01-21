@@ -2333,7 +2333,7 @@ MonoBehaviour:
   _optionsPanel: {fileID: 4244676232274465667}
   _backgroundPanel: {fileID: 3675262061663813470}
   _loadingPanel: {fileID: 8193897013322137833}
-  _countDownImage: {fileID: 6774896649856857160}
+  _countDownObject: {fileID: 6774896649856857160}
   _startButton: {fileID: 2198444648989727227}
 --- !u!114 &4962196535488242427
 MonoBehaviour:

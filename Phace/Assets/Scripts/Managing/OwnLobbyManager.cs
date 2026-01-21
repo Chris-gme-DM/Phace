@@ -19,6 +19,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     public readonly Dictionary<int, PlayerSession> ActiveSessions = new();
     public readonly SyncDictionary<int, PlayerSessionData> LobbyPlayers = new();
 
+    [AllowMutableSyncType] private readonly SyncVar<GameState> _networkedGameState = new();
     #endregion
     #region Initialization
     public override void OnStartServer()
@@ -51,7 +52,6 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     }
     #endregion
     #region State
-    [AllowMutableSyncType] private readonly SyncVar<GameState> _networkedGameState = new();
 
     [Server]
     public void SetGlobalState(GameState newState)

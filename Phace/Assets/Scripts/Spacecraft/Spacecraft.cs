@@ -4,7 +4,7 @@ using FishNet.Object.Synchronizing;
 /// <summary>
 /// This class represents a spacecraft in the game, managing its stats and actions.
 /// </summary>
-public class Spacecraft : NetworkBehaviour
+public class Spacecraft : NetworkBehaviour, IDamageable
 {
     #region Data/Networking
     public SpacecraftData SpacecraftData;
@@ -15,8 +15,6 @@ public class Spacecraft : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-
-
     }
     public void Initialize(SpacecraftData data)
     {
@@ -68,5 +66,11 @@ public class Spacecraft : NetworkBehaviour
 
     [ServerRpc]
     public void HandleSecondaryAttack(int attackPatternID) { }
+
+    [Server]
+    public void TakeDamage(int damage)
+    {
+        throw new System.NotImplementedException();
+    }
 }
 #endregion

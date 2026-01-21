@@ -31,7 +31,8 @@ public class EnemySpawnManager : NetworkBehaviour
     private bool secondWaveCanStart = false;
 
     public static EnemySpawnManager Instance;
-
+    // Additions
+    private bool isPlaying = false;
     public override void OnStartServer()
     {
         spawnReset = spawnInterval;
@@ -40,12 +41,19 @@ public class EnemySpawnManager : NetworkBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
         TimeManager.OnTick += OnTick;
+
+        GameEvents.OnGameStateChanged.AddListener(HandleGameStateChanged);
     }
 
+    private void HandleGameStateChanged(GameState newState)
+    {
+        if (newState != GameState.InGame) isPlaying = false;
+        if (newState == GameState.InGame) isPlaying = true;
+    }
 
     private void Update()
     {
-        if (!IsServerInitialized)
+        if (!isPlaying)
             return;
 
         if (spawnedAmountA >= spawnLimitA)

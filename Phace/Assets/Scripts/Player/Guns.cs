@@ -1,12 +1,7 @@
 using FishNet.Managing.Timing;
 using FishNet.Object;
-using FishNet.Object.Synchronizing;
-using FishNet.Transporting;
-using FishNet.Connection;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Unity.VisualScripting;
-using FishNet.Demo.HashGrid; // <- New Input System
 
 
 public class Guns : NetworkBehaviour

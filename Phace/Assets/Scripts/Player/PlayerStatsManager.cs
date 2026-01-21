@@ -4,8 +4,8 @@ using UnityEngine;
 using System.Collections.Generic;
 public class PlayerStatsManager : NetworkBehaviour, IDamageable
 {
-    [SerializeField] private int health = 3;
-    private readonly SyncVar<int> _syncedHealth = new SyncVar<int>();
+    [SerializeField] private float health = 3;
+    private readonly SyncVar<float> _syncedHealth = new SyncVar<float>();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
 
