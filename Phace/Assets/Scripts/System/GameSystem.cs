@@ -46,7 +46,7 @@ public class GameSystem : MonoBehaviour
         RegisterCategory("Spacecrafts/PlayerSC", PlayerSpacecrafts);
         RegisterCategory("Spacecrafts/EnemySC", EnemySpacecrafts);
         RegisterCategory("Spacecrafts/BossSC", BossSpacecrafts);
-        Debug.Log($"Registry complete! Total ships in Dictionary: {_spacecraftById.Count}");
+        //Debug.Log($"Registry complete! Total ships in Dictionary: {_spacecraftById.Count}");
     }
 
     private void RegisterCategory(string path, List<SpacecraftData> categoryList)
@@ -157,7 +157,7 @@ public static class GameEvents
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Exception while invoking OnGameStateChanged for state{newState}: {ex}");
+            //Debug.LogError($"Exception while invoking OnGameStateChanged for state{newState}: {ex}");
         }
     }
 }

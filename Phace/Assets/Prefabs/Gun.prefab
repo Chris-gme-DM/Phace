@@ -49,6 +49,9 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 1691737200994914355}
   _networkObjectCache: {fileID: 0}
+  shootDelaySingleShot: 0.5
+  shootDelaySpreadShot: 1.5
+  shootDelayHomingShot: 4
 --- !u!114 &1691737200994914355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,12 +264,16 @@ MonoBehaviour:
     m_ActionName: 'SpaceshipTopDown/Boost[/Keyboard/shift]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 1fa04ad0-786c-412a-80b1-f1e9cbac4111
+    m_ActionId: 70bb8411-286f-45e9-9dac-6823057b2a9d
     m_ActionName: 'SpaceshipTopDown/Shield[/Keyboard/alt]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 83ee6223-5b98-41a8-84a3-37c0d37cec28
-    m_ActionName: 'SpaceshipTopDown/ShipMenu[/Keyboard/p]'
+    m_ActionId: 23ec256e-3c6b-4475-9d3b-b0552ea0d1d7
+    m_ActionName: 'SpaceshipTopDown/Menu[/Keyboard/escape]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5b9bcf3c-8b95-44c8-8aeb-5c23756bcb23
+    m_ActionName: SpaceshipTopDown/Sprint
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4160762676540318794}
@@ -281,11 +288,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_ActionId: b72e16d6-b4a2-4444-9c85-4412ff242a82
+    m_ActionId: dc42fb36-c4eb-4dc4-8ef2-90906bb61f56
     m_ActionName: 'SpaceshipTopDown/HomingMissle[/Keyboard/space]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: c8a85800-49c8-44ac-a405-eb7a21379c34
+    m_ActionId: 21c0bb2b-cc2f-4899-8e7f-b5d74462602b
     m_ActionName: 'SpaceshipTopDown/ChangeSpeedInput[/Keyboard/shift]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 

@@ -43,15 +43,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Crouch",
-                    "type": "Button",
-                    "id": "576987c8-ee0f-42e2-a81e-b6c91ae85064",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Boost",
                     "type": "Button",
                     "id": "dfe0c35b-ee8b-4ccb-bff4-ee39b80fc6b7",
@@ -63,7 +54,7 @@
                 {
                     "name": "Shield",
                     "type": "Button",
-                    "id": "a921ace6-88f8-43a9-8873-0c03e5574634",
+                    "id": "70bb8411-286f-45e9-9dac-6823057b2a9d",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -72,7 +63,7 @@
                 {
                     "name": "Menu",
                     "type": "Button",
-                    "id": "12e7f847-856b-42f7-9b60-f8cc41e760c6",
+                    "id": "23ec256e-3c6b-4475-9d3b-b0552ea0d1d7",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -81,7 +72,28 @@
                 {
                     "name": "Sprint",
                     "type": "Button",
+                    "id": "a921ace6-88f8-43a9-8873-0c03e5574634",
+                    "id": "5b9bcf3c-8b95-44c8-8aeb-5c23756bcb23",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "HomingMissle",
+                    "type": "Button",
+                    "id": "12e7f847-856b-42f7-9b60-f8cc41e760c6",
+                    "id": "dc42fb36-c4eb-4dc4-8ef2-90906bb61f56",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeSpeedInput",
+                    "type": "Button",
                     "id": "432b6f60-d220-49f6-a339-a397c90dffcd",
+                    "id": "21c0bb2b-cc2f-4899-8e7f-b5d74462602b",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -328,6 +340,39 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "41dd3a1a-fbe8-407b-9b25-babe15388b21",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HomingMissle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5c9d007f-a617-4907-8054-e02df5c958d6",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeSpeedInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c3f6acc3-3a87-45d0-952f-167900ceb965",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeSpeedInput",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -893,7 +938,7 @@
                     "name": "Crouch",
                     "type": "Button",
                     "id": "27c5f898-bc57-4ee1-8800-db469aca5fe3",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -929,24 +974,6 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "641cd816-40e6-41b4-8c3d-04687c349290",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "HomingMissle",
-                    "type": "Button",
-                    "id": "b72e16d6-b4a2-4444-9c85-4412ff242a82",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ChangeSpeedInput",
-                    "type": "Button",
-                    "id": "c8a85800-49c8-44ac-a405-eb7a21379c34",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1182,39 +1209,6 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "30e6cc40-5e2d-4af7-9247-53253ed4c799",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "HomingMissle",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e053336b-9b01-48ae-93ae-3f9d9e25b66b",
-                    "path": "<Keyboard>/shift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ChangeSpeedInput",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "27c6a9ca-f4e7-4b0b-8c8e-366ed64e02f8",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ChangeSpeedInput",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

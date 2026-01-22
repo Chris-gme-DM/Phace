@@ -42,7 +42,7 @@ public class BootstrapperManager : MonoBehaviour
             if (localPrefab == null) continue;
             GameObject go = Instantiate(localPrefab);
             DontDestroyOnLoad(go);
-            Debug.Log($"Manager {go} loaded");
+            //Debug.Log($"Manager {go} loaded");
 
         }
     }
