@@ -13,7 +13,7 @@ public class GameSystem : MonoBehaviour
     private readonly Dictionary<int, SpacecraftData> _spacecraftById = new();
     private readonly Dictionary<int, LevelData> _leveldictById = new();
 
-    public readonly List<LevelData> _levelDatas = new();
+    public readonly List<LevelData> LevelDatas = new();
 
     public readonly List<SpacecraftData> PlayerSpacecrafts = new();
     public readonly List<SpacecraftData> EnemySpacecrafts = new();
@@ -30,7 +30,7 @@ public class GameSystem : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this);
         BuildSpacecraftRegistry();
-        RegisterLevels("Levels", _levelDatas);
+        RegisterLevels("Levels", LevelDatas);
     }
     public void BuildSpacecraftRegistry()
     {
@@ -141,7 +141,9 @@ public static class GameEvents
     public static UnityEvent OnPlayerDestroyed = new();
     public static UnityEvent OnEnemyDestroyed = new();
     public static UnityEvent OnLevelChanged = new();
-
+    public static UnityEvent<PlayerSession, SpacecraftStats> OnPlayerStatsChanged = new();
+    public static UnityEvent<SpacecraftStats> OnBossStatChanged = new();
+    public static UnityEvent<bool> OnPostGame = new();
     public static void ChangeGameState(GameState newState)
     {
         try

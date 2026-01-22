@@ -22,7 +22,6 @@ public class PlayerStatsManager : NetworkBehaviour, IDamageable
         _syncedHealth.Value = health;
     }
 
-
     [Server]
     public void TakeDamage(int damage)
     {

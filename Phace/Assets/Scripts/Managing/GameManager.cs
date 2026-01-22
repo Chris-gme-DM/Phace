@@ -2,22 +2,21 @@ using FishNet;
 using FishNet.Object;
 using UnityEngine;
 using FishNet.Object.Synchronizing;
-using System.Collections;
-
+using System.Collections.Generic;
 public class GameManager : SingletonNetworkBehaviour<GameManager>
 {
     #region Settings
 
     [SerializeField] private NetworkObject _playerPrefab;
     [SerializeField] private NetworkObject _enemyPrefab;
-    [SerializeField] private SpacecraftData[] _playerSpacecraftDatas;
-    [SerializeField] private SpacecraftData[] _enemySpacecraftDatas;
-    [SerializeField] private SpacecraftData[] _bossSpacecraftDatas;
-    [SerializeField] private LevelData[] _levelDatas;
+    public readonly List<Spacecraft> _playerSpacecrafs;
+    public readonly List<Spacecraft> _enemySpacecrafts;
+    public readonly Spacecraft ActiveBoss;
+    private LevelData _levelData;
 
     private int _level;
     public int Level => _level;
-    private readonly SyncStopwatch _stopwatch;
+    public readonly SyncStopwatch _stopwatch;
     #endregion
     #region Initialization
     public override void OnStartServer()
@@ -28,8 +27,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         GameEvents.OnEntitySpawn.AddListener(HandleEntitySpawn);
         GameEvents.OnPlayerDestroyed.AddListener(HandlePlayerDestroyed);
         GameEvents.OnEnemyDestroyed.AddListener(HandleEnemyDestroyed);
-        GameEvents.OnLevelChanged.AddListener(HandleLevelChanged);
-
+        GameEvents.OnLevelChanged.AddListener(HandleLevelChange);
     }
 
     public override void OnStopServer()
@@ -49,19 +47,24 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     #region EventHandlers
     private void HandleGameStateChanged(GameState newState)
     {
-        if (newState == GameState.InGame) HandleLevelChanged();
-        if (newState != GameState.InGame) CleanUp();
+        if (newState == GameState.InGame) HandleLevelChange();
     }
-    private void HandleLevelChanged()   // Effectively if current game level is 1 is starting a new game
+    private void HandleLevelChange()   // Effectively if current game level is 1 is starting a new game
     {
-        LevelData selectedLevel = _levelDatas[Random.Range(0, _levelDatas.Length)];
+        _level++;
+        // GameSystem knows all the levels, as soon as they exist properly...
+        var levels = GameSystem.Instance.LevelDatas;
+        _levelData = levels[Random.Range(0, levels.Count)];
         // Initialize level with selectedLevel data
-        Debug.Log($"Level {selectedLevel.LevelID} started with difficulty {selectedLevel.DifficultyRating}");
+        //Debug.Log($"Level {_levelData.LevelID} started with difficulty {_levelData.DifficultyRating}");
         // Additional level start logic here
         // If any player is still dead, respawn them
         foreach(var session in OwnLobbyManager.Instance.ActiveSessions.Values)
         {
-            SpawnPlayerCraft(session);
+            if (session.ControlledSC == null || session.ControlledSC.IsSpawned)
+            { 
+                SpawnPlayerCraft(session);
+            }
         }
         // Read the base on the selectedLevel properties
         // Adjust these settings accordingly
@@ -86,12 +89,9 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         foreach (var session in OwnLobbyManager.Instance.ActiveSessions.Values)
         { session.PlayerScore.Value += 100; }
         var esm = EnemySpawnManager.Instance;
-        if (esm.WaveDestroyed)
-        {
-            _level++;
-            GameEvents.OnLevelChanged.Invoke();
-        }
+
     }
+    [Server]
     private void HandlePlayerDestroyed()
     {
         // Check if both players are dead
@@ -99,8 +99,13 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         // Respawn a player ship with its stats repaired
         foreach(var session in OwnLobbyManager.Instance.ActiveSessions.Values)
         {
-            session.PlayerScore.Value -= 1000;
+            session.PlayerScore.Value -= 500;
             
+        }
+        if (_playerSpacecrafs.Count > 0) return;
+        else
+        {
+            PostGame(false);
         }
     }
 
@@ -113,16 +118,14 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         var data = GameSystem.Instance.GetSpacecraftDataById(craftId);
         if (data == null) return;
         GameObject go = Instantiate(_playerPrefab.gameObject);
-        var spacecraft = go.GetComponent<Spacecraft>();
-        if (spacecraft != null)
+        if (go.TryGetComponent<Spacecraft>(out var spacecraft))
         {
             spacecraft.Initialize(data);
+            spacecraft.SpacecraftData = data;
         }
         InstanceFinder.ServerManager.Spawn(go, session.Owner);
-
-        var netObj = go.GetComponent<NetworkObject>();
-        if (netObj != null) session.SetControlledSpacecraft(netObj);
-
+        _playerSpacecrafs.Add(spacecraft);
+        if (go.TryGetComponent<NetworkObject>(out var netObj)) session.SetControlledSpacecraft(netObj);
         // maybe deprecated
         GameEvents.OnEntitySpawn.Invoke(spacecraft);
         
@@ -141,7 +144,22 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     private void CleanUp()
     {
         // Set the level back to 1, just as a precaution
-        // Empty the field
+        _level = 1;
+        // Empty the fields
+        foreach (var craft in _playerSpacecrafs)
+        {
+            craft.Despawn();
+        }
+        _playerSpacecrafs.Clear();
+        if(ActiveBoss != null)Despawn();
+    }
+    [Server]
+    public void PostGame(bool victory)
+    {
+        GameEvents.OnPostGame.Invoke(victory);
+        CleanUp();
+        OwnLobbyManager.Instance.SetGlobalState(GameState.PostGame);
+
     }
     #endregion
 }

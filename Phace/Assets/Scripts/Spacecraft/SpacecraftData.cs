@@ -13,10 +13,10 @@ public class SpacecraftData : ScriptableObject
     [SerializeField] private string _spacecraftName;
     [TextArea][SerializeField] private string _spacecraftDescription;
     [SerializeField] private AssociationType _association;
-    [SerializeField] private float _spacecraftSize;
+    //[SerializeField] private float _spacecraftSize;
     [SerializeField] private GameObject _goSpacecraftPrefab;
-    [SerializeField] private AttackPatternData _primaryAttackPattern;
-    [SerializeField] private AttackPatternData _secondaryAttackPattern;
+    [SerializeField] private AttackPattern _primaryAttackPattern;
+    [SerializeField] private AttackPattern _secondaryAttackPattern;
     [Header("Base Stats")]
     [SerializeField] private float _baseMaxSpeed;
     [SerializeField] private float _baseHealth;
@@ -28,7 +28,7 @@ public class SpacecraftData : ScriptableObject
 
     public int SpacecraftID => _spacecraftID;
     public string SpacecraftName => _spacecraftName;
-    public float SpacecraftSize => _spacecraftSize;
+    //public float SpacecraftSize => _spacecraftSize;
     public float BaseMaxSpeed => _baseMaxSpeed;
     public float BaseHealth => _baseHealth;
     public float BaseHealthRegen => _baseHealthRegen;
@@ -39,8 +39,8 @@ public class SpacecraftData : ScriptableObject
     public GameObject GOSpacecraftPrefab => _goSpacecraftPrefab;
     public Sprite Icon => _goSpacecraftPrefab.GetComponentInChildren<SpriteRenderer>().sprite;
     public AssociationType Association => _association;
-    public AttackPatternData PrimaryAttackPattern => _primaryAttackPattern;
-    public AttackPatternData SecondaryAttackPattern => _secondaryAttackPattern;
+    public AttackPattern PrimaryAttackPattern => _primaryAttackPattern;
+    public AttackPattern SecondaryAttackPattern => _secondaryAttackPattern;
 }
 /// <summary>
 /// Holds current stats for a spacecraft instance.
@@ -63,5 +63,5 @@ public struct SpacecraftStats
 
     // Other Stuff
     public AssociationType Association;
-    public float SpacecraftSize;
+    public float Size;
 }

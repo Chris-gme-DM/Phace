@@ -33,7 +33,6 @@ public class EnemySpawnManager : NetworkBehaviour
     public static EnemySpawnManager Instance;
     // Additions
     private bool isPlaying = false;
-    public bool WaveDestroyed => waveADestroyed ||waveBDestroyed;
     public override void OnStartServer()
     {
         spawnReset = spawnInterval;
@@ -139,6 +138,7 @@ public class EnemySpawnManager : NetworkBehaviour
     {
         if (activeEnemiesA.Remove(enemy)) return;
         if (activeEnemiesB.Remove(enemy)) return;
+        GameEvents.OnEnemyDestroyed.Invoke();
     }
 
     [Server]

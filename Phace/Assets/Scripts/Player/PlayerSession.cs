@@ -1,5 +1,4 @@
 using FishNet;
-using FishNet.CodeGenerating;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System;
@@ -15,6 +14,8 @@ public class PlayerSession : NetworkBehaviour
     public readonly SyncVar<bool> IsReady = new(false);
 
     private NetworkObject _controlledSpacecraft;
+
+    public NetworkObject ControlledSC => _controlledSpacecraft;
 
     public override void OnStartClient()
     {
