@@ -541,7 +541,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79a9b18798cf36f4497ebe681d62ee32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerNameDisplay: {fileID: 0}
-  _playerScoreDisplay: {fileID: 0}
-  _playerHealthBar: {fileID: 0}
-  _playerShieldBar: {fileID: 0}
+  _playerNameDisplay: {fileID: 8274528843613678834}
+  _playerScoreDisplay: {fileID: 6403794269647798306}
+  _playerHealthBar: {fileID: 6927321850255266348}
+  _playerShieldBar: {fileID: 4056896008163792910}

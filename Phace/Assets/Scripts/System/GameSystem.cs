@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 /// <summary>
 /// This script holds game-related data. Levels, settings, global stats, and structs used across multiple systems.
+/// It builds a registry of all spacecrafts on Startup of the game
 /// </summary>
 /// 
 public class GameSystem : MonoBehaviour
@@ -32,6 +33,9 @@ public class GameSystem : MonoBehaviour
         BuildSpacecraftRegistry();
         RegisterLevels("Levels", LevelDatas);
     }
+    /// <summary>
+    /// This method builds an entire registry of all spacecrafts and levels to provide references for other components
+    /// </summary>
     public void BuildSpacecraftRegistry()
     {
         _spacecraftById.Clear();
@@ -88,11 +92,12 @@ public class GameSystem : MonoBehaviour
     }
     public void SetActiveProfile(string playerName)
     {
+        if (string.IsNullOrEmpty(playerName)) playerName = "NewPilot";
+        playerName.ToString();
         PlayerProfile profile = SaveManager.Instance.LoadPlayerProfile(playerName);
         profile.PlayerName = playerName;
         SaveManager.Instance.SavePlayerProfile(profile);
         ActiveProfile = profile;
-        Debug.Log($"GameSystem: Profile locked for Player {profile.PlayerName}");
     }
 }
 #region Scriptable Objects
@@ -154,7 +159,6 @@ public static class GameEvents
         {
             Debug.LogError($"Exception while invoking OnGameStateChanged for state{newState}: {ex}");
         }
-        Debug.Log($"GameState changed to {newState}");
     }
 }
 #endregion

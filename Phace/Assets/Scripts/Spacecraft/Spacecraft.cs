@@ -1,6 +1,7 @@
 using UnityEngine;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using FishNet;
 /// <summary>
 /// This class represents a spacecraft in the game, managing its stats and actions.
 /// </summary>
@@ -37,7 +38,7 @@ public class Spacecraft : NetworkBehaviour, IDamageable
             s.Association = SpacecraftData.Association;
         }
         Stats.Value = s;
-        TimeManager.OnTick += OnTick;
+        InstanceFinder.TimeManager.OnTick += OnTick;
     }
     [Server]
     private void OnTick()
@@ -84,7 +85,7 @@ public class Spacecraft : NetworkBehaviour, IDamageable
         stat.CurrentHealth = Mathf.Max(0, stat.CurrentHealth);
         if (stat.CurrentHealth <= 0)
         {
-            TimeManager.OnTick -= OnTick;
+            InstanceFinder.TimeManager.OnTick -= OnTick;
             if (stat.Association == AssociationType.Player)
             {
                 GameEvents.OnPlayerDestroyed.Invoke();

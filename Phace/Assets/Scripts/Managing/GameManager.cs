@@ -9,8 +9,8 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
 
     [SerializeField] private NetworkObject _playerPrefab;
     [SerializeField] private NetworkObject _enemyPrefab;
-    public readonly List<Spacecraft> _playerSpacecrafs;
-    public readonly List<Spacecraft> _enemySpacecrafts;
+    public readonly List<Spacecraft> _playerSpacecrafs = new();
+    public readonly List<Spacecraft> _enemySpacecrafts = new();
     public readonly Spacecraft ActiveBoss;
     private LevelData _levelData;
 
@@ -53,8 +53,11 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     {
         _level++;
         // GameSystem knows all the levels, as soon as they exist properly...
-        var levels = GameSystem.Instance.LevelDatas;
-        _levelData = levels[Random.Range(0, levels.Count)];
+
+        // After levels are properly compiled, enable the next two lines again
+
+        //var levels = GameSystem.Instance.LevelDatas;
+        //_levelData = levels[Random.Range(0, levels.Count)];
         // Initialize level with selectedLevel data
         //Debug.Log($"Level {_levelData.LevelID} started with difficulty {_levelData.DifficultyRating}");
         // Additional level start logic here
@@ -120,8 +123,8 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         GameObject go = Instantiate(_playerPrefab.gameObject);
         if (go.TryGetComponent<Spacecraft>(out var spacecraft))
         {
-            spacecraft.Initialize(data);
             spacecraft.SpacecraftData = data;
+            spacecraft.Initialize(data);
         }
         InstanceFinder.ServerManager.Spawn(go, session.Owner);
         _playerSpacecrafs.Add(spacecraft);

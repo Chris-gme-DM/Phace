@@ -31,6 +31,7 @@ public class GamePanelUI : MonoBehaviour
             CleanUp();
 
             int index = 0;
+            Debug.Log($"{OwnLobbyManager.Instance.LobbyPlayers.Count} player {index}");
             // Check all active Players in the Lobby
             foreach (var session in OwnLobbyManager.Instance.LobbyPlayers.Values)
             {
@@ -50,6 +51,7 @@ public class GamePanelUI : MonoBehaviour
                 {
                     hud.Initialize(session);
                 }
+                Debug.Log($"Spawnig a HUD {panelGo} for player{index} in {rt.localPosition}");
                 index++;
             }
         }
@@ -69,11 +71,6 @@ public class GamePanelUI : MonoBehaviour
         _bossPanel.SetActive(false);
     }
 
-    private void PopulatePlayerPanel(PlayerSession session, int index)
-    {
-
-
-    }
     private void OnDisable()
     {
         GameEvents.OnGameStateChanged.RemoveAllListeners();
