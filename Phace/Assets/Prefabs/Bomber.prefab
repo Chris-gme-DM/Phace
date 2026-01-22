@@ -201,7 +201,7 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 405274163973311471}
   _networkObjectCache: {fileID: 405274163973311471}
-  health: 100000
+  health: 1000
 --- !u!114 &8091092783439918798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,6 +387,10 @@ PrefabInstance:
     - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
       propertyPath: WasActiveDuringEdit
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8490897254478620492, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
+      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
       propertyPath: m_LocalPosition.x

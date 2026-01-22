@@ -61,7 +61,7 @@ public class UIManager : MonoBehaviour
         _mainMenuPanel.SetActive(newState == GameState.MainMenu);
         _lobbyPanel.SetActive(newState == GameState.Lobby || newState == GameState.PostGame); // If we make a post game panel, change this
         UpdateInputFocus();
-        Debug.Log($"{CurrentGameState}");
+        //Debug.Log($"{CurrentGameState}");
     }
     private void HandlePlayerLobbyStatus(PlayerSessionData playerSessionData)
     {

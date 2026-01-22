@@ -16,7 +16,7 @@ public class TestShipProjectile : NetworkBehaviour
         
     }
 
-    private void Start()
+    public override void  OnStartServer()
     {
         TimeManager.OnTick += OnTick;
     }
@@ -32,6 +32,12 @@ public class TestShipProjectile : NetworkBehaviour
             rb.MovePosition(nextPos);
         }
     }
+
+    public override void OnStopServer()
+    {
+       TimeManager.OnTick -= OnTick;
+    } 
+    
 
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)

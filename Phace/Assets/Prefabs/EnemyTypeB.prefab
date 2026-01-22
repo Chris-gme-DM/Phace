@@ -55,8 +55,8 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
-  health: 3
-  shootDelay: 2
+  health: 5
+  shootDelay: 1.2
 --- !u!114 &4556797933271260862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,8 +167,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 3120286977348176897}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.4
-  m_Speed: 5
+  m_Radius: 0.13
+  m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120

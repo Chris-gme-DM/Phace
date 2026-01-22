@@ -35,7 +35,7 @@ public class SaveManager : MonoBehaviour
             string json = JsonUtility.ToJson(profile);
             byte[] encrypted = SaveSystem.Encrypt(json);
             File.WriteAllBytes(_saveFilePath, encrypted);
-            Debug.Log($"Player: {profile.PlayerName} saved now");
+            //Debug.Log($"Player: {profile.PlayerName} saved now");
         }
         catch (Exception ex)
         {

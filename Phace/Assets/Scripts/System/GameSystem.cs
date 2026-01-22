@@ -42,7 +42,7 @@ public class GameSystem : MonoBehaviour
         RegisterCategory("Spacecrafts/PlayerSC", PlayerSpacecrafts);
         RegisterCategory("Spacecrafts/EnemySC", EnemySpacecrafts);
         RegisterCategory("Spacecrafts/BossSC", BossSpacecrafts);
-        Debug.Log($"Registry complete! Total ships in Dictionary: {_spacecraftById.Count}");
+        //Debug.Log($"Registry complete! Total ships in Dictionary: {_spacecraftById.Count}");
     }
 
     private void RegisterCategory(string path, List<SpacecraftData> categoryList)
@@ -92,7 +92,7 @@ public class GameSystem : MonoBehaviour
         profile.PlayerName = playerName;
         SaveManager.Instance.SavePlayerProfile(profile);
         ActiveProfile = profile;
-        Debug.Log($"GameSystem: Profile locked for Player {profile.PlayerName}");
+        //Debug.Log($"GameSystem: Profile locked for Player {profile.PlayerName}");
     }
 }
 #region Scriptable Objects
@@ -150,9 +150,9 @@ public static class GameEvents
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Exception while invoking OnGameStateChanged for state{newState}: {ex}");
+            //Debug.LogError($"Exception while invoking OnGameStateChanged for state{newState}: {ex}");
         }
-        Debug.Log($"GameState changed to {newState}");
+        //Debug.Log($"GameState changed to {newState}");
     }
 }
 #endregion

@@ -56,20 +56,20 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     [Server]
     public void SetGlobalState(GameState newState)
     {
-        Debug.Log($"Server: Requesting state change to {newState}");
+        //Debug.Log($"Server: Requesting state change to {newState}");
         _networkedGameState.Value = newState;
         GameEvents.ChangeGameState(newState);
-        Debug.Log($"THE GAME STATE IS: {newState}, MF");
+        //Debug.Log($"THE GAME STATE IS: {newState}, MF");
     }
     private void OnGameStateSynced(GameState prev, GameState next, bool asServer)
     {
-        Debug.Log($"[SyncVar] GameState changed from {prev} to {next}");
+        //Debug.Log($"[SyncVar] GameState changed from {prev} to {next}");
         HandleStateChange(next);
     }
     private void HandleStateChange(GameState newState)
     {
         GameEvents.ChangeGameState(newState);
-        Debug.Log($"GameState: {newState}");
+        //Debug.Log($"GameState: {newState}");
     }
     #endregion
     #region Handlers
@@ -142,7 +142,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     [Server]
     private void StartGame()
     {
-        Debug.Log("UI: Host Button Clicked");
+        //Debug.Log("UI: Host Button Clicked");
         // Tell that motherfucker to start a countdown and then the fucking game
         Instance.SetGlobalState(GameState.InGame);
         UIManager.Instance.StartButton.SetActive(false);
