@@ -14,6 +14,10 @@ public class OptionsUI : MonoBehaviour
     public float MusicVolume => _musicVolume;
     public float SFXVolume => _sfxVolume;
 
+    /// <summary>
+    /// Currently the SoundManager is not compiled yet, but will be added later.
+    /// </summary>
+    /// <param name="amount"></param>
     public void OnMasterVolumeEdit(float amount)
     { 
         _masterVolume = amount;
@@ -35,5 +39,14 @@ public class OptionsUI : MonoBehaviour
     {
         // Deal over 9000 dmg to this players object
     }
-
+    public void OnClickMainMenu()
+    {
+        OwnLobbyManager.Instance.SetGlobalState(GameState.MainMenu);
+        SaveManager.Instance.SavePlayerProfile(GameSystem.Instance.ActiveProfile);
+    }
+    public void OnClickQuit()
+    {
+        SaveManager.Instance.SavePlayerProfile(GameSystem.Instance.ActiveProfile);
+        Application.Quit();
+    }
 }

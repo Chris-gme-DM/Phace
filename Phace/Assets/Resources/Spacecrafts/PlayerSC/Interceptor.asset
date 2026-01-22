@@ -17,7 +17,7 @@ MonoBehaviour:
   _spacecraftDescription: Fast Attack craft
   _association: 0
   _spacecraftSize: 1
-  _goSpacecraftPrefab: {fileID: 1184559574030090596, guid: 3529a10e9bec949468f7d6a631d1eb58, type: 3}
+  _goSpacecraftPrefab: {fileID: 2737441590741945366, guid: a031315331de605489f66085dd9792c1, type: 3}
   _primaryAttackPattern: {fileID: 11400000, guid: 938326b0eebfe314783fba6770be3f2a, type: 2}
   _secondaryAttackPattern: {fileID: 11400000, guid: 57fcb9925d7a87c40b13bcd335eff6e5, type: 2}
   _baseMaxSpeed: 5

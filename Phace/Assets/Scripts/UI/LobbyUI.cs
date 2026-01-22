@@ -1,7 +1,5 @@
 using FishNet.Object.Synchronizing;
-using System;
 using UnityEngine;
-using UnityEngine.UI;
 public class LobbyUI : MonoBehaviour
 {
     [Header("ScreenHalfs")]

@@ -56,7 +56,6 @@ public class LobbyPlayerPanelUI : MonoBehaviour
             btnText.text = _isReady ? "READY!" : "READY?";
         }
         if (playerNameDisplay.TryGetComponent<Text>(out var nameText)) nameText.color = _isReady ? Color.green : new Color(1f, 0.5f, 0f);
-        Debug.Log($"{playerNameDisplay} is ready: {_isReady}");
     }
     // Set this in the fucking button
     public void OnClickPrev()

@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewAttackPatternData", menuName = "AttackPatterns/Attack Pattern Data")]

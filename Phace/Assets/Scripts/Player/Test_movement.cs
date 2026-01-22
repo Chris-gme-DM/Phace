@@ -1,7 +1,6 @@
 ﻿using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

@@ -2,7 +2,6 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerInput))]
 public class UIManager : MonoBehaviour
@@ -19,6 +18,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _loadingPanel;
     [SerializeField] private GameObject _countDownObject;
     [SerializeField] private GameObject _startButton;
+    [SerializeField] private GameObject _postGamePanel;
     public GameObject StartButton => _startButton;
 
     private PlayerInput _playerInput;
@@ -57,9 +57,10 @@ public class UIManager : MonoBehaviour
     private void HandleGameStateChange(GameState newState)
     {
         CurrentGameState = newState;
-        _gamePanel.SetActive(newState == GameState.InGame);
+        _gamePanel.SetActive(newState == GameState.InGame || newState == GameState.PostGame);
         _mainMenuPanel.SetActive(newState == GameState.MainMenu);
-        _lobbyPanel.SetActive(newState == GameState.Lobby || newState == GameState.PostGame); // If we make a post game panel, change this
+        _lobbyPanel.SetActive(newState == GameState.Lobby);
+        _postGamePanel.SetActive(newState == GameState.PostGame);
         UpdateInputFocus();
         Debug.Log($"{CurrentGameState}");
     }

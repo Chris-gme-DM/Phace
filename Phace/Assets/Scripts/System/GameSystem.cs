@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 /// <summary>
 /// This script holds game-related data. Levels, settings, global stats, and structs used across multiple systems.
+/// It builds a registry of all spacecrafts on Startup of the game
 /// </summary>
 /// 
 public class GameSystem : MonoBehaviour
@@ -13,7 +14,7 @@ public class GameSystem : MonoBehaviour
     private readonly Dictionary<int, SpacecraftData> _spacecraftById = new();
     private readonly Dictionary<int, LevelData> _leveldictById = new();
 
-    public readonly List<LevelData> _levelDatas = new();
+    public readonly List<LevelData> LevelDatas = new();
 
     public readonly List<SpacecraftData> PlayerSpacecrafts = new();
     public readonly List<SpacecraftData> EnemySpacecrafts = new();
@@ -30,8 +31,11 @@ public class GameSystem : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this);
         BuildSpacecraftRegistry();
-        RegisterLevels("Levels", _levelDatas);
+        RegisterLevels("Levels", LevelDatas);
     }
+    /// <summary>
+    /// This method builds an entire registry of all spacecrafts and levels to provide references for other components
+    /// </summary>
     public void BuildSpacecraftRegistry()
     {
         _spacecraftById.Clear();
@@ -88,11 +92,12 @@ public class GameSystem : MonoBehaviour
     }
     public void SetActiveProfile(string playerName)
     {
+        if (string.IsNullOrEmpty(playerName)) playerName = "NewPilot";
+        playerName.ToString();
         PlayerProfile profile = SaveManager.Instance.LoadPlayerProfile(playerName);
         profile.PlayerName = playerName;
         SaveManager.Instance.SavePlayerProfile(profile);
         ActiveProfile = profile;
-        Debug.Log($"GameSystem: Profile locked for Player {profile.PlayerName}");
     }
 }
 #region Scriptable Objects
@@ -141,7 +146,9 @@ public static class GameEvents
     public static UnityEvent OnPlayerDestroyed = new();
     public static UnityEvent OnEnemyDestroyed = new();
     public static UnityEvent OnLevelChanged = new();
-
+    public static UnityEvent<PlayerSession, SpacecraftStats> OnPlayerStatsChanged = new();
+    public static UnityEvent<SpacecraftStats> OnBossStatChanged = new();
+    public static UnityEvent<bool> OnPostGame = new();
     public static void ChangeGameState(GameState newState)
     {
         try
@@ -152,7 +159,6 @@ public static class GameEvents
         {
             Debug.LogError($"Exception while invoking OnGameStateChanged for state{newState}: {ex}");
         }
-        Debug.Log($"GameState changed to {newState}");
     }
 }
 #endregion

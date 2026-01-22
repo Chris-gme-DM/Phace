@@ -1,6 +1,7 @@
 using FishNet;
 using FishNet.CodeGenerating;
 using FishNet.Connection;
+using FishNet.Managing.Server;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
@@ -19,6 +20,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     public readonly Dictionary<int, PlayerSession> ActiveSessions = new();
     public readonly SyncDictionary<int, PlayerSessionData> LobbyPlayers = new();
 
+    [AllowMutableSyncType] private readonly SyncVar<GameState> _networkedGameState = new();
     #endregion
     #region Initialization
     public override void OnStartServer()
@@ -51,25 +53,20 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     }
     #endregion
     #region State
-    [AllowMutableSyncType] private readonly SyncVar<GameState> _networkedGameState = new();
 
     [Server]
     public void SetGlobalState(GameState newState)
     {
-        Debug.Log($"Server: Requesting state change to {newState}");
         _networkedGameState.Value = newState;
         GameEvents.ChangeGameState(newState);
-        Debug.Log($"THE GAME STATE IS: {newState}, MF");
     }
     private void OnGameStateSynced(GameState prev, GameState next, bool asServer)
     {
-        Debug.Log($"[SyncVar] GameState changed from {prev} to {next}");
         HandleStateChange(next);
     }
     private void HandleStateChange(GameState newState)
     {
         GameEvents.ChangeGameState(newState);
-        Debug.Log($"GameState: {newState}");
     }
     #endregion
     #region Handlers
@@ -142,8 +139,6 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     [Server]
     private void StartGame()
     {
-        Debug.Log("UI: Host Button Clicked");
-        // Tell that motherfucker to start a countdown and then the fucking game
         Instance.SetGlobalState(GameState.InGame);
         UIManager.Instance.StartButton.SetActive(false);
     }
@@ -151,11 +146,13 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     [Server]
     private void RemoteConnectionStateChanged(NetworkConnection client, RemoteConnectionStateArgs args)
     {
-        //if (args.ConnectionState == RemoteConnectionState.Started)
-        //{
-        //    // Spawning Logic of PLayerSessions and their fucking data
-        //    SpawnPlayer(client);
-        //}
+        if (args.ConnectionState == RemoteConnectionState.Started)
+        {
+            if(ActiveSessions.Count >= MaxLobbyClients)
+            {
+                client.Kick(KickReason.Unset);
+            }
+        }
         if (args.ConnectionState != RemoteConnectionState.Stopped)
         {
             if (ActiveSessions.TryGetValue(client.ClientId, out PlayerSession session))
