@@ -220,6 +220,7 @@ public class EnemySpawnManager : NetworkBehaviour
         if (activeEnemiesC.Remove(enemy)) return;
         if (activeBosses.Remove(enemy)) return;
 
+        GameEvents.OnEnemyDestroyed.Invoke();
     }
 
     [Server]

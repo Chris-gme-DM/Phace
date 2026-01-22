@@ -45,7 +45,7 @@
                 {
                     "name": "Boost",
                     "type": "Button",
-                    "id": "dfe0c35b-ee8b-4ccb-bff4-ee39b80fc6b7",
+                    "id": "27c5f898-bc57-4ee1-8800-db469aca5fe3",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press",
@@ -72,7 +72,7 @@
                 {
                     "name": "Sprint",
                     "type": "Button",
-                    "id": "a921ace6-88f8-43a9-8873-0c03e5574634",
+                    "id": "2776c80d-3c14-4091-8c56-d04ced07a2b0",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -81,7 +81,7 @@
                 {
                     "name": "HomingMissle",
                     "type": "Button",
-                    "id": "12e7f847-856b-42f7-9b60-f8cc41e760c6",
+                    "id": "b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -90,7 +90,7 @@
                 {
                     "name": "ChangeSpeedInput",
                     "type": "Button",
-                    "id": "432b6f60-d220-49f6-a339-a397c90dffcd",
+                    "id": "641cd816-40e6-41b4-8c3d-04687c349290",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
