@@ -9,12 +9,13 @@ public class Spacecraft : NetworkBehaviour, IDamageable
     #region Data/Networking
     public SpacecraftData SpacecraftData;
     public readonly SyncVar<SpacecraftStats> Stats = new();
-    public readonly SyncVar<Transform> SpawnInformation = new();
     public readonly SyncVar<AssociationType> Association = new();
 
+    private float _lastHit;
     public override void OnStartServer()
     {
         base.OnStartServer();
+        Stats.OnChange += HandleStatChanged;
     }
     public void Initialize(SpacecraftData data)
     {
@@ -30,47 +31,86 @@ public class Spacecraft : NetworkBehaviour, IDamageable
             s.MaxShield = data.BaseShield;
             s.ShieldRegenRate = data.BaseShieldRegen;
             s.ShieldRegenDelay = data.BaseShieldRegenDelay;
-            s.MoveSpeed = 0f;
+            //s.MoveSpeed = 0f;
             s.MaxSpeed = data.BaseMaxSpeed;
 
             s.Association = SpacecraftData.Association;
-
         }
+        Stats.Value = s;
+        TimeManager.OnTick += OnTick;
     }
-    public void Respawn()
+    [Server]
+    private void OnTick()
     {
-        
+        float timeLastHit = Time.time - _lastHit;
+        if (timeLastHit >= Stats.Value.ShieldRegenDelay)
+        {
+            RechargeShield(0);
+        }
+        if (timeLastHit >= Stats.Value.HealthRegenDelay)
+        {
+            Repair(0);
+        }
     }
     #endregion
     #region Handlers
-    [ServerRpc]
-    public void TakeDamage(float amount)
-    {
-
-    }
-    [ServerRpc]
-    public void Repair(float amount)
-    {
-        
-    }
-    [ServerRpc]
-    public void RechargeShield(float amount)
-    {
-
-    }
-    [ServerRpc]
-    public void HandleMovement(Vector2 direction, float speed) { }
-
-    [ServerRpc]
-    public void HandlePrimaryAttack(int attackPatternID) { }
-
-    [ServerRpc]
-    public void HandleSecondaryAttack(int attackPatternID) { }
-
+    /// <summary>
+    /// Most mehtods that handle changes to the in game stats of a spacecraft. If we want to access some of these methods from outside, they have to be changed to public
+    /// Repair and RechargeShield will need some tweeking before launch, for balance reasons
+    /// </summary>
+    /// <param name="amount"></param>
     [Server]
-    public void TakeDamage(int damage)
+    private void Repair(int amount)
     {
-        throw new System.NotImplementedException();
+        SpacecraftStats stat = Stats.Value;
+        stat.CurrentHealth += amount;
+        stat.CurrentHealth += stat.HealthRegenRate/100; // adjustment for the feel of a regen rate and the actual gameplay tick
+        stat.CurrentHealth = Mathf.Max(stat.CurrentHealth, stat.MaxHealth);
     }
-}
+    [Server]
+    private void RechargeShield(int amount)
+    {
+        SpacecraftStats stats = Stats.Value;
+        stats.CurrentShield += amount;
+        stats.CurrentShield += stats.ShieldRegenRate/100;  // adjustment for the feel of a regen rate and the actual gameplay tick
+        stats.CurrentShield = Mathf.Max(stats.CurrentShield, stats.MaxShield);
+    }
+    [Server]
+    public void TakeDamage(int amount)
+    {
+        _lastHit = Time.time;
+        SpacecraftStats stat = Stats.Value;
+        stat.CurrentHealth -= amount;
+        stat.CurrentHealth = Mathf.Max(0, stat.CurrentHealth);
+        if (stat.CurrentHealth <= 0)
+        {
+            TimeManager.OnTick -= OnTick;
+            if (stat.Association == AssociationType.Player)
+            {
+                GameEvents.OnPlayerDestroyed.Invoke();
+            }
+            else
+            {
+                GameEvents.OnEnemyDestroyed.Invoke();
+            }
+            Despawn();
+        }
+    }
+    private void HandleStatChanged(SpacecraftStats prev, SpacecraftStats next, bool asServer)
+    {
+        if (asServer) return;
+        if (next.Association == AssociationType.Player) 
+        {
+            if (OwnLobbyManager.Instance.ActiveSessions.TryGetValue(OwnerId, out var session))
+            {
+                GameEvents.OnPlayerStatsChanged.Invoke(session, next);
+            }
+        }
+        else if(next.Association == AssociationType.Boss)
+        {
+            GameEvents.OnBossStatChanged.Invoke(next);
+        }
+    }
 #endregion
+}
+

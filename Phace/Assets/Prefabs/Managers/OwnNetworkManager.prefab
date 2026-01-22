@@ -17,6 +17,10 @@ PrefabInstance:
       value: -52.69995
       objectReference: {fileID: 0}
     - target: {fileID: 1574178288740041694, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
+      propertyPath: _port
+      value: 7770
+      objectReference: {fileID: 0}
+    - target: {fileID: 1574178288740041694, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
       propertyPath: _maximumClients
       value: 20
       objectReference: {fileID: 0}
