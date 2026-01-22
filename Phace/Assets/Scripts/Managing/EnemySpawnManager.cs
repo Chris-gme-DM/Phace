@@ -131,7 +131,7 @@ public class EnemySpawnManager : NetworkBehaviour
 
     private void OnTick()
     {
-        if (!IsServerInitialized)
+        if (!IsServerInitialized || !isPlaying) 
             return;
         float tickDelta = (float)TimeManager.TickDelta;
         spawnInterval -= tickDelta;
@@ -215,11 +215,11 @@ public class EnemySpawnManager : NetworkBehaviour
 
     public void NotifyEnemyDestroyed(NetworkObject enemy)
     {
+        GameEvents.OnEnemyDestroyed.Invoke();
         if (activeEnemiesA.Remove(enemy)) return;
         if (activeEnemiesB.Remove(enemy)) return;
         if (activeEnemiesC.Remove(enemy)) return;
         if (activeBosses.Remove(enemy)) return;
-
     }
 
     [Server]

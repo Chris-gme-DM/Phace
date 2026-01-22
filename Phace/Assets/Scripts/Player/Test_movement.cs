@@ -63,6 +63,7 @@ public class PlayerMovement : NetworkBehaviour
  
     private void TimeManager_OnTick()
     {
+
       
         if (!IsOwner)
             return;
@@ -99,6 +100,11 @@ public class PlayerMovement : NetworkBehaviour
         if (lookDir.sqrMagnitude > 0.001f)
             LookServer(lookDir);
 
+        // Clamp player position 
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, -15f, 15f);
+        pos.y = Mathf.Clamp(pos.y, -8.5f, 8.5f);
+        transform.position = pos;
     }
 
     public void OnMove(InputAction.CallbackContext ctx)

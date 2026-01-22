@@ -37,7 +37,6 @@ Transform:
   m_Children:
   - {fileID: 3132707897000482982}
   - {fileID: 7998986202716336677}
-  - {fileID: 1597440220469464586}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &405274163973311471
@@ -64,7 +63,7 @@ MonoBehaviour:
   - {fileID: 1508615123913829330}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects:
-  - {fileID: 0}
+  - {fileID: 258605880760502289}
   - {fileID: 0}
   RuntimeParentNetworkBehaviour: {fileID: 0}
   RuntimeChildNetworkBehaviours: []
@@ -74,7 +73,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584325979175574934
+  _initializedTimestamp: -8584324928570581531
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -89,7 +88,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 11
+  <PrefabId>k__BackingField: 7
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 5664532154776859885
   SceneId: 0
@@ -201,7 +200,7 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 405274163973311471}
   _networkObjectCache: {fileID: 405274163973311471}
-  health: 1000
+  health: 5
 --- !u!114 &8091092783439918798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -345,11 +344,11 @@ MonoBehaviour:
     m_ActionName: 'SpaceshipTopDown/Menu[/Keyboard/escape]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 5b9bcf3c-8b95-44c8-8aeb-5c23756bcb23
+    m_ActionId: a921ace6-88f8-43a9-8873-0c03e5574634
     m_ActionName: SpaceshipTopDown/Sprint
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: dc42fb36-c4eb-4dc4-8ef2-90906bb61f56
+    m_ActionId: 12e7f847-856b-42f7-9b60-f8cc41e760c6
     m_ActionName: 'SpaceshipTopDown/HomingMissle[/Keyboard/space]'
   - m_PersistentCalls:
       m_Calls:
@@ -365,7 +364,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_ActionId: 21c0bb2b-cc2f-4899-8e7f-b5d74462602b
+    m_ActionId: 432b6f60-d220-49f6-a339-a397c90dffcd
     m_ActionName: 'SpaceshipTopDown/ChangeSpeedInput[/Keyboard/shift]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
@@ -388,17 +387,33 @@ PrefabInstance:
       propertyPath: WasActiveDuringEdit
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
+      propertyPath: <IsNested>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
+      propertyPath: <ComponentIndex>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
+      propertyPath: InitializedParentNetworkBehaviour
+      value: 
+      objectReference: {fileID: 5642149523041427546}
+    - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
+      propertyPath: SerializedTransformProperties.Position.y
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8490897254478620492, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
       propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -437,76 +452,21 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
+--- !u!114 &258605880760502289 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
+  m_PrefabInstance: {fileID: 1507723636768970786}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7998986202716336677 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
   m_PrefabInstance: {fileID: 1507723636768970786}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &7909911184654623757
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1919292801761880823}
-    m_Modifications:
-    - target: {fileID: 1223936757734503968, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_Name
-      value: Gun (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: WasActiveDuringEdit
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
---- !u!4 &1597440220469464586 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8930243589355301383, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
-  m_PrefabInstance: {fileID: 7909911184654623757}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8341694523437679357
 PrefabInstance:
@@ -587,6 +547,10 @@ PrefabInstance:
     - target: {fileID: 6393488338427664987, guid: b5654c55b1f15eb4bac0b2daf0f6781e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6953689449629180543, guid: b5654c55b1f15eb4bac0b2daf0f6781e, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6953689449629180543, guid: b5654c55b1f15eb4bac0b2daf0f6781e, type: 3}
       propertyPath: m_ColliderPaths.Array.size

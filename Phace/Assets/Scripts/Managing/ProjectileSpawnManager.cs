@@ -111,6 +111,24 @@ public class ProjectileSpawnManager : NetworkBehaviour
     }
 
     [Server]
+    public void Enemy4WayShot(Vector3 position)
+    {
+        float angleStep = 90f;
+               
+            for (int i = 0; i < 4; i++)
+            {
+                float angle = i * angleStep;
+                Vector3 shotDirection = Quaternion.Euler(0f, 0f, angle) * Vector3.up;
+                NetworkObject projectile = Instantiate(EnemyProjectileTypeAPrefab, position, Quaternion.identity);
+                projectile.transform.up = shotDirection;
+                Spawn(projectile);
+                StartCoroutine(DespawnAfterTime(projectile, lifetimeSecondsProjectile));
+            }
+    }
+
+
+
+    [Server]
     public void EnemyBossShot(Vector3 position,int projectileCount)
     {
         float angleStep = 360f / projectileCount;
