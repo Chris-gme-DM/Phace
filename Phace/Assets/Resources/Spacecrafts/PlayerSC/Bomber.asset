@@ -17,7 +17,7 @@ MonoBehaviour:
   _spacecraftDescription: Slow Rocket blasting craft
   _association: 0
   _spacecraftSize: 1.5
-  _goSpacecraftPrefab: {fileID: 5931337330674805499, guid: 733f5c50d61a8044da85a08e55214037, type: 3}
+  _goSpacecraftPrefab: {fileID: 2737441590741945366, guid: a031315331de605489f66085dd9792c1, type: 3}
   _primaryAttackPattern: {fileID: 11400000, guid: 57fcb9925d7a87c40b13bcd335eff6e5, type: 2}
   _secondaryAttackPattern: {fileID: 11400000, guid: 938326b0eebfe314783fba6770be3f2a, type: 2}
   _baseMaxSpeed: 4

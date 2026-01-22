@@ -2,6 +2,8 @@ using FishNet.Managing.Timing;
 using FishNet.Object;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.VisualScripting;
+using FishNet.Demo.HashGrid; 
 
 
 public class Guns : NetworkBehaviour
@@ -22,14 +24,14 @@ public class Guns : NetworkBehaviour
 
 
 
-    public override void OnStartServer()
+    public override void OnStartClient()
     {
         base.OnStartServer();
         TimeManager.OnTick += OnTick;
 
     }
 
-    public override void OnStopServer()
+    public override void OnStopClient()
     {
         base.OnStopServer();
         TimeManager.OnTick -= OnTick;
@@ -40,34 +42,9 @@ public class Guns : NetworkBehaviour
         bulletSpawner = FindAnyObjectByType<ProjectileSpawnManager>();
     }
 
-    //private void Update()
-    //{
-    //    // Nur der lokale Spieler darf diese Aktionen ausführen.
-    //    if (!IsOwner)
-    //        return;
-
-    //    if ( Mouse.current.leftButton.wasPressedThisFrame)
-    //    {
-
-    //        GunsSpawnSingleProjectile();
-    //    }
-
-    //    if (Mouse.current.rightButton.wasPressedThisFrame)
-    //    {
-    //        GunsSpawnSpreadShot();
-    //    }
-
-    //    if (Keyboard.current.spaceKey.wasPressedThisFrame)
-    //    {
-    //        GunsSpawnHomingShot();
-    //    }
-
-
-    //}
     private void OnTick()
     {
-        if (!IsServerInitialized)
-            return;
+ 
         float tickDelta = (float)TimeManager.TickDelta;
         if (shootIntervalSingleShot > 0f)
         {
@@ -100,25 +77,44 @@ public class Guns : NetworkBehaviour
             canShootHoming = true;
         }
     }
+
+    
     public void OnAttackPrimary(InputAction.CallbackContext ctx) 
-    { 
-        if(!IsOwner || !canShootSingle) return;    
-        GunsSpawnSingleProjectile();
-        shootIntervalSingleShot = shootDelaySingleShot;
+    {
+        if (ctx.performed)
+        {
+            if (!IsOwner || !canShootSingle) return;
+            GunsSpawnSingleProjectile();
+            shootIntervalSingleShot = shootDelaySingleShot;
+            Debug.Log("Primary Attack Fired");
+        }
     }
 
+    
     public void OnAttackSecondary(InputAction.CallbackContext ctx) 
-    { 
-        if(!IsOwner || !canShootSpread) return;    
-        GunsSpawnSpreadShot();
-        shootIntervalSpreadShot = shootDelaySpreadShot;
+    {
+        
+        if (ctx.performed)
+        Debug.Log("Secondary Attack Fired");
+        {
+            if (!IsOwner || !canShootSpread) return;
+            GunsSpawnSpreadShot();
+            shootIntervalSpreadShot = shootDelaySpreadShot;
+            
+        }
     }
 
+    
     public void OnHomingMissle(InputAction.CallbackContext ctx) 
-    { 
-        if(!IsOwner || !canShootHoming) return;    
+    {
+        if ( ctx.performed)
+        {
+        if (!IsOwner || !canShootHoming) return;    
         GunsSpawnHomingShot();
         shootIntervalHomingShot = shootDelayHomingShot;
+            Debug.Log("Homing Missle Fired");
+        }
+ 
     }
 
 

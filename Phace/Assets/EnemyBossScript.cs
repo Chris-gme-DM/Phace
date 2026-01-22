@@ -5,9 +5,9 @@ using UnityEngine.AI;
 using System;
 using FishNet.Object.Synchronizing;
 
-public class TestEnemyScript : NetworkBehaviour, IDamageable
+public class EnemyBossScript : NetworkBehaviour, IDamageable
 {
-    
+
     private NavMeshAgent _agent;
     private int positionIndex;
     private List<Transform> patrolPoints;
@@ -26,7 +26,10 @@ public class TestEnemyScript : NetworkBehaviour, IDamageable
 
     [SerializeField] private int health = 5;
     private float shootInterval = 0f;
+    private float spawnInterceptorInterVal = 0f;
     [SerializeField] private float shootDelay = 2f;
+    [SerializeField] private float spawnInterceptorDelay = 5f;
+    [SerializeField] private int projectileCount = 9;
 
     public override void OnStartServer()
     {
@@ -87,8 +90,7 @@ public class TestEnemyScript : NetworkBehaviour, IDamageable
 
 
     }
-
-
+    
     private void LateUpdate()
     {
         if (IsServerStarted || IsClientStarted)
@@ -112,6 +114,18 @@ public class TestEnemyScript : NetworkBehaviour, IDamageable
             shootAtPlayer();
             shootInterval += shootDelay;
         }
+        
+        if (spawnInterceptorInterVal > 0f)
+        {
+            spawnInterceptorInterVal -= tickDelta;
+        } 
+        else
+        {
+            SpawnInterceptor();
+            spawnInterceptorInterVal += spawnInterceptorDelay;
+        }
+    
+    
     }
 
     [Server]
@@ -178,7 +192,6 @@ public class TestEnemyScript : NetworkBehaviour, IDamageable
         }
     }
 
-
     [Server]
     private void NextPosition()
     {
@@ -224,22 +237,23 @@ public class TestEnemyScript : NetworkBehaviour, IDamageable
         //transform.rotation = Quaternion.Euler(rot);
     }
 
-
     [Server]
     private void shootAtPlayer()
     {
         if (playerInRange != null && bulletSpawner != null)
         {
-            float spreadAngle = 15f;
-            var baseDirection = (playerInRange.position - transform.position).normalized;
-            // Links rotieren
-            var spreadLeft = Quaternion.Euler(0, 0, -spreadAngle) * baseDirection;
-            // Rechts rotieren
-            var spreadRight = Quaternion.Euler(0, 0, spreadAngle) * baseDirection;
-            
-            bulletSpawner.SpawnEnemySpreadShot(transform.position, baseDirection, spreadLeft, spreadRight);
+
+            bulletSpawner.EnemyBossShot(transform.position, projectileCount);
 
         }
+    }
+
+    [Server]
+    public void SpawnInterceptor()
+    {
+        if (!spawner)
+            return;
+        spawner.BossInterceptors(transform.position + (-transform.forward * 2.2f), transform.up);
     }
 
     [Server]

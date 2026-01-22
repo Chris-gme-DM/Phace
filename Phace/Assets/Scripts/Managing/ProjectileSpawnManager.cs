@@ -110,6 +110,31 @@ public class ProjectileSpawnManager : NetworkBehaviour
         }
     }
 
+    [Server]
+    public void EnemyBossShot(Vector3 position,int projectileCount)
+    {
+        float angleStep = 360f / projectileCount;
+               
+            for (int i = 0; i < projectileCount; i++)
+            {
+                float angle = i * angleStep;
+
+                Vector3 shotDirection =
+                    Quaternion.Euler(0f, 0f, angle) * Vector3.up;
+
+                NetworkObject projectile =
+                    Instantiate(EnemyProjectileTypeAPrefab, position, Quaternion.identity);
+
+                projectile.transform.up = shotDirection;
+
+                Spawn(projectile);
+                StartCoroutine(DespawnAfterTime(projectile, lifetimeSecondsProjectile));
+            }
+    }
+
+
+    
+
     IEnumerator DespawnAfterTime(NetworkObject obj, float time)
     {
         yield return new WaitForSeconds(time);
