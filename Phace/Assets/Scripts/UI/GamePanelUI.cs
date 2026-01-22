@@ -21,7 +21,7 @@ public class GamePanelUI : MonoBehaviour
 
     private void HandleLevelChange()
     {
-        _levelText.text = GameManager.Instance.Level.ToString();
+        _levelText.text = GameManager.Instance._level.ToString();
     }
 
     private void HandleGameStateChange(GameState arg0)

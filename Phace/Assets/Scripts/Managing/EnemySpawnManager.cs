@@ -131,7 +131,7 @@ public class EnemySpawnManager : NetworkBehaviour
 
     private void OnTick()
     {
-        if (!IsServerInitialized)
+        if (!IsServerInitialized || !isPlaying)
             return;
         float tickDelta = (float)TimeManager.TickDelta;
         spawnInterval -= tickDelta;

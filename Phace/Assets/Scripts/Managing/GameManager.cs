@@ -13,9 +13,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     public readonly List<Spacecraft> _enemySpacecrafts = new();
     public readonly Spacecraft ActiveBoss;
     private LevelData _levelData;
-
-    private int _level;
-    public int Level => _level;
+    public readonly SyncVar<int> _level;
     public readonly SyncStopwatch _stopwatch;
     #endregion
     #region Initialization
@@ -28,6 +26,8 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         GameEvents.OnPlayerDestroyed.AddListener(HandlePlayerDestroyed);
         GameEvents.OnEnemyDestroyed.AddListener(HandleEnemyDestroyed);
         GameEvents.OnLevelChanged.AddListener(HandleLevelChange);
+
+        _level.OnChange += OnLevelChanged;
     }
 
     public override void OnStopServer()
@@ -47,11 +47,17 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     #region EventHandlers
     private void HandleGameStateChanged(GameState newState)
     {
-        if (newState == GameState.InGame) HandleLevelChange();
+        if (newState == GameState.InGame) _level.Value++;
     }
-    private void HandleLevelChange()   // Effectively if current game level is 1 is starting a new game
+    private void OnLevelChanged(int prev, int next, bool asServer)
     {
-        _level++;
+        if (asServer) return;
+        // This seems convoluted, but in the current setup it is a working bandaid
+        GameEvents.OnLevelChanged.Invoke();
+    }
+    private void HandleLevelChange()
+    {
+        if (_level.Value <= 1) return;
         // GameSystem knows all the levels, as soon as they exist properly...
 
         // After levels are properly compiled, enable the next two lines again
@@ -147,7 +153,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     private void CleanUp()
     {
         // Set the level back to 1, just as a precaution
-        _level = 1;
+        _level.Value = 1;
         // Empty the fields
         foreach (var craft in _playerSpacecrafs)
         {
