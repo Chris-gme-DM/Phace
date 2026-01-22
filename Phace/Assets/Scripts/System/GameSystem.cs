@@ -155,9 +155,8 @@ public static class GameEvents
         {
             OnGameStateChanged?.Invoke(newState);
         }
-        catch (Exception ex)
+        catch
         {
-            //Debug.LogError($"Exception while invoking OnGameStateChanged for state{newState}: {ex}");
         }
     }
 }
