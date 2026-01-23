@@ -176,6 +176,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  health: 30
   shootDelay: 1.5
   spawnInterceptorDelay: 5
   projectileCount: 12

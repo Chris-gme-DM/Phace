@@ -134,7 +134,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 8677307905672516358}
   _networkObjectCache: {fileID: 8677307905672516358}
-  speed: 9
+  speed: 14
   damage: 1
 --- !u!114 &8677307905672516358
 MonoBehaviour:

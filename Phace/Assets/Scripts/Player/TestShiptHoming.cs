@@ -160,7 +160,7 @@ public class TestShiptHoming : NetworkBehaviour
                 NetworkObject.Despawn();
             }
         }
-        else if (collision.gameObject.CompareTag("FriendlyProjectile") || collision.gameObject.CompareTag("Player"))
+        else if (collision.gameObject.CompareTag("FriendlyProjectile") || collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("EnemyProjectile"))
         {
             Physics2D.IgnoreCollision(collision, GetComponent<Collider2D>());
             return;
@@ -172,6 +172,10 @@ public class TestShiptHoming : NetworkBehaviour
         }
     }
 
-
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    }
 
 }

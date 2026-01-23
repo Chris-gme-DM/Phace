@@ -51,12 +51,12 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 7036945429704097465}
   _networkObjectCache: {fileID: 7036945429704097465}
-  detectionRadius: 31
+  detectionRadius: 30
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
   shootDelay: 1
-  health: 2
+  health: 3
 --- !u!114 &7036945429704097465
 MonoBehaviour:
   m_ObjectHideFlags: 0

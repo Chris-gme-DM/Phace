@@ -491,9 +491,9 @@ MonoBehaviour:
   - {fileID: 66415143}
   - {fileID: 238159379}
   spawnInterval: 2
-  spawnLimitA: 10
-  spawnLimitB: 7
-  spawnLimitC: 5
+  spawnLimitA: 12
+  spawnLimitB: 8
+  spawnLimitC: 6
   spawnLimitBoss: 1
 --- !u!114 &630618123
 MonoBehaviour:
