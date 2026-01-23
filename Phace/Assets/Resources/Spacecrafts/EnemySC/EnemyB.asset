@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa97d289b340167478fcb7d75afdec7f, type: 3}
+  m_Name: EnemyB
+  m_EditorClassIdentifier: 
+  _spacecraftID: 202
+  _spacecraftName: EnemyB
+  _spacecraftDescription: Chaser / interceptor. Starts chasing player when in range.
+    Fires spreadshot.
+  _association: 1
+  _goSpacecraftPrefab: {fileID: 3120286977348176897, guid: 5b67d03c2853f6d4f9627a3fc3773a49, type: 3}
+  _baseMaxSpeed: 0
+  _baseHealth: 3
+  _baseHealthRegen: 0
+  _baseHealthRegenDelay: 0
+  _baseShield: 0
+  _baseShieldRegen: 0
+  _baseShieldRegenDelay: 0

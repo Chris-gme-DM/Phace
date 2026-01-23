@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa97d289b340167478fcb7d75afdec7f, type: 3}
+  m_Name: BoOrgMothership
+  m_EditorClassIdentifier: 
+  _spacecraftID: 301
+  _spacecraftName: BoOrg Mothership
+  _spacecraftDescription: "Boss enemy that has a 360\xB0 shot and spawns enemies
+    of type B."
+  _association: 2
+  _goSpacecraftPrefab: {fileID: 7855056727817969837, guid: 774e07cec1ecb354fb84664f194950aa, type: 3}
+  _baseMaxSpeed: 2
+  _baseHealth: 100
+  _baseHealthRegen: 0
+  _baseHealthRegenDelay: 0
+  _baseShield: 0
+  _baseShieldRegen: 0
+  _baseShieldRegenDelay: 0

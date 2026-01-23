@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa97d289b340167478fcb7d75afdec7f, type: 3}
+  m_Name: EnemyC
+  m_EditorClassIdentifier: 
+  _spacecraftID: 203
+  _spacecraftName: 
+  _spacecraftDescription: Patrolling enemy that fires projectiles in 4 directions
+    wich have a wavelike movement.
+  _association: 1
+  _goSpacecraftPrefab: {fileID: 1352433335668209549, guid: 32a452bfb45a8444fb8bae03d63c14b3, type: 3}
+  _baseMaxSpeed: 0
+  _baseHealth: 4
+  _baseHealthRegen: 0
+  _baseHealthRegenDelay: 0
+  _baseShield: 0
+  _baseShieldRegen: 0
+  _baseShieldRegenDelay: 0
