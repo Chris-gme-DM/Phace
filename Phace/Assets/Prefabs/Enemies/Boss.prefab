@@ -82,7 +82,7 @@ MonoBehaviour:
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 65535
   <SpawnableCollectionId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 2905374278569635469
+  <AssetPathHash>k__BackingField: 10966751033400004843
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
@@ -176,7 +176,6 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
-  health: 30
   shootDelay: 1.5
   spawnInterceptorDelay: 5
   projectileCount: 12

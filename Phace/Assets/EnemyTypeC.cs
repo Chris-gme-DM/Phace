@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using System;
 using FishNet.Object.Synchronizing;
 
-public class EnemyBossScript : NetworkBehaviour/*, IDamageable*/
+public class EnemyTypeC : NetworkBehaviour, IDamageable
 {
 
     private NavMeshAgent _agent;
@@ -14,8 +14,8 @@ public class EnemyBossScript : NetworkBehaviour/*, IDamageable*/
     [SerializeField] private float detectionRadius = 30f;
     [SerializeField] private LayerMask playerLayer;
     private readonly List<Collider2D> results = new List<Collider2D>(16);
-    private ContactFilter2D playerFilter;
-    private Transform playerInRange;
+    //private ContactFilter2D playerFilter;
+    //private Transform playerInRange;
     public Transform CurrentTarget { get; private set; }
     // network synchronized rotation
     //[SerializeField] private float SyncedRotationZ;
@@ -23,36 +23,34 @@ public class EnemyBossScript : NetworkBehaviour/*, IDamageable*/
     public float RotationZ => _syncedRotationZ.Value;
     private EnemySpawnManager spawner;
     private ProjectileSpawnManager bulletSpawner;
-
-    //[SerializeField] private int health = 5;
     private float shootInterval = 0f;
-    private float spawnInterceptorInterVal = 0f;
     [SerializeField] private float shootDelay = 2f;
-    [SerializeField] private float spawnInterceptorDelay = 5f;
-    [SerializeField] private int projectileCount = 9;
+
+
+    [SerializeField] private int health = 1;
+
 
     public override void OnStartServer()
     {
         base.OnStartServer();
         _agent = GetComponent<NavMeshAgent>();
-        bulletSpawner = FindAnyObjectByType<ProjectileSpawnManager>();
         spawner = FindAnyObjectByType<EnemySpawnManager>();
-        patrolPoints = spawner.patrolPointsA;
+        bulletSpawner = FindAnyObjectByType<ProjectileSpawnManager>();
+        patrolPoints = spawner.patrolPointsC;
 
         positionIndex = 0;
         _agent.SetDestination(patrolPoints[positionIndex].position);
 
         // Configure filter once on server
-        playerFilter = new ContactFilter2D();
-        playerFilter.SetLayerMask(playerLayer);
-        playerFilter.useTriggers = true;
-        TimeManager.OnTick += OnTick;
+        //playerFilter = new ContactFilter2D();
+        //playerFilter.SetLayerMask(playerLayer);
+        //playerFilter.useTriggers = true;
+
         // Run detection on a timer (NOT every frame)
-        InvokeRepeating(nameof(UpdateTarget), 0f, 0.25f);
-
-
-
+        //InvokeRepeating(nameof(UpdateTarget), 0f, 0.25f);
+        TimeManager.OnTick += OnTick;
     }
+
     public override void OnStartClient()
     {
         if (IsServerStarted) return;
@@ -63,34 +61,26 @@ public class EnemyBossScript : NetworkBehaviour/*, IDamageable*/
     public override void OnStopServer()
     {
         base.OnStopServer();
-        CancelInvoke(nameof(UpdateTarget));
+        //CancelInvoke(nameof(UpdateTarget));
         TimeManager.OnTick -= OnTick;
         spawner?.NotifyEnemyDestroyed(GetComponent<NetworkObject>());
     }
+
 
     void Update()
     {
         if (IsServerStarted)
         {
+            if (!_agent.pathPending && _agent.remainingDistance <= 0.2f)
+            {
+                NextPosition();
+            }
 
-            if (playerInRange == null)
-            {
-                if (!_agent.pathPending && _agent.remainingDistance <= 0.2f)
-                {
-                    NextPosition();
-                }
-            }
-            else
-            {
-                Chaseplayer();
-            }
-            // Server: calculate and send rotation
             UpdateRotation();
         }
-
-
     }
-    
+
+
     private void LateUpdate()
     {
         if (IsServerStarted || IsClientStarted)
@@ -99,7 +89,6 @@ public class EnemyBossScript : NetworkBehaviour/*, IDamageable*/
             transform.rotation = Quaternion.Euler(0f, 0f, RotationZ);
         }
     }
-
     private void OnTick()
     {
         if (!IsServerInitialized)
@@ -114,67 +103,57 @@ public class EnemyBossScript : NetworkBehaviour/*, IDamageable*/
             shootAtPlayer();
             shootInterval += shootDelay;
         }
-        
-        if (spawnInterceptorInterVal > 0f)
-        {
-            spawnInterceptorInterVal -= tickDelta;
-        } 
-        else
-        {
-            SpawnInterceptor();
-            spawnInterceptorInterVal += spawnInterceptorDelay;
-        }
-    
-    
-    }
-
-    [Server]
-    private int DetectPlayers()
-    {
-        results.Clear();
-
-        return Physics2D.OverlapCircle(
-            transform.position,
-            detectionRadius,
-            playerFilter,
-            results
-        );
     }
 
 
-    [Server]
-    private Transform FindClosestPlayer()
-    {
-        int count = DetectPlayers();
 
-        Transform closest = null;
-        float closestDistSqr = float.MaxValue;
-        Vector2 origin = transform.position;
+    //[Server]
+    //private int DetectPlayers()
+    //{
+    //    results.Clear();
 
-        for (int i = 0; i < count; i++)
-        {
-            Transform player = results[i].transform;
+    //    return Physics2D.OverlapCircle(
+    //        transform.position,
+    //        detectionRadius,
+    //        playerFilter,
+    //        results
+    //    );
+    //}
 
-            float distSqr = ((Vector2)player.position - origin).sqrMagnitude;
 
-            if (distSqr < closestDistSqr)
-            {
-                closestDistSqr = distSqr;
-                closest = player;
-            }
-            Debug.Log(closest);
-        }
+    //[Server]
+    //private Transform FindClosestPlayer()
+    //{
+    //    int count = DetectPlayers();
 
-        playerInRange = closest;
-        return closest;
+    //    Transform closest = null;
+    //    float closestDistSqr = float.MaxValue;
+    //    Vector2 origin = transform.position;
 
-    }
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        Transform player = results[i].transform;
 
-    [Server]
-    private void UpdateTarget()
-    {
-        CurrentTarget = FindClosestPlayer();
-    }
+    //        float distSqr = ((Vector2)player.position - origin).sqrMagnitude;
+
+    //        if (distSqr < closestDistSqr)
+    //        {
+    //            closestDistSqr = distSqr;
+    //            closest = player;
+    //        }
+    //        Debug.Log(closest);
+    //    }
+
+    //    playerInRange = closest;
+    //    return closest;
+
+    //}
+
+    //[Server]
+    //private void UpdateTarget()
+    //{
+    //    CurrentTarget = FindClosestPlayer();
+    //}
 
     // Optional editor visualization (client + server safe)
     private void OnDrawGizmosSelected()
@@ -183,14 +162,6 @@ public class EnemyBossScript : NetworkBehaviour/*, IDamageable*/
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 
-    [Server]
-    private void Chaseplayer()
-    {
-        if (playerInRange != null)
-        {
-            _agent.SetDestination(playerInRange.position);
-        }
-    }
 
     [Server]
     private void NextPosition()
@@ -222,49 +193,47 @@ public class EnemyBossScript : NetworkBehaviour/*, IDamageable*/
         //    transform.rotation = Quaternion.Euler(0f, 0f, RotationZ);
 
         //}
+
+        //rot.x = 0;
+        //rot.y = 0;
+        //transform.rotation = Quaternion.Euler(rot);
         if (_agent.velocity.sqrMagnitude > 0.01f)
         {
             Vector2 dir = _agent.velocity.normalized;
 
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            angle -= 90f; // Spritecorrection
+            angle -= 90f; // Sprite correction
 
             _syncedRotationZ.Value = angle;
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
-        //rot.x = 0;
-        //rot.y = 0;
-        //transform.rotation = Quaternion.Euler(rot);
+
+
+
+
+
+
+
     }
 
     [Server]
     private void shootAtPlayer()
     {
-        if (playerInRange != null && bulletSpawner != null)
+        if  (bulletSpawner != null)
         {
-
-            bulletSpawner.EnemyBossShot(transform.position, projectileCount);
+            bulletSpawner.Enemy4WayShot(transform.position);
 
         }
     }
 
+
     [Server]
-    public void SpawnInterceptor()
+    public void TakeDamage(int damage)
     {
-        if (!spawner)
-            return;
-        spawner.BossInterceptors(transform.position + (-transform.forward * 2.2f), transform.up);
+        health -= damage;
+        if (health <= 0)
+        {
+            NetworkObject.Despawn();
+        }
     }
-
-    //[Server]
-    //public void TakeDamage(int damage)
-    //{
-    //    health -= damage;
-    //    if (health <= 0)
-    //    {
-    //        NetworkObject.Despawn();
-    //    }
-    //}
-
-
 }

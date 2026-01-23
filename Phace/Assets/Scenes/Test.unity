@@ -468,11 +468,17 @@ MonoBehaviour:
   - {fileID: 2068025277}
   - {fileID: 823475769}
   - {fileID: 1750730638}
-  patrolPointsB: []
-  patrolPointsC: []
+  patrolPointsB:
+  - {fileID: 676585027}
+  - {fileID: 676585027}
+  patrolPointsC:
+  - {fileID: 676585027}
+  - {fileID: 2068025277}
+  - {fileID: 1750730638}
+  - {fileID: 808440450}
   enemyTypeA: {fileID: 7036945429704097465, guid: 16155b56b6841494d840600b7b5b9de6, type: 3}
   enemyTypeB: {fileID: 4556797933271260862, guid: 5b67d03c2853f6d4f9627a3fc3773a49, type: 3}
-  enemyTypeC: {fileID: 7036945429704097465, guid: 16155b56b6841494d840600b7b5b9de6, type: 3}
+  enemyTypeC: {fileID: 7594773412764522762, guid: 32a452bfb45a8444fb8bae03d63c14b3, type: 3}
   boss: {fileID: 7793794678559784791, guid: 774e07cec1ecb354fb84664f194950aa, type: 3}
   spawnPointsA:
   - {fileID: 66415143}
@@ -486,8 +492,8 @@ MonoBehaviour:
   - {fileID: 238159379}
   spawnInterval: 2
   spawnLimitA: 10
-  spawnLimitB: 8
-  spawnLimitC: 10
+  spawnLimitB: 7
+  spawnLimitC: 5
   spawnLimitBoss: 1
 --- !u!114 &630618123
 MonoBehaviour:
@@ -646,8 +652,8 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 8677307905672516358, guid: 9ba27e44e54859a4aabec15458c8d764, type: 3}
   HomingProjectilePrefab: {fileID: 3980280303514068580, guid: 693200078bf1c2c4c889b40046eda658, type: 3}
   EnemyProjectileTypeAPrefab: {fileID: 3741622911742609991, guid: d1479b11c12e2a94e8970a6967616be2, type: 3}
-  EnemyProjectileTypeBPrefab: {fileID: 3741622911742609991, guid: d1479b11c12e2a94e8970a6967616be2, type: 3}
-  lifetimeSecondsProjectile: 3
+  EnemyProjectileTypeBPrefab: {fileID: 8083588580938927424, guid: 36ad418471720144e8f9ed8bdf8b0256, type: 3}
+  lifetimeSecondsProjectile: 5
   lifetimeSecondsHomingProjectile: 5
 --- !u!4 &670724424
 Transform:
@@ -689,7 +695,7 @@ Transform:
   m_GameObject: {fileID: 676585026}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12.76, y: 6.2, z: 0}
+  m_LocalPosition: {x: 12.76, y: 6.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -783,7 +789,7 @@ Transform:
   m_GameObject: {fileID: 823475768}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.95, y: 0.59, z: 0}
+  m_LocalPosition: {x: -13.28, y: -0.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1051,7 +1057,7 @@ Transform:
   m_GameObject: {fileID: 1750730637}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.51, y: 6.6, z: 0}
+  m_LocalPosition: {x: -13.23, y: 6.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
