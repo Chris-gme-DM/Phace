@@ -16,14 +16,11 @@ MonoBehaviour:
   _spacecraftName: Bomber
   _spacecraftDescription: Slow Rocket blasting craft
   _association: 0
-  _spacecraftSize: 1.5
   _goSpacecraftPrefab: {fileID: 2737441590741945366, guid: a031315331de605489f66085dd9792c1, type: 3}
-  _primaryAttackPattern: {fileID: 11400000, guid: 57fcb9925d7a87c40b13bcd335eff6e5, type: 2}
-  _secondaryAttackPattern: {fileID: 11400000, guid: 938326b0eebfe314783fba6770be3f2a, type: 2}
   _baseMaxSpeed: 4
-  _baseHealth: 700
+  _baseHealth: 10
   _baseHealthRegen: 10
   _baseHealthRegenDelay: 10
-  _baseShield: 200
-  _baseShieldRegen: 15
-  _baseShieldRegenDelay: 10
+  _baseShield: 5
+  _baseShieldRegen: 5
+  _baseShieldRegenDelay: 5

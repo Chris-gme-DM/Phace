@@ -7,6 +7,7 @@ public class GamePanelUI : MonoBehaviour
     [Header("Configuration")]
     [SerializeField] private GameObject _playerPanelPrefab;
     [SerializeField] private GameObject _bossPanel;
+    [SerializeField] private GameObject _gamePanelPrefab;
 
     [Header("LevelPanel")]
     [SerializeField] private GameObject _levelPanel;
@@ -17,26 +18,27 @@ public class GamePanelUI : MonoBehaviour
     {
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChange);
         GameEvents.OnLevelChanged.AddListener(HandleLevelChange);
+        if (GameManager.Instance != null)
+        {
+            _levelText.text = GameManager.Instance.LevelText;
+        }
     }
-
     private void HandleLevelChange()
     {
-        _levelText.text = GameManager.Instance.Level.ToString();
+        _levelText.text = GameManager.Instance.LevelText;
     }
 
-    private void HandleGameStateChange(GameState arg0)
+    public void HandleGameStateChange(GameState arg0)
     {
         if (arg0 == GameState.InGame) 
         {
-            CleanUp();
-
             int index = 0;
             Debug.Log($"{OwnLobbyManager.Instance.LobbyPlayers.Count} player {index}");
             // Check all active Players in the Lobby
             foreach (var session in OwnLobbyManager.Instance.LobbyPlayers.Values)
             {
                 if (index >= 4) break;
-                GameObject panelGo = Instantiate(_playerPanelPrefab);
+                GameObject panelGo = Instantiate(_playerPanelPrefab, _gamePanelPrefab.transform);
                 _spawnedPlayerPanels.Add(panelGo);
 
                 RectTransform rt = panelGo.GetComponent<RectTransform>();
@@ -57,7 +59,6 @@ public class GamePanelUI : MonoBehaviour
         }
         else
         {
-            CleanUp();
         }
     }
 
@@ -73,7 +74,7 @@ public class GamePanelUI : MonoBehaviour
 
     private void OnDisable()
     {
-        GameEvents.OnGameStateChanged.RemoveAllListeners();
-        GameEvents.OnLevelChanged.RemoveAllListeners();
+        GameEvents.OnLevelChanged.RemoveListener(HandleLevelChange);
+        GameEvents.OnGameStateChanged.RemoveListener(HandleGameStateChange);
     }
 }

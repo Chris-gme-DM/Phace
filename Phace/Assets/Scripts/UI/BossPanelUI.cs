@@ -7,21 +7,29 @@ public class BossPanelUI : MonoBehaviour
     [SerializeField] private GameObject _bossName;
     [SerializeField] private Image _bossHealthBar;
 
-    private readonly TMP_Text BossNameText;
+    private readonly TMP_Text _bossNameText;
     private void OnEnable()
     {
         GameEvents.OnBossStatChanged.AddListener(UpdateBossPanelUI);
+        if (GameManager.Instance.ActiveBoss != null)
+        {
+            SetBossPanelUI();
+            UpdateBossPanelUI(GameManager.Instance.ActiveBoss.Stats.Value);
+        }
     }
     public void SetBossPanelUI()
     {
-        BossNameText.text = _bossName.GetComponentInChildren<Text>().text.ToString();
-        BossNameText.text = GameManager.Instance.ActiveBoss.SpacecraftData.SpacecraftName;
+        if (GameManager.Instance.ActiveBoss != null && GameManager.Instance.ActiveBoss.SpacecraftData != null)
+        {
+            _bossNameText.text = GameManager.Instance.ActiveBoss.SpacecraftData.SpacecraftName;
+        }
     }
     public void UpdateBossPanelUI(SpacecraftStats stats)
     {
-        if (!gameObject.activeSelf) gameObject.SetActive(true);
-        var bossVar = GameManager.Instance.ActiveBoss.Stats.Value;
-        _bossHealthBar.fillAmount = bossVar.CurrentHealth / bossVar.MaxHealth;
+        if (GameManager.Instance.ActiveBoss == null) return;
+        //if (!gameObject.activeSelf) gameObject.SetActive(true);
+        //var bossVar = GameManager.Instance.ActiveBoss.Stats.Value;
+        _bossHealthBar.fillAmount = stats.CurrentHealth / stats.MaxHealth;
     }
     private void OnDisable()
     {

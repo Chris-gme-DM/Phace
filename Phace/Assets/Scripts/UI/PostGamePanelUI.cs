@@ -35,6 +35,7 @@ public class PostGamePanelUI : MonoBehaviour
     }
     public void OnClickQuit()
     {
+        SaveManager.Instance.SavePlayerProfile(GameSystem.Instance.ActiveProfile);
         Application.Quit();
     }
 }

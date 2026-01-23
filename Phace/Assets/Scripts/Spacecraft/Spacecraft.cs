@@ -1,7 +1,8 @@
-using UnityEngine;
+using FishNet;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
-using FishNet;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using UnityEngine;
 /// <summary>
 /// This class represents a spacecraft in the game, managing its stats and actions.
 /// </summary>
@@ -17,6 +18,10 @@ public class Spacecraft : NetworkBehaviour, IDamageable
     {
         base.OnStartServer();
         Stats.OnChange += HandleStatChanged;
+        if (Stats.Value.MaxHealth <= 0 && SpacecraftData != null)
+        {
+            Initialize(SpacecraftData);
+        }
     }
     public void Initialize(SpacecraftData data)
     {
@@ -35,7 +40,7 @@ public class Spacecraft : NetworkBehaviour, IDamageable
             //s.MoveSpeed = 0f;
             s.MaxSpeed = data.BaseMaxSpeed;
 
-            s.Association = SpacecraftData.Association;
+            s.Association = data.Association;
         }
         Stats.Value = s;
         InstanceFinder.TimeManager.OnTick += OnTick;
@@ -63,10 +68,12 @@ public class Spacecraft : NetworkBehaviour, IDamageable
     [Server]
     private void Repair(int amount)
     {
-        SpacecraftStats stat = Stats.Value;
-        stat.CurrentHealth += amount;
-        stat.CurrentHealth += stat.HealthRegenRate/100; // adjustment for the feel of a regen rate and the actual gameplay tick
-        stat.CurrentHealth = Mathf.Max(stat.CurrentHealth, stat.MaxHealth);
+        SpacecraftStats stats = Stats.Value;
+        stats.CurrentHealth += amount;
+        stats.CurrentHealth += stats.HealthRegenRate/100; // adjustment for the feel of a regen rate and the actual gameplay tick
+        stats.CurrentHealth = Mathf.Max(stats.CurrentHealth, stats.MaxHealth);
+        Stats.Value = stats;
+
     }
     [Server]
     private void RechargeShield(int amount)
@@ -75,18 +82,21 @@ public class Spacecraft : NetworkBehaviour, IDamageable
         stats.CurrentShield += amount;
         stats.CurrentShield += stats.ShieldRegenRate/100;  // adjustment for the feel of a regen rate and the actual gameplay tick
         stats.CurrentShield = Mathf.Max(stats.CurrentShield, stats.MaxShield);
+        Stats.Value = stats;
+
     }
     [Server]
     public void TakeDamage(int amount)
     {
         _lastHit = Time.time;
-        SpacecraftStats stat = Stats.Value;
-        stat.CurrentHealth -= amount;
-        stat.CurrentHealth = Mathf.Max(0, stat.CurrentHealth);
-        if (stat.CurrentHealth <= 0)
+        SpacecraftStats stats = Stats.Value;
+        stats.CurrentHealth -= amount;
+        stats.CurrentHealth = Mathf.Max(0, stats.CurrentHealth);
+        Stats.Value = stats;
+        if (stats.CurrentHealth <= 0)
         {
             InstanceFinder.TimeManager.OnTick -= OnTick;
-            if (stat.Association == AssociationType.Player)
+            if (stats.Association == AssociationType.Player)
             {
                 GameEvents.OnPlayerDestroyed.Invoke();
             }

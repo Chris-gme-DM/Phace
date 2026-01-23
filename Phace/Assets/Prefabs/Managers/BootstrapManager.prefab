@@ -44,10 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e375071a3c8aab54fb2054978409bb39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Game_1
+  sceneName: Test
   networkedManagersPrefabs: []
   localManagerPrefabs:
   - {fileID: 3272779161122077018, guid: 47ab85584d603474fa58605ef3951ceb, type: 3}
   - {fileID: 4835020624075444804, guid: bdef97ed85b172540b78f712fedb4e64, type: 3}
-  - {fileID: 3224081279271760759, guid: 8058c24d634499f4e8b95d8f59bdc454, type: 3}
   - {fileID: 6271557745126550074, guid: 25bc58378adf2be4a99d38275b3972a9, type: 3}

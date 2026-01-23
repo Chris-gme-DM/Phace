@@ -8,19 +8,27 @@ public class GamePlayerPanelUI : MonoBehaviour
     [SerializeField] private Image _playerHealthBar;
     [SerializeField] private Image _playerShieldBar;
 
+    private int _myPlayerId;
+
     public void Initialize(PlayerSessionData data)
     {
+        _myPlayerId = data.PlayerID;
         _playerNameDisplay.text = data.PlayerName;
         _playerScoreDisplay.text = data.PlayerScore.ToString();
-        
         GameEvents.OnPlayerStatsChanged.AddListener(UpdatePlayerUI);
     }
 
     private void UpdatePlayerUI(PlayerSession session, SpacecraftStats stats)
     {
-        _playerScoreDisplay.text = session.PlayerScore.ToString();
+        if (session.Owner.ClientId != _myPlayerId) return;
+
+        _playerScoreDisplay.text = session.PlayerScore.Value.ToString();
+
         _playerHealthBar.fillAmount = stats.CurrentHealth / stats.MaxHealth;
         _playerShieldBar.fillAmount = stats.CurrentShield / stats.MaxShield;
     }
-
+    private void OnDisable()
+    {
+        GameEvents.OnPlayerStatsChanged.RemoveListener(UpdatePlayerUI);
+    }
 }

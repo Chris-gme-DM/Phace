@@ -1,4 +1,5 @@
 using FishNet;
+using FishNet.CodeGenerating;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System;
@@ -12,10 +13,10 @@ public class PlayerSession : NetworkBehaviour
     public readonly SyncVar<int> SpacecraftID = new(101);
     public readonly SyncVar<int> PlayerScore = new(0);
     public readonly SyncVar<bool> IsReady = new(false);
+    [AllowMutableSyncType]
+    public readonly SyncVar<NetworkObject> _controlledSpacecraft;
 
-    private NetworkObject _controlledSpacecraft;
-
-    public NetworkObject ControlledSC => _controlledSpacecraft;
+    public NetworkObject ControlledSC => _controlledSpacecraft.Value;
 
     public override void OnStartClient()
     {
@@ -66,7 +67,7 @@ public class PlayerSession : NetworkBehaviour
 
     public void SetControlledSpacecraft(NetworkObject spacecraftNO)
     {
-        _controlledSpacecraft = spacecraftNO;
+        _controlledSpacecraft.Value = spacecraftNO;
     }
 }
 

@@ -27,20 +27,22 @@ public class EnemySpawnManager : NetworkBehaviour
     [SerializeField] private int spawnLimitBoss = 1;
     private float spawnReset;
     // Active enemies lists
-    private List<NetworkObject> activeEnemiesA = new List<NetworkObject>();
-    private List<NetworkObject> activeEnemiesB = new List<NetworkObject>();
-    private List<NetworkObject> activeEnemiesC = new List<NetworkObject>();
-    private List<NetworkObject> activeBosses = new List<NetworkObject>();
+    public readonly List<NetworkObject> activeEnemiesA = new List<NetworkObject>();
+    public readonly List<NetworkObject> activeEnemiesB = new List<NetworkObject>();
+    public readonly List<NetworkObject> activeEnemiesC = new List<NetworkObject>();
+    public readonly List<NetworkObject> activeBosses = new List<NetworkObject>();
     //Amount of enemies spawned per wave
     private int spawnedAmountA = 0;
     private int spawnedAmountB = 0;
     private int spawnedAmountC = 0;
     private int spawnedAmountBoss = 0;
+    public int SpawnedAmountBoss => spawnedAmountBoss;
     // Wave finished spawn (limit reached)
     private bool waveAComplete = false;
     private bool waveBComplete = false;
     private bool waveCComplete = false;
     private bool bossSpawned = false;
+    public bool BossSpawned => bossSpawned;
     // Wave completely destroyed
     private bool waveADestroyed = false;
     private bool waveBDestroyed = false;
@@ -74,8 +76,8 @@ public class EnemySpawnManager : NetworkBehaviour
 
     private void HandleGameStateChanged(GameState newState)
     {
-        if (newState != GameState.InGame) isPlaying = false;
         if (newState == GameState.InGame) isPlaying = true;
+        else isPlaying = false;
     }
 
     private void Update()
@@ -107,16 +109,19 @@ public class EnemySpawnManager : NetworkBehaviour
         {
 
             waveADestroyed = true;
+            GameManager.Instance.Level.Value++;
             GameEvents.OnLevelChanged.Invoke();
         }
         else if ( activeEnemiesB.Count == 0 && waveBComplete && !waveBDestroyed)
         {
             waveBDestroyed = true;
+            GameManager.Instance.Level.Value++;
             GameEvents.OnLevelChanged.Invoke();
         }
         else if ( activeEnemiesC.Count == 0 && waveCComplete && !waveCDestroyed)
         {
             waveCDestroyed = true;
+            GameManager.Instance.Level.Value++;
             GameEvents.OnLevelChanged.Invoke();
         }
         else if (activeBosses.Count == 0 && bossSpawned && !bossDestroyed)
@@ -195,27 +200,27 @@ public class EnemySpawnManager : NetworkBehaviour
 
             if (!bossDelayed)
             {
-                StartCoroutine (DelayBoss());
+                StartCoroutine(DelayBoss());
                 bossDelayed = true;
             }
-            
+
             if (!bossCanStart) return;
             spawnedAmountBoss++;
             int spawnIndex = UnityEngine.Random.Range(0, spawnPointsA.Length);
-            NetworkObject enemyObj = (Instantiate(boss, spawnPointsC[spawnIndex].position, Quaternion.identity));
+            NetworkObject enemyObj = Instantiate(boss, spawnPointsC[spawnIndex].position, Quaternion.identity);
             Spawn(enemyObj);
             activeBosses.Add(enemyObj);
 
-
-
-
+            if (enemyObj.TryGetComponent<Spacecraft>(out var bossSc))
+            {
+                GameManager.Instance.ActiveBoss = bossSc;
+            }
         }
     }
     [Server]
 
     public void NotifyEnemyDestroyed(NetworkObject enemy)
     {
-        GameEvents.OnEnemyDestroyed.Invoke();
         if (activeEnemiesA.Remove(enemy)) return;
         if (activeEnemiesB.Remove(enemy)) return;
         if (activeEnemiesC.Remove(enemy)) return;

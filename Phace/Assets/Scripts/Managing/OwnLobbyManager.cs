@@ -141,6 +141,9 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     {
         Instance.SetGlobalState(GameState.InGame);
         UIManager.Instance.StartButton.SetActive(false);
+        GamePanelUI go = FindAnyObjectByType<GamePanelUI>();
+        // I dont know
+        go.HandleGameStateChange(GameState.InGame);
     }
 
     [Server]

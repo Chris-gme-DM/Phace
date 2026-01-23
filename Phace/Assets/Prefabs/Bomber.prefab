@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 5642149523041427546}
   - component: {fileID: 1099928347325962242}
   - component: {fileID: 3227470225473774930}
-  - component: {fileID: 1508615123913829330}
   - component: {fileID: 8091092783439918798}
+  - component: {fileID: -6047812474713027421}
   m_Layer: 7
   m_Name: Bomber
   m_TagString: Player
@@ -60,11 +60,9 @@ MonoBehaviour:
   NetworkBehaviours:
   - {fileID: 5642149523041427546}
   - {fileID: 1099928347325962242}
-  - {fileID: 1508615123913829330}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects:
   - {fileID: 258605880760502289}
-  - {fileID: 0}
   RuntimeParentNetworkBehaviour: {fileID: 0}
   RuntimeChildNetworkBehaviours: []
   _isNetworked: 1
@@ -73,7 +71,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584324928570581531
+  _initializedTimestamp: -8584324183175953430
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -88,7 +86,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 7
+  <PrefabId>k__BackingField: 4
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 5664532154776859885
   SceneId: 0
@@ -185,22 +183,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1508615123913829330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2737441590741945366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4933d39b89d2d9d4d806f8592b9e5589, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 2
-  _addedNetworkObject: {fileID: 405274163973311471}
-  _networkObjectCache: {fileID: 405274163973311471}
-  health: 400
 --- !u!114 &8091092783439918798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -371,6 +353,22 @@ MonoBehaviour:
   m_DefaultActionMap: SpaceshipTopDown
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &-6047812474713027421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2737441590741945366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4f59914de3b8d04fa75782422fd788d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 405274163973311471}
+  _networkObjectCache: {fileID: 0}
+  SpacecraftData: {fileID: 11400000, guid: b59b7b20a21f6ed4abedf28c857c3d24, type: 2}
 --- !u!1001 &1507723636768970786
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -392,6 +390,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
+      propertyPath: <PrefabId>k__BackingField
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
       propertyPath: <ComponentIndex>k__BackingField
       value: 1
       objectReference: {fileID: 0}
@@ -400,8 +402,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5642149523041427546}
     - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
+      propertyPath: SerializedTransformProperties.Position.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1691737200994914355, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
       propertyPath: SerializedTransformProperties.Position.y
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8490897254478620492, guid: 6ae91a9db3115b249837d617a9f6270f, type: 3}
       propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.size

@@ -3,6 +3,8 @@ using FishNet.Object;
 using UnityEngine;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
+using System;
+using FishNet.CodeGenerating;
 public class GameManager : SingletonNetworkBehaviour<GameManager>
 {
     #region Settings
@@ -11,17 +13,18 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     [SerializeField] private NetworkObject _enemyPrefab;
     public readonly List<Spacecraft> _playerSpacecrafs = new();
     public readonly List<Spacecraft> _enemySpacecrafts = new();
-    public readonly Spacecraft ActiveBoss;
+    public Spacecraft ActiveBoss;
     private LevelData _levelData;
 
-    private int _level;
-    public int Level => _level;
-    public readonly SyncStopwatch _stopwatch;
+    [AllowMutableSyncType]
+    public SyncVar<int> Level = new();
+    public string LevelText => Level.Value.ToString();
     #endregion
     #region Initialization
     public override void OnStartServer()
     {
         base.OnStartServer();
+        Level.Value = 1;
         // Subscribe to game events here
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChanged);
         GameEvents.OnEntitySpawn.AddListener(HandleEntitySpawn);
@@ -32,11 +35,11 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
 
     public override void OnStopServer()
     {
-        GameEvents.OnGameStateChanged.RemoveAllListeners();
-        GameEvents.OnEntitySpawn.RemoveAllListeners();
-        GameEvents.OnPlayerDestroyed.RemoveAllListeners();
-        GameEvents.OnEnemyDestroyed.RemoveAllListeners();
-        GameEvents.OnLevelChanged.RemoveAllListeners();
+        GameEvents.OnGameStateChanged.RemoveListener(HandleGameStateChanged);
+        GameEvents.OnEntitySpawn.RemoveListener(HandleEntitySpawn);
+        GameEvents.OnPlayerDestroyed.RemoveListener(HandlePlayerDestroyed);
+        GameEvents.OnEnemyDestroyed.RemoveListener(HandleEnemyDestroyed);
+        GameEvents.OnLevelChanged.RemoveListener(HandleLevelChange);
 
         base.OnStopServer();
     }
@@ -47,15 +50,24 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     #region EventHandlers
     private void HandleGameStateChanged(GameState newState)
     {
-        if (newState == GameState.InGame) HandleLevelChange();
+        if (newState == GameState.InGame)
+        {
+            foreach (var session in OwnLobbyManager.Instance.ActiveSessions.Values)
+            {
+                if (session.ControlledSC == null)
+                {
+                    SpawnPlayerCraft(session);
+                }
+            }
+            HandleLevelChange();
+        }
     }
+    [Server]
     private void HandleLevelChange()   // Effectively if current game level is 1 is starting a new game
     {
-        _level++;
         // GameSystem knows all the levels, as soon as they exist properly...
-
         // After levels are properly compiled, enable the next two lines again
-
+        GameEvents.OnLevelChanged.Invoke();
         //var levels = GameSystem.Instance.LevelDatas;
         //_levelData = levels[Random.Range(0, levels.Count)];
         // Initialize level with selectedLevel data
@@ -64,14 +76,13 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         // If any player is still dead, respawn them
         foreach(var session in OwnLobbyManager.Instance.ActiveSessions.Values)
         {
-            if (session.ControlledSC == null || session.ControlledSC.IsSpawned)
-            { 
-                SpawnPlayerCraft(session);
-            }
+            if (session.ControlledSC == null) SpawnPlayerCraft(session);
         }
+
         // Read the base on the selectedLevel properties
         // Adjust these settings accordingly
         // Setup enemies, spawn points, etc.    Currently EnemySpawnManager is handling this
+
     }
     // Make this a Coroutine
     private void HandleEntitySpawn(Spacecraft spacecraft)
@@ -91,8 +102,17 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         // Decide if the level is comleted
         foreach (var session in OwnLobbyManager.Instance.ActiveSessions.Values)
         { session.PlayerScore.Value += 100; }
-        var esm = EnemySpawnManager.Instance;
-
+        if (EnemySpawnManager.Instance.BossSpawned)
+        {
+            if (EnemySpawnManager.Instance.activeBosses.Count == 0)
+            {
+                foreach (var session in OwnLobbyManager.Instance.ActiveSessions.Values)
+                {
+                    session.PlayerScore.Value += 10000;
+                }
+                PostGame(true);
+            }
+        }
     }
     [Server]
     private void HandlePlayerDestroyed()
@@ -121,16 +141,19 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         var data = GameSystem.Instance.GetSpacecraftDataById(craftId);
         if (data == null) return;
         GameObject go = Instantiate(_playerPrefab.gameObject);
+        InstanceFinder.ServerManager.Spawn(go, session.Owner);
         if (go.TryGetComponent<Spacecraft>(out var spacecraft))
         {
             spacecraft.SpacecraftData = data;
             spacecraft.Initialize(data);
+            _playerSpacecrafs.Add(spacecraft);
+            if (go.TryGetComponent<NetworkObject>(out var netObj))
+            {
+                session.SetControlledSpacecraft(netObj);
+            }
         }
-        InstanceFinder.ServerManager.Spawn(go, session.Owner);
-        _playerSpacecrafs.Add(spacecraft);
-        if (go.TryGetComponent<NetworkObject>(out var netObj)) session.SetControlledSpacecraft(netObj);
-        // maybe deprecated
-        GameEvents.OnEntitySpawn.Invoke(spacecraft);
+        //// maybe deprecated
+        //GameEvents.OnEntitySpawn.Invoke(spacecraft);
         
     }
     /// <summary>
@@ -147,7 +170,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     private void CleanUp()
     {
         // Set the level back to 1, just as a precaution
-        _level = 1;
+        Level.Value = 1;
         // Empty the fields
         foreach (var craft in _playerSpacecrafs)
         {
