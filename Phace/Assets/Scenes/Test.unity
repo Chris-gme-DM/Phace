@@ -491,9 +491,9 @@ MonoBehaviour:
   - {fileID: 66415143}
   - {fileID: 238159379}
   spawnInterval: 2
-  spawnLimitA: 1
-  spawnLimitB: 1
-  spawnLimitC: 10
+  spawnLimitA: 10
+  spawnLimitB: 7
+  spawnLimitC: 5
   spawnLimitBoss: 1
 --- !u!114 &630618123
 MonoBehaviour:
@@ -652,7 +652,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 8677307905672516358, guid: 9ba27e44e54859a4aabec15458c8d764, type: 3}
   HomingProjectilePrefab: {fileID: 3980280303514068580, guid: 693200078bf1c2c4c889b40046eda658, type: 3}
   EnemyProjectileTypeAPrefab: {fileID: 3741622911742609991, guid: d1479b11c12e2a94e8970a6967616be2, type: 3}
-  EnemyProjectileTypeBPrefab: {fileID: 3741622911742609991, guid: d1479b11c12e2a94e8970a6967616be2, type: 3}
+  EnemyProjectileTypeBPrefab: {fileID: 8083588580938927424, guid: 36ad418471720144e8f9ed8bdf8b0256, type: 3}
   lifetimeSecondsProjectile: 5
   lifetimeSecondsHomingProjectile: 5
 --- !u!4 &670724424

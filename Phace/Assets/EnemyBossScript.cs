@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using System;
 using FishNet.Object.Synchronizing;
 
-public class EnemyBossScript : NetworkBehaviour, IDamageable
+public class EnemyBossScript : NetworkBehaviour/*, IDamageable*/
 {
 
     private NavMeshAgent _agent;
@@ -24,7 +24,7 @@ public class EnemyBossScript : NetworkBehaviour, IDamageable
     private EnemySpawnManager spawner;
     private ProjectileSpawnManager bulletSpawner;
 
-    [SerializeField] private int health = 5;
+    //[SerializeField] private int health = 5;
     private float shootInterval = 0f;
     private float spawnInterceptorInterVal = 0f;
     [SerializeField] private float shootDelay = 2f;
@@ -256,15 +256,15 @@ public class EnemyBossScript : NetworkBehaviour, IDamageable
         spawner.BossInterceptors(transform.position + (-transform.forward * 2.2f), transform.up);
     }
 
-    [Server]
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-        if (health <= 0)
-        {
-            NetworkObject.Despawn();
-        }
-    }
+    //[Server]
+    //public void TakeDamage(int damage)
+    //{
+    //    health -= damage;
+    //    if (health <= 0)
+    //    {
+    //        NetworkObject.Despawn();
+    //    }
+    //}
 
 
 }

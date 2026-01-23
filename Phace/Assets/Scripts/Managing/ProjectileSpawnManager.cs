@@ -87,21 +87,21 @@ public class ProjectileSpawnManager : NetworkBehaviour
     [Server]
     public void SpawnEnemySpreadShot(Vector3 position, Vector3 direction, Vector3 directionLeft, Vector3 directionRight)
     {
-         NetworkObject enemySpreadProjectile1 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
+         NetworkObject enemySpreadProjectile1 = Instantiate(EnemyProjectileTypeAPrefab, position, Quaternion.identity);
         enemySpreadProjectile1.transform.up = directionLeft;
         Spawn(enemySpreadProjectile1); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (enemySpreadProjectile1 != null)
         {
             StartCoroutine(DespawnAfterTime(enemySpreadProjectile1, lifetimeSecondsProjectile));
         }
-        NetworkObject enemySpreadProjectile2 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
+        NetworkObject enemySpreadProjectile2 = Instantiate(EnemyProjectileTypeAPrefab, position, Quaternion.identity);
         enemySpreadProjectile2.transform.up = direction;
         Spawn(enemySpreadProjectile2); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (enemySpreadProjectile2 != null)
         {
             StartCoroutine(DespawnAfterTime(enemySpreadProjectile2, lifetimeSecondsProjectile));
         }
-        NetworkObject enemySpreadProjectile3 = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
+        NetworkObject enemySpreadProjectile3 = Instantiate(EnemyProjectileTypeAPrefab, position, Quaternion.identity);
         enemySpreadProjectile3.transform.up = directionRight;
         Spawn(enemySpreadProjectile3); // NetworkBehaviour shortcut for ServerManager.Spawn(obj);
         if (enemySpreadProjectile3 != null)
@@ -119,7 +119,7 @@ public class ProjectileSpawnManager : NetworkBehaviour
             {
                 float angle = i * angleStep;
                 Vector3 shotDirection = Quaternion.Euler(0f, 0f, angle) * Vector3.up;
-                NetworkObject projectile = Instantiate(EnemyProjectileTypeAPrefab, position, Quaternion.identity);
+                NetworkObject projectile = Instantiate(EnemyProjectileTypeBPrefab, position, Quaternion.identity);
                 projectile.transform.up = shotDirection;
                 Spawn(projectile);
                 StartCoroutine(DespawnAfterTime(projectile, lifetimeSecondsProjectile));
