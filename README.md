@@ -47,24 +47,24 @@ All attacks (players and enemies) have a cooldown system.
 ### Technichal Overview
 It runs in Unity and uses fishnet.
 ### Rpcs
--EnemyBossScript.cs [SERVER] → 9
--EnemySpawnManager.cs [SERVER] → 4
--EnemyTypeA.cs [SERVER] → 7
--EnemyTypeB.cs [SERVER] → 8
--EnemyTypeC.cs [SERVER] → 4
--GameManager.cs[SERVER] → 3
--Guns.cs [ServerRpc] → 4
--Lobby.cs [Server] → 2
--OwnLobbyManager.cs [Server] → 7
--PlayerMovement.cs [ServerRpc] → 3
--PlayerSession.cs [ServerRpc] → 1
--PlayerStatsManager.cs [Server] → 2
--ProjectileEnemyTypeA.cs [Server] → 1
--ProjectileEnemyTypeB.cs [Server] → 1
--ProjectileSpawnManager.cs [Server] → 7
--Spacecraft.cs [Server] → 4
--TestShipHoming.cs [Server] → 4
--TestShipProjectile.cs [Server] → 1
++ EnemyBossScript.cs [SERVER] → 9
++ EnemySpawnManager.cs [SERVER] → 4
++ EnemyTypeA.cs [SERVER] → 7
++ EnemyTypeB.cs [SERVER] → 8
++ EnemyTypeC.cs [SERVER] → 4
++ GameManager.cs[SERVER] → 3
++ Guns.cs [ServerRpc] → 4
++ Lobby.cs [Server] → 2
++ OwnLobbyManager.cs [Server] → 7
++ PlayerMovement.cs [ServerRpc] → 3
++ PlayerSession.cs [ServerRpc] → 1
++ PlayerStatsManager.cs [Server] → 2
++ ProjectileEnemyTypeA.cs [Server] → 1
++ ProjectileEnemyTypeB.cs [Server] → 1
++ ProjectileSpawnManager.cs [Server] → 7
++ Spacecraft.cs [Server] → 4
++ TestShipHoming.cs [Server] → 4
++ TestShipProjectile.cs [Server] → 1
 
 ### SyncVars
 Various SyncVars are used.
