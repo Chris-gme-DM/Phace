@@ -16,14 +16,11 @@ MonoBehaviour:
   _spacecraftName: BoOrg Mothership
   _spacecraftDescription: 
   _association: 2
-  _spacecraftSize: 5
-  _goSpacecraftPrefab: {fileID: 5931337330674805499, guid: 733f5c50d61a8044da85a08e55214037, type: 3}
-  _primaryAttackPattern: {fileID: 0}
-  _secondaryAttackPattern: {fileID: 0}
-  _baseMaxSpeed: 2
-  _baseHealth: 10000
-  _baseHealthRegen: 100
-  _baseHealthRegenDelay: 20
+  _goSpacecraftPrefab: {fileID: 7855056727817969837, guid: 774e07cec1ecb354fb84664f194950aa, type: 3}
+  _baseMaxSpeed: 4
+  _baseHealth: 2000
+  _baseHealthRegen: 10
+  _baseHealthRegenDelay: 10
   _baseShield: 0
   _baseShieldRegen: 0
   _baseShieldRegenDelay: 0

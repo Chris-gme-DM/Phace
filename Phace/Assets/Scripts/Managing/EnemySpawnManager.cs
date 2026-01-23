@@ -80,7 +80,7 @@ public class EnemySpawnManager : NetworkBehaviour
 
     private void Update()
     {
-        if (!isPlaying)
+        if (!isPlaying || !IsServerInitialized)
             return;
         // Check wave completion
         if (spawnedAmountA >= spawnLimitA)
@@ -215,12 +215,13 @@ public class EnemySpawnManager : NetworkBehaviour
 
     public void NotifyEnemyDestroyed(NetworkObject enemy)
     {
+        if (!IsServerInitialized) return;
+        GameEvents.OnEnemyDestroyed.Invoke();
         if (activeEnemiesA.Remove(enemy)) return;
         if (activeEnemiesB.Remove(enemy)) return;
         if (activeEnemiesC.Remove(enemy)) return;
         if (activeBosses.Remove(enemy)) return;
 
-        GameEvents.OnEnemyDestroyed.Invoke();
     }
 
     [Server]

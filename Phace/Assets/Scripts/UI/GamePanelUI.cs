@@ -16,18 +16,18 @@ public class GamePanelUI : MonoBehaviour
     private void Start()
     {
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChange);
-        GameEvents.OnLevelChanged.AddListener(HandleLevelChange);
     }
 
     private void HandleLevelChange()
     {
-        _levelText.text = GameManager.Instance._level.ToString();
+
     }
 
     private void HandleGameStateChange(GameState arg0)
     {
         if (arg0 == GameState.InGame) 
         {
+            GameEvents.OnLevelChanged.AddListener(HandleLevelChange);
             CleanUp();
 
             int index = 0;

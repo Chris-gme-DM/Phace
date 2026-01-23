@@ -49,11 +49,10 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 5729236883671825429}
   _networkObjectCache: {fileID: 5729236883671825429}
   _playerPrefab: {fileID: 1215856903430759559, guid: afa1b30d2c52c9e409dab360038311a3, type: 3}
+  _spawnPoints:
+  - {fileID: 5229276357307931207, guid: 06062ae12bc27d646a70c76de9bb5ade, type: 3}
+  - {fileID: 6250671934012601318, guid: 04bb3b0e33864f043a223f5ef3e1df5a, type: 3}
   _enemyPrefab: {fileID: -3392525328861023980, guid: 40aca47ad7c8e2f4f9f7ac21d0e6de17, type: 3}
-  _playerSpacecraftDatas: []
-  _enemySpacecraftDatas: []
-  _bossSpacecraftDatas: []
-  _levelDatas: []
 --- !u!114 &5729236883671825429
 MonoBehaviour:
   m_ObjectHideFlags: 0

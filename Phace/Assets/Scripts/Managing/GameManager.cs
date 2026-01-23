@@ -3,31 +3,46 @@ using FishNet.Object;
 using UnityEngine;
 using FishNet.Object.Synchronizing;
 using System.Collections.Generic;
-public class GameManager : SingletonNetworkBehaviour<GameManager>
+public class GameManager : NetworkBehaviour
 {
     #region Settings
-
+    public static GameManager Instance { get; private set; }
     [SerializeField] private NetworkObject _playerPrefab;
+    [SerializeField] private Transform[] _spawnPoints;
     [SerializeField] private NetworkObject _enemyPrefab;
     public readonly List<Spacecraft> _playerSpacecrafs = new();
     public readonly List<Spacecraft> _enemySpacecrafts = new();
     public readonly Spacecraft ActiveBoss;
     private LevelData _levelData;
-    public readonly SyncVar<int> _level;
-    public readonly SyncStopwatch _stopwatch;
+    public readonly SyncVar<int> Level = new();
+
+    private int _nextSpawnIndex = 0;
     #endregion
     #region Initialization
+    public override void OnStartNetwork()
+    {
+        base.OnStartNetwork();
+        {
+            if (Instance != null)
+            {
+                Destroy(this);
+                return;
+            }
+
+            if (Instance == null) Instance = this;
+        }
+    }
     public override void OnStartServer()
     {
         base.OnStartServer();
+
         // Subscribe to game events here
         GameEvents.OnGameStateChanged.AddListener(HandleGameStateChanged);
         GameEvents.OnEntitySpawn.AddListener(HandleEntitySpawn);
         GameEvents.OnPlayerDestroyed.AddListener(HandlePlayerDestroyed);
         GameEvents.OnEnemyDestroyed.AddListener(HandleEnemyDestroyed);
-        GameEvents.OnLevelChanged.AddListener(HandleLevelChange);
 
-        _level.OnChange += OnLevelChanged;
+        Level.OnChange += OnLevelChanged;
     }
 
     public override void OnStopServer()
@@ -36,7 +51,6 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
         GameEvents.OnEntitySpawn.RemoveAllListeners();
         GameEvents.OnPlayerDestroyed.RemoveAllListeners();
         GameEvents.OnEnemyDestroyed.RemoveAllListeners();
-        GameEvents.OnLevelChanged.RemoveAllListeners();
 
         base.OnStopServer();
     }
@@ -47,17 +61,18 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     #region EventHandlers
     private void HandleGameStateChanged(GameState newState)
     {
-        if (newState == GameState.InGame) _level.Value++;
+        if (newState == GameState.InGame) Level.Value++;
     }
     private void OnLevelChanged(int prev, int next, bool asServer)
     {
-        if (asServer) return;
+        if (!asServer) return;
+        HandleLevelChange();
         // This seems convoluted, but in the current setup it is a working bandaid
         GameEvents.OnLevelChanged.Invoke();
     }
     private void HandleLevelChange()
     {
-        if (_level.Value <= 1) return;
+        if (Level.Value <= 1) return;
         // GameSystem knows all the levels, as soon as they exist properly...
 
         // After levels are properly compiled, enable the next two lines again
@@ -123,18 +138,21 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     [Server]
     private void SpawnPlayerCraft(PlayerSession session)
     {
+        Debug.Log($"pleaseSpawnstuff");
         int craftId = session.SpacecraftID.Value;
         var data = GameSystem.Instance.GetSpacecraftDataById(craftId);
         if (data == null) return;
-        GameObject go = Instantiate(_playerPrefab.gameObject);
+        Transform spawnPoint = _spawnPoints[_nextSpawnIndex];
+        _nextSpawnIndex = (_nextSpawnIndex + 1) % _spawnPoints.Length;
+        GameObject go = Instantiate(_playerPrefab.gameObject, spawnPoint.position, spawnPoint.rotation);
+        InstanceFinder.ServerManager.Spawn(go, session.Owner);
         if (go.TryGetComponent<Spacecraft>(out var spacecraft))
         {
             spacecraft.SpacecraftData = data;
             spacecraft.Initialize(data);
+            if (go.TryGetComponent<NetworkObject>(out var netObj)) session.SetControlledSpacecraft(netObj);
+            _playerSpacecrafs.Add(spacecraft);
         }
-        InstanceFinder.ServerManager.Spawn(go, session.Owner);
-        _playerSpacecrafs.Add(spacecraft);
-        if (go.TryGetComponent<NetworkObject>(out var netObj)) session.SetControlledSpacecraft(netObj);
         // maybe deprecated
         GameEvents.OnEntitySpawn.Invoke(spacecraft);
         
@@ -153,7 +171,7 @@ public class GameManager : SingletonNetworkBehaviour<GameManager>
     private void CleanUp()
     {
         // Set the level back to 1, just as a precaution
-        _level.Value = 1;
+        Level.Value = 1;
         // Empty the fields
         foreach (var craft in _playerSpacecrafs)
         {

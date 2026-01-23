@@ -16,14 +16,11 @@ MonoBehaviour:
   _spacecraftName: Interceptor
   _spacecraftDescription: Fast Attack craft
   _association: 0
-  _spacecraftSize: 1
   _goSpacecraftPrefab: {fileID: 2737441590741945366, guid: a031315331de605489f66085dd9792c1, type: 3}
-  _primaryAttackPattern: {fileID: 11400000, guid: 938326b0eebfe314783fba6770be3f2a, type: 2}
-  _secondaryAttackPattern: {fileID: 11400000, guid: 57fcb9925d7a87c40b13bcd335eff6e5, type: 2}
-  _baseMaxSpeed: 5
-  _baseHealth: 500
+  _baseMaxSpeed: 6
+  _baseHealth: 100
   _baseHealthRegen: 10
   _baseHealthRegenDelay: 10
-  _baseShield: 100
+  _baseShield: 10
   _baseShieldRegen: 10
   _baseShieldRegenDelay: 5

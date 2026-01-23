@@ -26,6 +26,7 @@ public class OwnLobbyManager : SingletonNetworkBehaviour<OwnLobbyManager>
     public override void OnStartServer()
     {
         base.OnStartServer();
+
         _networkedGameState.OnChange += OnGameStateSynced;
         InstanceFinder.ServerManager.OnRemoteConnectionState += RemoteConnectionStateChanged;
         InstanceFinder.SceneManager.OnClientLoadedStartScenes += OnClientLoadedScenes;

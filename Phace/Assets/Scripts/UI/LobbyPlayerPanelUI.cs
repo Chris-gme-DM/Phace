@@ -35,8 +35,8 @@ public class LobbyPlayerPanelUI : MonoBehaviour
             if (sc.name != null) _scName.text = sc.name;
             _currentShipId = sc.SpacecraftID;
             if (sc.Icon != null) _spacecraftImage.sprite = sc.Icon;
-            if (_scHealth != null) _scHealth.fillAmount = sc.BaseHealth / 1000f;
-            if (_scShield !=null) _scShield.fillAmount = sc.BaseShield / 1000f;
+            if (_scHealth != null) _scHealth.fillAmount = sc.BaseHealth / 200f;
+            if (_scShield !=null) _scShield.fillAmount = sc.BaseShield / 100f;
             if (_scSpeed != null) _scSpeed.fillAmount = sc.BaseMaxSpeed / 10f;
 
  //           _scPrimaryAttack.sprite = sc.PrimaryAttack.AttackSprite;

@@ -45,7 +45,7 @@
                 {
                     "name": "Boost",
                     "type": "Button",
-                    "id": "27c5f898-bc57-4ee1-8800-db469aca5fe3",
+                    "id": "535455b4-001f-40dd-b3d4-d60f1d912e8f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press",
@@ -72,7 +72,7 @@
                 {
                     "name": "Sprint",
                     "type": "Button",
-                    "id": "2776c80d-3c14-4091-8c56-d04ced07a2b0",
+                    "id": "d8a60a7a-02dd-417e-bbe9-992b34c505e9",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -81,7 +81,7 @@
                 {
                     "name": "HomingMissle",
                     "type": "Button",
-                    "id": "b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba",
+                    "id": "09f1e518-9d4e-4d14-8981-b78390d93d66",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -90,7 +90,7 @@
                 {
                     "name": "ChangeSpeedInput",
                     "type": "Button",
-                    "id": "641cd816-40e6-41b4-8c3d-04687c349290",
+                    "id": "9c921f3c-8b5f-43a6-bab8-cfd0091969cd",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -321,10 +321,10 @@
                 {
                     "name": "",
                     "id": "bc81facf-d0d0-4c03-ad20-338651e4955a",
-                    "path": "*/{Menu}",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -332,10 +332,10 @@
                 {
                     "name": "",
                     "id": "683ca54a-41b9-427c-a7bf-8570d0efce97",
-                    "path": "<Keyboard>/{Cancel}",
+                    "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": ";Gamepad",
                     "action": "Menu",
                     "isComposite": false,
                     "isPartOfComposite": false

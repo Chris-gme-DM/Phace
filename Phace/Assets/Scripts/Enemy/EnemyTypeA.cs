@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using System;
 using FishNet.Object.Synchronizing;
 
-public class EnemyTypeA : NetworkBehaviour, IDamageable
+public class EnemyTypeA : NetworkBehaviour
 {
 
     private NavMeshAgent _agent;
@@ -25,9 +25,6 @@ public class EnemyTypeA : NetworkBehaviour, IDamageable
     private ProjectileSpawnManager bulletSpawner;
     private float shootInterval = 0f;
     [SerializeField] private float shootDelay = 2f;
-
-
-    [SerializeField] private int health = 1;
 
 
     public override void OnStartServer()
@@ -229,13 +226,4 @@ public class EnemyTypeA : NetworkBehaviour, IDamageable
     }
 
 
-    [Server]
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-        if (health <= 0)
-        {
-            NetworkObject.Despawn();
-        }
-    }
 }
